@@ -7,5 +7,8 @@
 package frc.team3602.robot;
 
 public final class Constants {
-
+    public final class OperatorInterfaceConstants {
+        public final static int kXboxControllerPort = 0;
+        public final static int kControlPanelPort = 1;
+    }
 }
