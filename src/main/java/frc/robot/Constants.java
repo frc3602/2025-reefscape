@@ -14,6 +14,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -34,8 +36,8 @@ public final class Constants {
     public static final Transform3d kRobotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
         new Rotation3d(0.0, 0.0, 0.0));
 
-    public static final Measure<Distance> kCameraHeight = Inches.of(10.75);
-    public static final Measure<Angle> kCameraPitch = Degrees.of(20); //23.5
+    public static final Measure<DistanceUnit> kCameraHeight = Inches.of(10.75);
+    public static final Measure<AngleUnit> kCameraPitch = Degrees.of(20); //23.5
 
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);

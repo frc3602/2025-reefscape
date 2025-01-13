@@ -20,7 +20,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.*;
 
-import static frc.team3602.robot.Constants.VisionConstants.*;
+import static frc.robot.Constants.VisionConstants.*;
 
 public class Vision {
   private final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
