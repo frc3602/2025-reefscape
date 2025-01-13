@@ -6,6 +6,7 @@
 
 package frc.robot;
 
+<<<<<<< HEAD
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -18,12 +19,15 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import static edu.wpi.first.units.Units.*;
 
+=======
+>>>>>>> 2f35fa63a3d7a52868ed930674569adcceeb3403
 public final class Constants {
     public final class OperatorInterfaceConstants {
         public final static int kXboxControllerPort = 0;
         public final static int kControlPanelPort = 1;
     }
 
+<<<<<<< HEAD
       public final class VisionConstants {
     public static final String kPhotonCameraName = "photonvision";
     public static final String kNoteCameraName = "photon_note";
@@ -38,4 +42,37 @@ public final class Constants {
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
+=======
+    public final class GripperConstants {
+
+        //pivot PID constants
+        public final static double pivotKP = 1;
+        public final static double pivotKI = 0;
+        public final static double pivotKD = 0;
+
+        //pivot ffe constants
+        public final static double pivotKS = 5;
+        public final static double pivotKG = 2;
+        public final static double pivotKV = 0.9;
+        public final static double pivotKA = 0.1;
+
+         // sim pivot PID constants
+         public final static double simPivotKP = 9;
+         public final static double simPivotKI = 0;
+         public final static double simPivotKD = 0;
+ 
+         // sim pivot ffe constants
+         public final static double simPivotKS = 5;
+         public final static double simPivotKG = 2;
+         public final static double simPivotKV = 0.9;
+         public final static double simPivotKA = 0.1;
+
+         //sim constants
+         public final static int pivotGearing = 36;
+         public final static double pivotLengthMeters = 0.5;
+         public final static double pivotMassKg = 3;
+
+
+    }
+>>>>>>> 2f35fa63a3d7a52868ed930674569adcceeb3403
 }
