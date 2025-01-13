@@ -12,7 +12,7 @@ public final class Constants {
         public final static int kControlPanelPort = 1;
     }
 
-    public final class ElevatorConstants {
+    public final class GripperConstants {
 
         //pivot PID constants
         public final static double pivotKP = 1;
@@ -26,7 +26,7 @@ public final class Constants {
         public final static double pivotKA = 0.1;
 
          // sim pivot PID constants
-         public final static double simPivotKP = 1;
+         public final static double simPivotKP = 9;
          public final static double simPivotKI = 0;
          public final static double simPivotKD = 0;
  

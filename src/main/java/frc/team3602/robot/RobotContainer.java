@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.team3602.robot.Subsystems.ElevatorSubsystem;
+import frc.team3602.robot.Subsystems.GripperSubsystem;
 
 public class RobotContainer {
   //controllers
@@ -18,7 +19,10 @@ public class RobotContainer {
   public final CommandJoystick joystick2 = new CommandJoystick(1);
 
   //importing other classes
+
   private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
+  private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys);
+
 
 
 
@@ -35,12 +39,12 @@ public class RobotContainer {
   }
 
   private void configButtonBindings() {
-    joystick.button(1).whileTrue(elevatorSubsys.testPivot());
-    joystick.button(2).whileTrue(elevatorSubsys.testGripperWheel());    
+    joystick.button(1).whileTrue(gripperSubsys.setAngle(90));
+    joystick.button(2).whileTrue(gripperSubsys.testGripperWheel());    
     joystick.button(3).whileTrue(elevatorSubsys.testElevator());
-    joystick2.button(1).whileTrue(elevatorSubsys.testPivotNegative());
+    joystick2.button(1).whileTrue(gripperSubsys.setAngle(270));
     joystick2.button(2).whileTrue(elevatorSubsys.testElevatorNegative());
-    joystick2.button(3).whileTrue(elevatorSubsys.testGripperWheelNegative());
+    joystick2.button(3).whileTrue(gripperSubsys.testGripperWheelNegative());
 
   }
 
