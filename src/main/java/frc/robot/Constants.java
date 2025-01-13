@@ -4,7 +4,7 @@
  * in the root directory of this project.
  */
 
-package frc.team3602.robot;
+package frc.robot;
 
 public final class Constants {
     public final class OperatorInterfaceConstants {
