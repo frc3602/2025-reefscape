@@ -15,6 +15,7 @@ import frc.team3602.robot.Subsystems.ElevatorSubsystem;
 public class RobotContainer {
   //controllers
   public final CommandJoystick joystick = new CommandJoystick(0);
+  public final CommandJoystick joystick2 = new CommandJoystick(1);
 
   //importing other classes
   private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
@@ -37,9 +38,9 @@ public class RobotContainer {
     joystick.button(1).whileTrue(elevatorSubsys.testPivot());
     joystick.button(2).whileTrue(elevatorSubsys.testGripperWheel());    
     joystick.button(3).whileTrue(elevatorSubsys.testElevator());
-    joystick.button(4).whileTrue(elevatorSubsys.testPivotNegative());
-    joystick.button(5).whileTrue(elevatorSubsys.testElevatorNegative());
-    joystick.button(6).whileTrue(elevatorSubsys.testGripperWheelNegative());
+    joystick2.button(1).whileTrue(elevatorSubsys.testPivotNegative());
+    joystick2.button(2).whileTrue(elevatorSubsys.testElevatorNegative());
+    joystick2.button(3).whileTrue(elevatorSubsys.testGripperWheelNegative());
 
   }
 

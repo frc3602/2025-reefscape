@@ -9,16 +9,17 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.simulation.*;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
+//TODO put pivot and gripper in diff subsystem - maybe
 //TODO change each marked line of code
 public class ElevatorSubsystem extends SubsystemBase{
     //private Vision vision;
@@ -38,9 +39,9 @@ public class ElevatorSubsystem extends SubsystemBase{
     private final ArmFeedforward simPivotFeedforward = new ArmFeedforward(ElevatorConstants.simPivotKS, ElevatorConstants.simPivotKG, ElevatorConstants.simPivotKV, ElevatorConstants.simPivotKA);
 
     //simming 2d mech
-    private static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), ElevatorConstants.pivotGearing, SingleJointedArmSim.estimateMOI(ElevatorConstants.pivotLengthMeters, ElevatorConstants.pivotMassKg), 0.2, 0, 0, true, 0, null);
-    private static final SingleJointedArmSim gripperWheelSim = new SingleJointedArmSim(null, 0, 0.001, 0, 0, 0, false, 0, null);
-    private static final SingleJointedArmSim elevatorSim = new SingleJointedArmSim(null, 0, 0, 0.5, 1.57, 1.58, false, Math.PI/180, null);
+    private static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), ElevatorConstants.pivotGearing, SingleJointedArmSim.estimateMOI(ElevatorConstants.pivotLengthMeters, ElevatorConstants.pivotMassKg), 0.2, 0, 0, true, 0);
+    private static final SingleJointedArmSim gripperWheelSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 1, 0.001, 0, 0, 0, false, 0);
+    private static final SingleJointedArmSim elevatorSim = new SingleJointedArmSim(DCMotor.getFalcon500(2), 1, 6, 0.5, 1.57, 1.58, false, Math.PI/180);
 
     private static final Mechanism2d elevatorSimMech = new Mechanism2d(1.5, 1.5);
     private static final MechanismRoot2d pivotRoot = elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7);
@@ -53,13 +54,13 @@ public class ElevatorSubsystem extends SubsystemBase{
 
 
     public ElevatorSubsystem(){
-
+        SmartDashboard.putData("elevator viz", elevatorSimMech);
     }
 
 
     public Command testPivot(){
         return runEnd(() -> {
-            pivotMotor.setVoltage(5);
+            pivotMotor.setVoltage(40);
         }, () -> {
             pivotMotor.setVoltage(0);
     });
@@ -90,7 +91,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     public Command testGripperWheel(){
         return runEnd(() -> {
-            gripperWheelMotor.setVoltage(5);
+            gripperWheelMotor.setVoltage(12);
         }, () -> {
             gripperWheelMotor.setVoltage(0);
     });
@@ -98,7 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     
     public Command testGripperWheelNegative(){
         return runEnd(() -> {
-            gripperWheelMotor.setVoltage(-5);
+            gripperWheelMotor.setVoltage(-12);
         }, () -> {
             gripperWheelMotor.setVoltage(0);
     });
@@ -108,15 +109,9 @@ public class ElevatorSubsystem extends SubsystemBase{
     public void periodic() {
 
         //updating sims
-        pivotSim.setInput(pivotMotor.getMotorVoltage().getValueAsDouble());//min/max is +/- 40.96
-        pivotSim.update(TimedRobot.kDefaultPeriod);
-        gripperWheelSim.setInput(gripperWheelMotor.getMotorVoltage().getValueAsDouble());//min/max is +/- 40.96
-        gripperWheelSim.update(TimedRobot.kDefaultPeriod); 
-        elevatorSim.setInput(elevatorMotor.getMotorVoltage().getValueAsDouble());//min/max is +/- 40.96
-        elevatorSim.update(TimedRobot.kDefaultPeriod);
 
-        pivotViz.setAngle(Math.toDegrees(pivotSim.getAngleRads()));
-        gripperWheelViz.setAngle(gripperWheelViz.getAngle() + (gripperWheelMotor.getMotorVoltage().getValueAsDouble() * 0.02));
+        pivotViz.setAngle(Math.toDegrees(pivotSim.getAngleRads())); // pivot doesn't work //TODO set up like 2024 cresc
+        gripperWheelViz.setAngle(gripperWheelViz.getAngle() + (gripperWheelMotor.getMotorVoltage().getValueAsDouble() ));
         elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.0008));
 
         pivotRoot.setPosition(0.75, (0.1 + elevatorViz.getLength()));
