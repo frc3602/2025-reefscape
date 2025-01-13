@@ -39,7 +39,6 @@ public class Vision {
     return photonCamera.getLatestResult();
   }
 
-  @SuppressWarnings("unchecked")
   public Optional<EstimatedRobotPose> getEstimatedRobotPose() {
     var visionEstimate = photonPoseEstimator.update(this.getLatestResult());
     double latestTimestamp = getLatestResult().getTimestampSeconds();

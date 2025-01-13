@@ -31,8 +31,6 @@ public final class Constants {
     public static final String kPhotonCameraName = "photonvision";
     public static final String kNoteCameraName = "photon_note";
 
-    // Camera mounted facing forward, half a meter forward of center, half a meter
-    // up from center. TODO: Measure this
     public static final Transform3d kRobotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
         new Rotation3d(0.0, 0.0, 0.0));
 
