@@ -25,14 +25,16 @@ public final class Constants {
     }
 
       public final class VisionConstants {
-    public static final String kPhotonCameraName = "photonvision";
-    public static final String kNoteCameraName = "photon_note";
+    public static final String kFrontLeftCameraName = "frontLeftCamera";
+    public static final String kFrontRigtCameraName = "frontRightCamera";
+    public static final String kBackLeftCameraName = "backLeftCamera";
+    public static final String kBackRightCameraName = "backRightCamera";
 
     public static final Transform3d kRobotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
         new Rotation3d(0.0, 0.0, 0.0));
 
-    public static final Measure<DistanceUnit> kCameraHeight = Inches.of(10.75);
-    public static final Measure<AngleUnit> kCameraPitch = Degrees.of(20); //23.5
+    public static final Measure<DistanceUnit> kCameraHeight = Inches.of(4);
+    public static final Measure<AngleUnit> kCameraPitch = Degrees.of(45); //23.5
 
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);

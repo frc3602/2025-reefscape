@@ -17,6 +17,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.*;
 
@@ -25,7 +26,7 @@ import static frc.robot.Constants.VisionConstants.*;
 public class Vision {
   private final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-  private final PhotonCamera photonCamera = new PhotonCamera(kPhotonCameraName);
+  private final PhotonCamera photonCamera = new PhotonCamera(null);
   private final PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(kFieldLayout,
       PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCamera);
 
@@ -34,6 +35,7 @@ public class Vision {
   public Vision() {
     configVision();
   }
+
 
   public PhotonPipelineResult getLatestResult() {
     return photonCamera.getLatestResult();
