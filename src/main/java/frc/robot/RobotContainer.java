@@ -16,16 +16,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import static frc.robot.Constants.OperatorInterfaceConstants.*;
+import static frc.robot.Constants.VisionConstants.*;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.Camera;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
  
-
-
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -43,6 +43,10 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
     private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys);
 
+    private final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
+    private final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
+    private final Camera mod2Camera = new Camera(kMod2CameraName, kRobotToMod2CameraTransform);
+    private final Camera mod3Camera = new Camera(kMod1CameraName, kRobotToMod3CameraTransform);
 
     public RobotContainer() {
         configureBindings();
