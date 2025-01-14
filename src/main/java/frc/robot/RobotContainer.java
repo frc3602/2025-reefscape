@@ -51,13 +51,23 @@ public class RobotContainer {
     private void configureBindings() {
 
         if (Utils.isSimulation()){
-            joystick.button(1).whileTrue(gripperSubsys.setAngle(90));
-            joystick.button(2).whileTrue(gripperSubsys.testGripperWheel());    
+            drivetrainSubsystem.setDefaultCommand(
+                // Drivetrain will execute this command periodically
+                drivetrainSubsystem.applyRequest(() ->
+                    drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                        .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                        .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                )
+            );
+            
+            joystick.button(1).whileTrue(gripperSubsys.testGripperWheel()); 
+            joystick.button(2).whileTrue(gripperSubsys.testGripperWheelNegative());
             joystick.button(3).whileTrue(elevatorSubsys.testElevator());
-            joystick2.button(1).whileTrue(gripperSubsys.setAngle(270));
-            joystick2.button(2).whileTrue(elevatorSubsys.testElevatorNegative());
-            joystick2.button(3).whileTrue(gripperSubsys.testGripperWheelNegative());
-
+            joystick.button(4).whileTrue(elevatorSubsys.testElevatorNegative());
+            joystick2.button(1).onTrue(gripperSubsys.testMotionMagic(-90));
+            joystick2.button(2).onTrue(gripperSubsys.testMotionMagic(0));
+            joystick2.button(3).onTrue(gripperSubsys.testMotionMagic(90));
+            joystick2.button(4).onTrue(gripperSubsys.testMotionMagic(150));
         } else {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
