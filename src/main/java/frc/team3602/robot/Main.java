@@ -4,7 +4,7 @@
  * in the root directory of this project.
  */
 
-package frc.robot;
+package frc.team3602.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 
