@@ -28,7 +28,7 @@ public final class Constants {
     }
 
     public final class VisionConstants {
-      public static final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+      public static final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
 
       public static final String kMod0CameraName = "mod0Camera";
       public static final String kMod1CameraName = "mod1Camera";

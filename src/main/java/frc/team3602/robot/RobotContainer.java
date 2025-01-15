@@ -5,6 +5,10 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -45,6 +49,10 @@ public class RobotContainer {
     public final DrivetrainSubsystem drivetrainSubsystem = TunerConstants.createDrivetrain();
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
     private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys);
+    private Transform3d kRobotToMod0CameraTransform;
+    private Transform3d kRobotToMod1CameraTransform;
+    private Transform3d kRobotToMod2CameraTransform;
+    private Transform3d kRobotToMod3CameraTransform;
 
     private final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
     private final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
