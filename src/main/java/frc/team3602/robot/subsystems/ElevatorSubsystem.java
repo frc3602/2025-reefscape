@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.team3602.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.GripperConstants;
+import frc.team3602.robot.Constants.GripperConstants;
 
 //import frc.team3602.robot.Subsystems.*;
 

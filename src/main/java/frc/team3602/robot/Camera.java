@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.team3602.robot;
 
 import static frc.robot.Constants.VisionConstants.*;
 
