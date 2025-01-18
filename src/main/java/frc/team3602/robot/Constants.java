@@ -35,19 +35,19 @@ public final class Constants {
       public static final String kMod2CameraName = "mod2Camera";
       public static final String kMod3CameraName = "mod3Camera";
 
-      public static final Transform3d kRobotToMod0Camera = new Transform3d(
+      public static final Transform3d kRobotToMod0CameraTransform = new Transform3d(
         new Translation3d(0.0, 0.0, 0.0),
         new Rotation3d(0.0, 0.0, 0.0)
       );
-      public static final Transform3d kRobotToMod1Camera = new Transform3d(
+      public static final Transform3d kRobotToMod1CameraTransform = new Transform3d(
         new Translation3d(0.0, 0.0, 0.0),
         new Rotation3d(0.0, 0.0, 0.0)
       );
-      public static final Transform3d kRobotToMod2Camera = new Transform3d(
+      public static final Transform3d kRobotToMod2CameraTransform = new Transform3d(
         new Translation3d(0.0, 0.0, 0.0),
         new Rotation3d(0.0, 0.0, 0.0)
       );
-      public static final Transform3d kRobotToMod3Camera = new Transform3d(
+      public static final Transform3d kRobotToMod3CameraTransform = new Transform3d(
         new Translation3d(0.0, 0.0, 0.0),
         new Rotation3d(0.0, 0.0, 0.0)
       );

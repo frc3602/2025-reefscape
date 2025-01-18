@@ -5,7 +5,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +20,7 @@ import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.GripperSubsystem;
+import frc.team3602.robot.subsystems.PivotSubsystem;
 import frc.team3602.robot.Camera;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
@@ -46,13 +46,10 @@ public class RobotContainer {
     private final CommandJoystick joystick2 = new CommandJoystick(1);
 
     /* Subsystems */
-    public final DrivetrainSubsystem drivetrainSubsystem = TunerConstants.createDrivetrain();
+    public final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
-    private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys);
-    private Transform3d kRobotToMod0CameraTransform;
-    private Transform3d kRobotToMod1CameraTransform;
-    private Transform3d kRobotToMod2CameraTransform;
-    private Transform3d kRobotToMod3CameraTransform;
+    private final PivotSubsystem pivotSubsys = new PivotSubsystem();
+    private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys, () -> pivotSubsys.pivotMotor.getMotorVoltage().getValueAsDouble());
 
     private final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
     private final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
@@ -63,6 +60,7 @@ public class RobotContainer {
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
 
     public RobotContainer() {
+        configDefaultCommands();
         configButtonBindings();
         configAutonomous();
     }
@@ -72,7 +70,15 @@ public class RobotContainer {
      * commands for the subsytems.
      */
     private void configDefaultCommands() {
-        
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        drivetrainSubsys.setDefaultCommand(
+                drivetrainSubsys.applyRequest(() ->
+                    drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+        );
     }
 
     /**
@@ -82,51 +88,41 @@ public class RobotContainer {
     private void configButtonBindings() {
 
         if (Utils.isSimulation()){
-            drivetrainSubsystem.setDefaultCommand(
+            drivetrainSubsys.setDefaultCommand(
                 // Drivetrain will execute this command periodically
-                drivetrainSubsystem.applyRequest(() ->
+                drivetrainSubsys.applyRequest(() ->
                     drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                         .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                         .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 )
             );
             
-            joystick.button(1).whileTrue(gripperSubsys.testGripperWheel()); 
-            joystick.button(2).whileTrue(gripperSubsys.testGripperWheelNegative());
-            joystick.button(3).whileTrue(elevatorSubsys.testElevator());
-            joystick.button(4).whileTrue(elevatorSubsys.testElevatorNegative());
-            joystick2.button(1).onTrue(gripperSubsys.testMotionMagic(-90));
-            joystick2.button(2).onTrue(gripperSubsys.testMotionMagic(0));
-            joystick2.button(3).onTrue(gripperSubsys.testMotionMagic(90));
-            joystick2.button(4).onTrue(gripperSubsys.testMotionMagic(150));
+            joystick.button(1).whileTrue(gripperSubsys.testGripperWheel(12.0)); 
+            joystick.button(2).whileTrue(gripperSubsys.testGripperWheel(-12.0));
+            joystick.button(3).whileTrue(elevatorSubsys.testElevator(5.0));
+            joystick.button(4).whileTrue(elevatorSubsys.testElevator(-5.0));
+            joystick2.button(1).onTrue(pivotSubsys.testMotionMagic(-90));
+            joystick2.button(2).onTrue(pivotSubsys.testMotionMagic(0));
+            joystick2.button(3).onTrue(pivotSubsys.testMotionMagic(90));
+            joystick2.button(4).onTrue(pivotSubsys.testMotionMagic(150));
         } else {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrainSubsystem.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrainSubsystem.applyRequest(() ->
-                drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
 
-        xboxController.a().whileTrue(drivetrainSubsystem.applyRequest(() -> brake));
-        xboxController.b().whileTrue(drivetrainSubsystem.applyRequest(() ->
+        xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
+        xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))
         ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        xboxController.back().and(xboxController.y()).whileTrue(drivetrainSubsystem.sysIdDynamic(Direction.kForward));
-        xboxController.back().and(xboxController.x()).whileTrue(drivetrainSubsystem.sysIdDynamic(Direction.kReverse));
-        xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsystem.sysIdQuasistatic(Direction.kForward));
-        xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsystem.sysIdQuasistatic(Direction.kReverse));
+        xboxController.back().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kForward));
+        xboxController.back().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kReverse));
+        xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kForward));
+        xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        xboxController.leftBumper().onTrue(drivetrainSubsystem.runOnce(() -> drivetrainSubsystem.seedFieldCentric()));
+        xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
 
-        drivetrainSubsystem.registerTelemetry(logger::telemeterize);
+        drivetrainSubsys.registerTelemetry(logger::telemeterize);
         }
     }
 

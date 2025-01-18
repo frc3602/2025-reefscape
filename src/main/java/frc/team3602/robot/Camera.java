@@ -1,6 +1,6 @@
 package frc.team3602.robot;
 
-import static frc.robot.Constants.VisionConstants.*;
+import static frc.team3602.robot.Constants.VisionConstants.*;
 
 import java.util.Optional;
 
