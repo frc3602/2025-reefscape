@@ -8,6 +8,7 @@ package frc.team3602.robot;
 
 import static frc.team3602.robot.Constants.VisionConstants.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -35,7 +36,8 @@ public class Camera {
     }
 
     private PhotonPipelineResult getLatestResult() {
-        return photonCamera.getLatestResult();
+        List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
+        return results.get(results.size() - 1);
     }
 
   public Optional<EstimatedRobotPose> getEstimatedRobotPose() {
