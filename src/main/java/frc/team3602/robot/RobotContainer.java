@@ -86,17 +86,7 @@ public class RobotContainer {
      * interface button bindings.
      */
     private void configButtonBindings() {
-
-        if (Utils.isSimulation()){
-            drivetrainSubsys.setDefaultCommand(
-                // Drivetrain will execute this command periodically
-                drivetrainSubsys.applyRequest(() ->
-                    drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                        .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-                )
-            );
-            
+        if (Utils.isSimulation()) {         
             joystick.button(1).whileTrue(gripperSubsys.testGripperWheel(12.0)); 
             joystick.button(2).whileTrue(gripperSubsys.testGripperWheel(-12.0));
             joystick.button(3).whileTrue(elevatorSubsys.testElevator(5.0));
@@ -106,9 +96,8 @@ public class RobotContainer {
             joystick2.button(3).onTrue(pivotSubsys.testMotionMagic(90));
             joystick2.button(4).onTrue(pivotSubsys.testMotionMagic(150));
         } else {
-
-        xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
-        xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
+            xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
+            xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))
         ));
 
@@ -136,10 +125,6 @@ public class RobotContainer {
         return sendableChooser.getSelected();
     }
 
-    /**
-     * Function that is called in the constructor where we configure anything
-     * relating to autonomous.
-     */
     private void configAutonomous() {
         SmartDashboard.putData(sendableChooser);
     }

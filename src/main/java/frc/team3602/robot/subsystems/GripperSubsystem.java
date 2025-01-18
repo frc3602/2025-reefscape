@@ -20,7 +20,6 @@ import java.util.function.DoubleSupplier;
 
 import frc.team3602.robot.Constants.GripperConstants;
 
-
 public class GripperSubsystem extends SubsystemBase {
     private final ElevatorSubsystem elevatorSubsys;
     public final TalonFX gripperWheelMotor = new TalonFX(3);
@@ -67,5 +66,4 @@ public class GripperSubsystem extends SubsystemBase {
         pivotRoot.setPosition(0.75, (0.1 + elevatorViz.getLength()));
         gripperWheelRoot.setPosition(0.75 + (0.4 * Math.cos(pivotSim.getAngleRads())), (elevatorViz.getLength()) + (0.4 * Math.sin(pivotSim.getAngleRads())));
     }
-
 }

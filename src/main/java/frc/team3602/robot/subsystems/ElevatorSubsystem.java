@@ -5,9 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-//TODO put pivot and gripper in diff subsystem - maybe
-//TODO change each marked line of code
-public class ElevatorSubsystem extends SubsystemBase{
+public class ElevatorSubsystem extends SubsystemBase {
     public final TalonFX elevatorMotor = new TalonFX(0);
     public final TalonFX elevatorFollower = new TalonFX(1);
 
