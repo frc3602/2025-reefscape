@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2025 Team 3602 All rights reserved. This work is
+ * licensed under the terms of the MIT license which can be found
+ * in the root directory of this project.
+ */
+
 package frc.team3602.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -5,11 +11,9 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -46,10 +50,10 @@ public class RobotContainer {
     private final CommandJoystick joystick2 = new CommandJoystick(1);
 
     /* Subsystems */
-    public final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
+    private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
-    private final PivotSubsystem pivotSubsys = new PivotSubsystem();
-    private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys, () -> pivotSubsys.pivotMotor.getMotorVoltage().getValueAsDouble());
+    private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
+    private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Gripper Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
     private final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
     private final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
