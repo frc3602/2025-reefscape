@@ -37,7 +37,7 @@ public class Camera {
 
     private PhotonPipelineResult getLatestResult() {
         List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-        return results.get(results.size() - 1);
+        return (results.size() == 0) ? new PhotonPipelineResult() : results.get(results.size() - 1);
     }
 
   public Optional<EstimatedRobotPose> getEstimatedRobotPose() {

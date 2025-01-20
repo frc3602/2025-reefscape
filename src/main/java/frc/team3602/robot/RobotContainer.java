@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -74,15 +75,6 @@ public class RobotContainer {
      * commands for the subsytems.
      */
     private void configDefaultCommands() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrainSubsys.setDefaultCommand(
-                drivetrainSubsys.applyRequest(() ->
-                    drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
     }
 
     /**
@@ -99,7 +91,25 @@ public class RobotContainer {
             joystick2.button(2).onTrue(pivotSubsys.testMotionMagic(0));
             joystick2.button(3).onTrue(pivotSubsys.testMotionMagic(90));
             joystick2.button(4).onTrue(pivotSubsys.testMotionMagic(150));
+
+            drivetrainSubsys.setDefaultCommand(
+                drivetrainSubsys.applyRequest(() ->
+                drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+    );
         } else {
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        drivetrainSubsys.setDefaultCommand(
+                drivetrainSubsys.applyRequest(() ->
+                    drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+        );
+
             xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
             xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))
@@ -131,5 +141,9 @@ public class RobotContainer {
 
     private void configAutonomous() {
         SmartDashboard.putData(sendableChooser);
+    }
+
+    public Pose2d getPose() {
+        return drivetrainSubsys.getState().Pose;
     }
 }
