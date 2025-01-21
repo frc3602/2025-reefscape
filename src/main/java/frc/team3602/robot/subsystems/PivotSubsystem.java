@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -30,10 +31,15 @@ import frc.team3602.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
     public final TalonFX pivotMotor = new TalonFX(2);
+    public final TalonFXSimState simPivotMotor = new TalonFXSimState(pivotMotor);
 
     // Controls
     private final PIDController pivotController = new PIDController(PivotConstants.KD, PivotConstants.KI, PivotConstants.KD);
     private final ArmFeedforward pivotFeedforward = new ArmFeedforward(PivotConstants.KS, PivotConstants.KG, PivotConstants.KV, PivotConstants.KA);
+
+    private final PIDController simPivotController = new PIDController(PivotConstants.simPivotKD, PivotConstants.simPivotKI, PivotConstants.simPivotKD);
+    private final ArmFeedforward simPivotFeedforward = new ArmFeedforward(PivotConstants.simPivotKS, PivotConstants.simPivotKG, PivotConstants.simPivotKV, PivotConstants.simPivotKA);
+
 
     private double simPivotEncoder;
     private double pivotEncoder;
@@ -41,12 +47,12 @@ public class PivotSubsystem extends SubsystemBase {
     private double simTotalEffort = 0.0;
 
     // Simulation
-    public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing, SingleJointedArmSim.estimateMOI(PivotConstants.lengthMeters, PivotConstants.massKg), 0.2, -10000, 100000, true, 0);
+    public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing, SingleJointedArmSim.estimateMOI(PivotConstants.lengthMeters, PivotConstants.massKg), 0.2, -10000, 100000, true, 89);
     private DoubleSupplier elevatorVizLength;
     private final MechanismRoot2d pivotRoot;
     private final MechanismLigament2d pivotViz;
 
-    private double angleDeg = 0.0;
+    private double angleDeg = 30.0;
 
     public PivotSubsystem(MechanismRoot2d pivotRoot, DoubleSupplier elevatorVizLength) {
         var talonFXConfigs = new TalonFXConfiguration();
@@ -81,6 +87,7 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
+
     //  public Command testPivot(double voltage){
     //     return runEnd(() -> {
     //         pivotMotor.setVoltage(voltage);
@@ -96,16 +103,22 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double simGetEffort() {
-        return simTotalEffort = ((pivotFeedforward.calculate(simPivotEncoder, 0)) + (pivotController.calculate(Units.radiansToDegrees(simPivotEncoder), angleDeg)));
+        return simTotalEffort = ((simPivotFeedforward.calculate(Units.degreesToRadians(simPivotEncoder), 0)) + (simPivotController.calculate(simPivotEncoder, angleDeg)));
       }
 
     public void periodic() {
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Sim Pivot Motor Output", simPivotMotor.getMotorVoltage());
+        SmartDashboard.putNumber("Sim Pivot Encoder Deg", simPivotEncoder);
+        SmartDashboard.putNumber("Pivot Angle Deg", angleDeg);
+
+        simPivotEncoder = Units.radiansToDegrees(pivotSim.getAngleRads());
+        pivotMotor.setVoltage(simGetEffort());
 
         // Update Sim
-        pivotSim.setInput(pivotMotor.getMotorVoltage().getValueAsDouble());
+        pivotSim.setInput(simPivotMotor.getMotorVoltage());
         pivotSim.update(TimedRobot.kDefaultPeriod);
-        pivotViz.setAngle(Math.toDegrees(pivotSim.getAngleRads()) /*+ (pivotMotor.getMotorVoltage().getValueAsDouble() * 0.02)*/); // pivot doesn't work //TODO set up like 2024 crescendo
+        pivotViz.setAngle(Units.radiansToDegrees(pivotSim.getAngleRads()) /*+ (pivotMotor.getMotorVoltage().getValueAsDouble() * 0.02)*/); // pivot doesn't work //TODO set up like 2024 crescendo
         pivotRoot.setPosition(0.75, (0.1 + elevatorVizLength.getAsDouble()));
     }
 }

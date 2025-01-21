@@ -87,10 +87,14 @@ public class RobotContainer {
             joystick.button(2).whileTrue(gripperSubsys.testGripperWheel(-12.0));
             joystick.button(3).whileTrue(elevatorSubsys.testElevator(5.0));
             joystick.button(4).whileTrue(elevatorSubsys.testElevator(-5.0));
-            joystick2.button(1).onTrue(pivotSubsys.testMotionMagic(-90));
-            joystick2.button(2).onTrue(pivotSubsys.testMotionMagic(0));
-            joystick2.button(3).onTrue(pivotSubsys.testMotionMagic(90));
-            joystick2.button(4).onTrue(pivotSubsys.testMotionMagic(150));
+            // joystick2.button(1).onTrue(pivotSubsys.testMotionMagic(-90));
+            // joystick2.button(2).onTrue(pivotSubsys.testMotionMagic(0));
+            // joystick2.button(3).onTrue(pivotSubsys.testMotionMagic(90));
+            // joystick2.button(4).onTrue(pivotSubsys.testMotionMagic(150));
+            joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
+            joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
+            joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
+            joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
 
             drivetrainSubsys.setDefaultCommand(
                 drivetrainSubsys.applyRequest(() ->
