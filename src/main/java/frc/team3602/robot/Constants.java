@@ -73,18 +73,18 @@ public final class Constants {
 
       // Simulation Constants
       public final static int gearing = 36;
-      public final static double lengthMeters = 0.3;
+      public final static double lengthMeters = 0.5;
       public final static double massKg = 3.0;
 
       // sim pivot PID constants
-      public final static double simPivotKP = 0;
+      public final static double simPivotKP = 0.3; // $$0.4
       public final static double simPivotKI = 0;
-      public final static double simPivotKD = 0;
+      public final static double simPivotKD = 0.001;
 
       // sim pivot ffe constants
-      public final static double simPivotKS = 0;
-      public final static double simPivotKG = 0.8;
-      public final static double simPivotKV = 0;
-      public final static double simPivotKA = 0;
+      public final static double simPivotKS = 4.0;
+      public final static double simPivotKG = 1.315; //1.4> -> 1.3<
+      public final static double simPivotKV = 0.4;
+      public final static double simPivotKA = 0.1;
     }
 }
