@@ -26,7 +26,6 @@ import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.GripperSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
-import frc.team3602.robot.Camera;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
 import static frc.team3602.robot.Constants.VisionConstants.*;
@@ -56,10 +55,18 @@ public class RobotContainer {
     private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
     private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Gripper Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
-    private final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
-    private final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
-    private final Camera mod2Camera = new Camera(kMod2CameraName, kRobotToMod2CameraTransform);
-    private final Camera mod3Camera = new Camera(kMod1CameraName, kRobotToMod3CameraTransform);
+    /* Camerae */
+    private static final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
+    private static final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
+    private static final Camera mod2Camera = new Camera(kMod2CameraName, kRobotToMod2CameraTransform);
+    private static final Camera mod3Camera = new Camera(kMod1CameraName, kRobotToMod3CameraTransform);
+
+    /* Simulation */
+    private final VisionSimulation visionSimulation = new VisionSimulation()
+      .addCamera(mod0Camera)
+      .addCamera(mod1Camera)
+      .addCamera(mod2Camera)
+      .addCamera(mod3Camera);
 
     /* Autonomous */
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
@@ -75,6 +82,24 @@ public class RobotContainer {
      * commands for the subsytems.
      */
     private void configDefaultCommands() {
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        if (Utils.isSimulation()) {
+            drivetrainSubsys.setDefaultCommand(
+                drivetrainSubsys.applyRequest(() ->
+                drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
+            );
+        } else {
+            drivetrainSubsys.setDefaultCommand(
+                drivetrainSubsys.applyRequest(() ->
+                    drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                )
+            );
+        }
     }
 
     /**
@@ -95,25 +120,7 @@ public class RobotContainer {
             joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
             joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
             joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
-
-            drivetrainSubsys.setDefaultCommand(
-                drivetrainSubsys.applyRequest(() ->
-                drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-    );
         } else {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrainSubsys.setDefaultCommand(
-                drivetrainSubsys.applyRequest(() ->
-                    drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
-
             xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
             xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))
@@ -149,5 +156,13 @@ public class RobotContainer {
 
     public Pose2d getPose() {
         return drivetrainSubsys.getState().Pose;
+    }
+
+    public void resetSimulation() {
+        visionSimulation.reset();
+    }
+
+    public void updateSimulation() {
+        visionSimulation.update(getPose());
     }
 }

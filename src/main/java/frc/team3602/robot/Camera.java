@@ -16,6 +16,8 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.geometry.Transform3d;
@@ -25,12 +27,14 @@ import static edu.wpi.first.units.Units.*;
 public class Camera {
     private final PhotonCamera photonCamera;
     private final PhotonPoseEstimator photonPoseEstimator;
+    private PhotonCameraSim simCamera;
 
     private double lastEstimateTimestamp = 0.0;
 
     public Camera(String cameraName, Transform3d robotToCameraTransform) {
         photonCamera = new PhotonCamera(cameraName);
         photonPoseEstimator = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCameraTransform);
+        simCamera = new PhotonCameraSim(photonCamera);
 
         configCamera();
     }
@@ -77,6 +81,15 @@ public class Camera {
         }
 
         return targetDistance;
+    }
+
+    public PhotonCameraSim getSimulation(SimCameraProperties cameraProperties) {
+        simCamera = new PhotonCameraSim(photonCamera, cameraProperties);
+        return simCamera;
+    }
+
+    public Transform3d getRobotToCameraTransform() {
+        return photonPoseEstimator.getRobotToCameraTransform();
     }
 
     private void configCamera() {

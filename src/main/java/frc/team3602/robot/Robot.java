@@ -7,8 +7,6 @@
 package frc.team3602.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -17,18 +15,14 @@ public class Robot extends TimedRobot {
 
   private Command autonomousCommand = robotContainer.getAutonomousCommand();
 
-  private final Field2d field = new Field2d();
-
   @Override
   public void robotInit() {
-    SmartDashboard.putData("Field", field);
   }
 
   @Override
   public void robotPeriodic() {
-    field.setRobotPose(robotContainer.getPose());
-
     CommandScheduler.getInstance().run();
+    robotContainer.updateSimulation();
   }
 
   @Override
@@ -44,6 +38,7 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
     }
+    robotContainer.resetSimulation();
   }
 
   @Override
@@ -55,6 +50,7 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    robotContainer.resetSimulation();
   }
 
   @Override
