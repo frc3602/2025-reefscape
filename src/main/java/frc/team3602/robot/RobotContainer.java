@@ -62,7 +62,7 @@ public class RobotContainer {
     private static final Camera mod3Camera = new Camera(kMod1CameraName, kRobotToMod3CameraTransform);
 
     /* Simulation */
-    private final VisionSimulation visionSimulation = new VisionSimulation(() -> getPose())
+    private final VisionSimulation visionSimulation = new VisionSimulation()
       .addCamera(mod0Camera)
       .addCamera(mod1Camera)
       .addCamera(mod2Camera)
@@ -163,6 +163,6 @@ public class RobotContainer {
     }
 
     public void updateSimulation() {
-        visionSimulation.update();
+        visionSimulation.update(getPose());
     }
 }

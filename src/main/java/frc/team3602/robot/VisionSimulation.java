@@ -21,18 +21,15 @@ public class VisionSimulation {
     
     /* Field Simulation */
     private final VisionSystemSim visionSimulation = new VisionSystemSim("main");
-    private final Supplier<Pose2d> pose;
 
     /* Camera Simulation */
     private final SimCameraProperties cameraProperties = new SimCameraProperties();
     private List<Camera> camerae = new ArrayList<Camera>(4);
 
-    public VisionSimulation(Supplier<Pose2d> pose) {
+    public VisionSimulation() {
         visionSimulation.addAprilTags(kFieldLayout);
 
         cameraProperties.setCalibration(kWidthOfCamera, kHeightOfCamera, kCameraFOV);
-
-        this.pose = pose;
     }
 
     public VisionSimulation addCamera(Camera camera) {
@@ -48,7 +45,7 @@ public class VisionSimulation {
         visionSimulation.addAprilTags(kFieldLayout);
     }
 
-    public void update() {
-        visionSimulation.update(pose.get());
+    public void update(Pose2d pose) {
+        visionSimulation.update(pose);
     }
 }
