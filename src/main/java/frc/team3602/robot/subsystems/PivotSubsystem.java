@@ -30,14 +30,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3602.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
-    public final TalonFX pivotMotor = new TalonFX(2);
-    public final TalonFXSimState simPivotMotor = new TalonFXSimState(pivotMotor);
+    private final TalonFX pivotMotor = new TalonFX(2);
+    private final TalonFXSimState simPivotMotor = new TalonFXSimState(pivotMotor);
 
     // Controls
     private final PIDController pivotController = new PIDController(PivotConstants.KD, PivotConstants.KI, PivotConstants.KD);
     private final ArmFeedforward pivotFeedforward = new ArmFeedforward(PivotConstants.KS, PivotConstants.KG, PivotConstants.KV, PivotConstants.KA);
 
-    private final PIDController simPivotController = new PIDController(PivotConstants.simPivotKD, PivotConstants.simPivotKI, PivotConstants.simPivotKD);
+    private final PIDController simPivotController = new PIDController(PivotConstants.simPivotKP, PivotConstants.simPivotKI, PivotConstants.simPivotKD);
     private final ArmFeedforward simPivotFeedforward = new ArmFeedforward(PivotConstants.simPivotKS, PivotConstants.simPivotKG, PivotConstants.simPivotKV, PivotConstants.simPivotKA);
 
 
@@ -47,7 +47,7 @@ public class PivotSubsystem extends SubsystemBase {
     private double simTotalEffort = 0.0;
 
     // Simulation
-    public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing, SingleJointedArmSim.estimateMOI(PivotConstants.lengthMeters, PivotConstants.massKg), 0.2, -10000, 100000, true, 89);
+    public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing, SingleJointedArmSim.estimateMOI(PivotConstants.lengthMeters, PivotConstants.massKg), 0.2, -10000, 100000, true, -90);
     private DoubleSupplier elevatorVizLength;
     private final MechanismRoot2d pivotRoot;
     private final MechanismLigament2d pivotViz;
@@ -76,7 +76,7 @@ public class PivotSubsystem extends SubsystemBase {
 
         // Simulation
         this.pivotRoot = pivotRoot;
-        this.pivotViz = this.pivotRoot.append(new MechanismLigament2d("Pivot Ligament", 0.4, 90, 10.0, new Color8Bit(Color.kAliceBlue)));
+        this.pivotViz = this.pivotRoot.append(new MechanismLigament2d("Pivot Ligament", 0.4, -90, 10.0, new Color8Bit(Color.kAliceBlue)));
         this.elevatorVizLength = elevatorVizLength;
     }
 
@@ -111,14 +111,20 @@ public class PivotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Sim Pivot Motor Output", simPivotMotor.getMotorVoltage());
         SmartDashboard.putNumber("Sim Pivot Encoder Deg", simPivotEncoder);
         SmartDashboard.putNumber("Pivot Angle Deg", angleDeg);
+        SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, angleDeg));
 
-        simPivotEncoder = Units.radiansToDegrees(pivotSim.getAngleRads());
+        //simPivotEncoder = Units.radiansToDegrees(pivotSim.getAngleRads());
+        if ((pivotViz.getAngle()) < 0 ){
+            simPivotEncoder = (pivotViz.getAngle() % 360 )+360;
+        } else{
+        simPivotEncoder = pivotViz.getAngle() % 360;
+        }
         pivotMotor.setVoltage(simGetEffort());
 
         // Update Sim
         pivotSim.setInput(simPivotMotor.getMotorVoltage());
         pivotSim.update(TimedRobot.kDefaultPeriod);
-        pivotViz.setAngle(Units.radiansToDegrees(pivotSim.getAngleRads()) /*+ (pivotMotor.getMotorVoltage().getValueAsDouble() * 0.02)*/); // pivot doesn't work //TODO set up like 2024 crescendo
+        pivotViz.setAngle(Units.radiansToDegrees(pivotSim.getAngleRads()));//Units.radiansToDegrees(simPivotEncoder) /*+ (pivotMotor.getMotorVoltage().getValueAsDouble() * 0.02)*/); // pivot doesn't work //TODO set up like 2024 crescendo
         pivotRoot.setPosition(0.75, (0.1 + elevatorVizLength.getAsDouble()));
     }
 }
