@@ -31,9 +31,9 @@ public final class Constants {
     public final class VisionConstants {
       public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
-      public static final int kWidthOfCamera = 0;
-      public static final int kHeightOfCamera = 0;
-      public static final Rotation2d kCameraFOV = Rotation2d.fromDegrees(0.0);
+      public static final int kWidthOfCamera = 4656;
+      public static final int kHeightOfCamera = 3496;
+      public static final Rotation2d kCameraFOV = Rotation2d.fromDegrees(90.0);
 
       public static final String kMod0CameraName = "mod0Camera";
       public static final String kMod1CameraName = "mod1Camera";
