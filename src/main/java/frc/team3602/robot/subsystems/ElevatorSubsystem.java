@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
+
+    // Motors
     public final TalonFX elevatorMotor = new TalonFX(0);
     public final TalonFX elevatorFollower = new TalonFX(1);
 
@@ -37,12 +39,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         return runEnd(() -> {
             elevatorMotor.setVoltage(voltage);
         }, () -> {
-            elevatorMotor.setVoltage(0);
+            elevatorMotor.setVoltage(0.0);
        });
     }
     
     @Override
     public void periodic() {
+        // Update Simulation
         elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.0008));
     }
+
 }

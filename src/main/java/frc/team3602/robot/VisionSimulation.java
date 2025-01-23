@@ -8,7 +8,6 @@ package frc.team3602.robot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -48,4 +47,5 @@ public class VisionSimulation {
     public void update(Pose2d pose) {
         visionSimulation.update(pose);
     }
+
 }

@@ -8,8 +8,6 @@ package frc.team3602.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -21,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
 
 public class GripperSubsystem extends SubsystemBase {
+
+    // Motor
     public final TalonFX gripperWheelMotor = new TalonFX(3);
 
     // Simulation
@@ -31,6 +31,7 @@ public class GripperSubsystem extends SubsystemBase {
     DoubleSupplier pivotSimAngleRads;
     
     public GripperSubsystem(MechanismRoot2d gripperWheelRoot, DoubleSupplier elevatorVizLength, DoubleSupplier pivotSimAngleRads) {  
+        // Simulation Initiation
         this.gripperWheelRoot = gripperWheelRoot;    
         this.gripperWheelViz = this.gripperWheelRoot.append(new MechanismLigament2d("Gripper Wheel Ligament", 0.05, 70, 10.0, new Color8Bit(Color.kSpringGreen)));
         this.elevatorVizLength = elevatorVizLength;
@@ -41,14 +42,15 @@ public class GripperSubsystem extends SubsystemBase {
         return runEnd(() -> {
             gripperWheelMotor.setVoltage(voltage);
         }, () -> {
-            gripperWheelMotor.setVoltage(0);
+            gripperWheelMotor.setVoltage(0.0);
         });
     }
 
     @Override
     public void periodic() {
-        // Updating Sim
+        // Updating Simulation
         gripperWheelViz.setAngle(gripperWheelViz.getAngle() + (gripperWheelMotor.getMotorVoltage().getValueAsDouble() ));
         gripperWheelRoot.setPosition(0.75 + (0.4 * Math.cos(pivotSimAngleRads.getAsDouble())), (elevatorVizLength.getAsDouble()) + (0.4 * Math.sin(pivotSimAngleRads.getAsDouble())));
     }
+
 }
