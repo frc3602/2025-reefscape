@@ -60,7 +60,7 @@ public class RobotContainer {
     private static final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
     private static final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
     private static final Camera mod2Camera = new Camera(kMod2CameraName, kRobotToMod2CameraTransform);
-    private static final Camera mod3Camera = new Camera(kMod1CameraName, kRobotToMod3CameraTransform);
+    private static final Camera mod3Camera = new Camera(kMod3CameraName, kRobotToMod3CameraTransform);
 
     /* Simulation */
     private final VisionSimulation visionSimulation = new VisionSimulation()
