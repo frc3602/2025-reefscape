@@ -109,10 +109,12 @@ public class RobotContainer {
      */
     private void configButtonBindings() {
         if (Utils.isSimulation()) {         
-            joystick.button(1).whileTrue(gripperSubsys.testGripperWheel(12.0)); 
-            joystick.button(2).whileTrue(gripperSubsys.testGripperWheel(-12.0));
-            joystick.button(3).whileTrue(elevatorSubsys.testElevator(5.0));
-            joystick.button(4).whileTrue(elevatorSubsys.testElevator(-5.0));
+            // joystick.button(1).whileTrue(gripperSubsys.testGripperWheel(12.0)); 
+            // joystick.button(2).whileTrue(gripperSubsys.testGripperWheel(-12.0));
+            joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
+            joystick.button(2).whileTrue(elevatorSubsys.setHeight(1.0));
+            joystick.button(3).whileTrue(elevatorSubsys.setHeight(2.5));
+            joystick.button(4).whileTrue(elevatorSubsys.setHeight(4.0));
             // joystick2.button(1).onTrue(pivotSubsys.testMotionMagic(-90));
             // joystick2.button(2).onTrue(pivotSubsys.testMotionMagic(0));
             // joystick2.button(3).onTrue(pivotSubsys.testMotionMagic(90));

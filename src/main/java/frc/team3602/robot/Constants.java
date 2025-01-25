@@ -63,6 +63,35 @@ public final class Constants {
       public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
       public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
+    
+    public final class ElevatorConstants {
+            // PID Constants
+            public final static double KP = 1.0;
+            public final static double KI = 0.0;
+            public final static double KD = 0.0;
+      
+            //  ffe Constants
+            public final static double KS = 5.0;
+            public final static double KG = 2.0;
+            public final static double KV = 0.9;
+            public final static double KA = 0.1;
+      
+            // simulation constants
+            public final static double kMaxHeightMeters = 1.5;
+            // sim elevator PID constants
+            public final static double simKP = 2; 
+            public final static double simKI = 0;
+            public final static double simKD = 0.01;
+      
+            // sim elevator ffe constants
+            public final static double simKS = 4.0;
+            public final static double simKG = 0; 
+            public final static double simKV = 0.4;
+            public final static double simKA = 0.1;
+      }
+
+
+    
 
     public final class PivotConstants {
       // PID Constants
@@ -92,4 +121,5 @@ public final class Constants {
       public final static double simPivotKV = 0.4;
       public final static double simPivotKA = 0.1;
     }
+  
 }
