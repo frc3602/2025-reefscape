@@ -41,8 +41,8 @@ public class PivotSubsystem extends SubsystemBase {
     private double angleDeg = 30.0;
 
     // Controls, Actual
-    // private final PIDController pivotController = new PIDController(PivotConstants.KD, PivotConstants.KI, PivotConstants.KD);
-    // private final ArmFeedforward pivotFeedforward = new ArmFeedforward(PivotConstants.KS, PivotConstants.KG, PivotConstants.KV, PivotConstants.KA);
+    private final PIDController pivotController = new PIDController(PivotConstants.KD, PivotConstants.KI, PivotConstants.KD);
+    private final ArmFeedforward pivotFeedforward = new ArmFeedforward(PivotConstants.KS, PivotConstants.KG, PivotConstants.KV, PivotConstants.KA);
 
     // Controls, Simulated
     private final PIDController simPivotController = new PIDController(PivotConstants.simPivotKP, PivotConstants.simPivotKI, PivotConstants.simPivotKD);
