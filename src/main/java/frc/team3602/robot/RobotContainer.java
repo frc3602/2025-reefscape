@@ -7,6 +7,7 @@
 package frc.team3602.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -70,9 +71,11 @@ public class RobotContainer {
       .addCamera(mod3Camera);
 
     /* Autonomous */
-    private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
+    private  final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
+    
+        public RobotContainer() {
+        autoChooser = AutoBuilder.buildAutoChooser();
 
-    public RobotContainer() {
         configDefaultCommands();
         configButtonBindings();
         configAutonomous();
@@ -150,11 +153,11 @@ public class RobotContainer {
      * @return Currently selected autonomous routine.
      */
     public Command getAutonomousCommand() {
-        return sendableChooser.getSelected();
+        return autoChooser.getSelected();
     }
 
     private void configAutonomous() {
-        SmartDashboard.putData(sendableChooser);
+        SmartDashboard.putData(autoChooser);
     }
 
     public Pose2d getPose() {
