@@ -99,6 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Sim Elevator Motor Output", simElevatorMotor.getMotorVoltage());
         SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
         SmartDashboard.putNumber("Elevator Height", height);
+        SmartDashboard.putNumber("ElevatorSim.getPosiitonMeters()", elevatorSim.getPositionMeters());
         SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
         SmartDashboard.putNumber("Sim Elevator PID Effort", simElevatorController.calculate(simElevatorEncoder, height));
 

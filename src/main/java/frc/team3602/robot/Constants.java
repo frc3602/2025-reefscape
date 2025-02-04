@@ -41,21 +41,26 @@ public final class Constants {
       public static final String kMod2CameraName = "mod2Camera";
       public static final String kMod3CameraName = "mod3Camera";
 
+
+      //TODO
+      //TRANFORM 3D VALUES 
+      //ARE MADE UP
+      //THEY MUST BE CHANGED eventually
       public static final Transform3d kRobotToMod0CameraTransform = new Transform3d(
-        new Translation3d(0.0, 0.0, 0.0),
-        new Rotation3d(0.0, 0.0, 0.0)
+        new Translation3d(-1.0, 1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(135.0))
       );
       public static final Transform3d kRobotToMod1CameraTransform = new Transform3d(
-        new Translation3d(0.0, 0.0, 0.0),
-        new Rotation3d(0.0, 0.0, 0.0)
+        new Translation3d(1.0, 1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(45.0))
       );
       public static final Transform3d kRobotToMod2CameraTransform = new Transform3d(
-        new Translation3d(0.0, 0.0, 0.0),
-        new Rotation3d(0.0, 0.0, 0.0)
+        new Translation3d(1.0, -1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(315.0))
       );
       public static final Transform3d kRobotToMod3CameraTransform = new Transform3d(
-        new Translation3d(0.0, 0.0, 0.0),
-        new Rotation3d(0.0, 0.0, 0.0)
+        new Translation3d(-1.0, -1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(225.0))
       );
 
       public static final Measure<DistanceUnit> kCameraHeight = Inches.of(4);
@@ -77,7 +82,7 @@ public final class Constants {
             public final static double KV = 0.9;
             public final static double KA = 0.1;
       
-            // simulation constants
+        // simulation constants
             public final static double kMaxHeightMeters = 1.5;
             // sim elevator PID constants
             public final static double simKP = 2; 
@@ -106,7 +111,7 @@ public final class Constants {
       public final static double KV = 0.9;
       public final static double KA = 0.1;
 
-      // Simulation Constants
+    // Simulation Constants
       public final static int gearing = 36;
       public final static double lengthMeters = 0.5;
       public final static double massKg = 3.0;

@@ -2,6 +2,7 @@ package frc.team3602.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -13,6 +14,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -260,6 +265,31 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
+
+//NEW
+//Pathplanner - create paths on the fly
+//TODO - is not functional
+
+private List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(3.0, 6.0, Rotation2d.fromDegrees(0)),
+        new Pose2d(0.8, 7.0, Rotation2d.fromDegrees(45.0))
+);
+
+private PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+
+public PathPlannerPath FlyPathTest = new PathPlannerPath(
+        waypoints,
+        constraints,
+        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+        new GoalEndState(0.0, Rotation2d.fromDegrees(45)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+);
+
+
+
+
+
+
+
 
     private void configDrivetrainSubsys() {
         try {

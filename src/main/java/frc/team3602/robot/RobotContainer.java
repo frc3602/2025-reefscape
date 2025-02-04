@@ -64,11 +64,11 @@ public class RobotContainer {
     private static final Camera mod3Camera = new Camera(kMod3CameraName, kRobotToMod3CameraTransform);
 
     /* Simulation */
-    private final VisionSimulation visionSimulation = new VisionSimulation()
-      .addCamera(mod0Camera)
-      .addCamera(mod1Camera)
-      .addCamera(mod2Camera)
-      .addCamera(mod3Camera);
+    private final Vision visionSimulation = new Vision(() -> drivetrainSubsys.getState().Pose, drivetrainSubsys);
+    //   .addCamera(mod0Camera)
+    //   .addCamera(mod1Camera)
+    //   .addCamera(mod2Camera)
+    //   .addCamera(mod3Camera);
 
     /* Autonomous */
     private  final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
@@ -112,16 +112,12 @@ public class RobotContainer {
      */
     private void configButtonBindings() {
         if (Utils.isSimulation()) {         
-            // joystick.button(1).whileTrue(gripperSubsys.testGripperWheel(12.0)); 
-            // joystick.button(2).whileTrue(gripperSubsys.testGripperWheel(-12.0));
+       
             joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
             joystick.button(2).whileTrue(elevatorSubsys.setHeight(1.0));
             joystick.button(3).whileTrue(elevatorSubsys.setHeight(2.5));
             joystick.button(4).whileTrue(elevatorSubsys.setHeight(4.0));
-            // joystick2.button(1).onTrue(pivotSubsys.testMotionMagic(-90));
-            // joystick2.button(2).onTrue(pivotSubsys.testMotionMagic(0));
-            // joystick2.button(3).onTrue(pivotSubsys.testMotionMagic(90));
-            // joystick2.button(4).onTrue(pivotSubsys.testMotionMagic(150));
+
             joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
             joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
             joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
@@ -169,7 +165,7 @@ public class RobotContainer {
     }
 
     public void updateSimulation() {
-        visionSimulation.update(getPose());
+      visionSimulation.update(getPose());
     }
 
 }
