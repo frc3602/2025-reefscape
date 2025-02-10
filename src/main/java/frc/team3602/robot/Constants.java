@@ -8,6 +8,7 @@ package frc.team3602.robot;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -19,6 +20,7 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -27,6 +29,17 @@ public final class Constants {
     public final class OperatorInterfaceConstants {
       public final static int kXboxControllerPort = 0;
       public final static int kControlPanelPort = 1;
+    }
+
+    //in case we want the flypath stuff in superstructure or something
+    public final class flyPathPosesConstants {
+
+      //TODO- change with real life robot testing
+      public static final Pose2d blueNONBargeCoralIntakePose = new Pose2d(1.22, 1.68, Rotation2d.fromDegrees(142));
+      public static final Pose2d blueBargeCoralIntakePose = new Pose2d(0.8, 7.07, Rotation2d.fromDegrees(34.6));
+      public static final Pose2d redNONBargeCoralIntakePose = new Pose2d(16.5, 7.5, Rotation2d.fromDegrees(-36.7));
+      public static final Pose2d redBargeCoralIntakePose = new Pose2d(16.5, 1.68, Rotation2d.fromDegrees(-145));
+
     }
 
     public final class VisionConstants {

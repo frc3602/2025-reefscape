@@ -117,7 +117,7 @@ public class RobotContainer {
             joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
             joystick.button(2).whileTrue(elevatorSubsys.setHeight(1.0));
             joystick.button(3).whileTrue(elevatorSubsys.setHeight(2.5));
-            joystick.button(4).whileTrue(elevatorSubsys.setHeight(4.0));
+            joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
 
             joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
             joystick2.button(2).onTrue(pivotSubsys.setAngle(0));

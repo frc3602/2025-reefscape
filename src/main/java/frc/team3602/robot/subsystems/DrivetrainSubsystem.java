@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -29,9 +30,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.team3602.robot.Constants.flyPathPosesConstants;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -268,21 +271,86 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
 //NEW
 //Pathplanner - create paths on the fly
-//TODO - is not functional
 
-private List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(3.0, 6.0, Rotation2d.fromDegrees(0)),
-        new Pose2d(0.8, 7.0, Rotation2d.fromDegrees(45.0))
+//lists are the points the robot will use to travel along
+//TODO make waypoints more accurate & fix with real robot testing
+//I don't think it needs red vs blue, but in the meantime, I created some red vars too
+//in the var names, barge refers to the barge side of the field. from the drivers station, this is the left side of the field
+private List<Waypoint> blueFarBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
+    new Pose2d(5.7, 6.4, Rotation2d.fromDegrees(-10)),
+    new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
+    flyPathPosesConstants.blueBargeCoralIntakePose
+);
+private List<Waypoint> blueCloseBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
+    new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
+    flyPathPosesConstants.blueBargeCoralIntakePose
 );
 
 private PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
 
-public PathPlannerPath FlyPathTest = new PathPlannerPath(
-        waypoints,
-        constraints,
-        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-        new GoalEndState(0.0, Rotation2d.fromDegrees(45)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-);
+//command to get us to the coral station
+//we can use booleans to get our pose and try a path based on that(depending on y, we can go to the other coral station)
+public Command flypathToCoralStation() {
+    if(getState().Pose.getX()>= 4.5){
+
+    try{
+        
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath flypath = new PathPlannerPath(
+            blueFarBargeReefToCoralIntake,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+    );
+        flypath.preventFlipping = true;
+
+        // Create a path following command using AutoBuilder.
+        return AutoBuilder.followPath(flypath);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }}else{
+        try{
+        
+            // Load the path you want to follow using its name in the GUI
+            PathPlannerPath flypath = new PathPlannerPath(
+                blueCloseBargeReefToCoralIntake,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+            flypath.preventFlipping = true;
+    
+            // Create a path following command using AutoBuilder.
+            return AutoBuilder.followPath(flypath);
+        } catch (Exception e) {
+            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+            return Commands.none();
+    }}
+
+  }
+
+
+// private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+// .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+// .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive mot
+// public Command flyPathTESTBRUH(){
+//     return runOnce(() -> {
+
+//         try{
+//         var config = RobotConfig.fromGUISettings();
+//         FlyPathTest.generateTrajectory(getState().Speeds, kBlueAlliancePerspectiveRotation, config);
+//         } catch (Exception f){
+//             FlyPathTest.generateTrajectory(getState().Speeds, kBlueAlliancePerspectiveRotation, null);
+//             DriverStation.reportError("Fly test generation w/ robot config from gui FAILED", f.getStackTrace());
+//         }
+   
+//         applyRequest(() ->
+//                 drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward with negative Y (forward)
+//                 .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative X (left)
+//                 .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate)); // Drive counterclockwise with negative X (left);
+// });
+// }
 
 
 
