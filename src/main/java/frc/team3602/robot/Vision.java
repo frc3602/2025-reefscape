@@ -19,12 +19,13 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 import static frc.team3602.robot.Constants.VisionConstants.*;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 
 public class Vision {
     private DrivetrainSubsystem driveSubsys;
-    private final Pose2dSupplier getSimPose;
 
 /*Cameras */
   private final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
@@ -49,14 +50,8 @@ public class Vision {
       private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
 
 
-
-    @FunctionalInterface
-    public interface Pose2dSupplier {
-      Pose2d getPose2d();
-    }
-    public Vision(Pose2dSupplier getSimPose, DrivetrainSubsystem driveSubsys) {
-
-        this.getSimPose = getSimPose;
+ /*vision constructor */      
+    public Vision(DrivetrainSubsystem driveSubsys) {
         this.driveSubsys = driveSubsys;
         photonPoseEstimator0.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimator1.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -153,62 +148,42 @@ public class Vision {
 
     }
 
-    public void update(Pose2d pose) {
-    double latestTimestamp0 = mod0Camera.getLatestResult().getTimestampSeconds();
-    boolean newResult0 = Math.abs(latestTimestamp0 - lastEstimateTimestampMod0) > 1e-5;
+  public void update(Pose2d pose) {
 
-    if (newResult0){
-        lastEstimateTimestampMod0 = latestTimestamp0;
-    }
     try {
         getEstimatedPoseMod0(pose);
     } catch (Exception e) {
         mod0Pose2d = pose;
+        Commands.print("mod0 pose failed");
     }
-    double latestTimestamp1 = mod1Camera.getLatestResult().getTimestampSeconds();
-    boolean newResult1 = Math.abs(latestTimestamp1 - lastEstimateTimestampMod1) > 1e-5;
 
-    if (newResult1){
-        lastEstimateTimestampMod1 = latestTimestamp1;
-    }
     try {
         getEstimatedPoseMod1(pose);
     } catch (Exception e) {
         mod1Pose2d = pose;
+        Commands.print("mod1 pose failed");
     } 
-    double latestTimestamp2 = mod2Camera.getLatestResult().getTimestampSeconds();
-    boolean newResult2 = Math.abs(latestTimestamp2 - lastEstimateTimestampMod2) > 1e-5;
-
-    if (newResult2){
-        lastEstimateTimestampMod2 = latestTimestamp2;
-    }
+    
     try {
         getEstimatedPoseMod2(pose);
     } catch (Exception e) {
         mod2Pose2d = pose;
+        Commands.print("mod2 pose failed");
     } 
-    double latestTimestamp3 = mod3Camera.getLatestResult().getTimestampSeconds();
-    boolean newResult3 = Math.abs(latestTimestamp3 - lastEstimateTimestampMod3) > 1e-5;
-
-    if (newResult3){
-        lastEstimateTimestampMod3 = latestTimestamp3;
-    }
+   
     try {
         getEstimatedPoseMod3(pose);
     } catch (Exception e) {
         mod3Pose2d = pose;
-    }
-
+        Commands.print("mod3 pose failed");
+    }    
+   
      driveSubsys.addVisionMeasurement(mod0Pose2d, lastEstimateTimestampMod0);
      driveSubsys.addVisionMeasurement(mod1Pose2d, lastEstimateTimestampMod1);
      driveSubsys.addVisionMeasurement(mod2Pose2d, lastEstimateTimestampMod2);
      driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
 
-
         visionSim.update(pose);
         visionSim.getDebugField();
-    }
-
-  
-
- }
+  }
+}

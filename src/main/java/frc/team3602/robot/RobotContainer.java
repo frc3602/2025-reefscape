@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+
 import static edu.wpi.first.units.Units.*;
 
 import frc.team3602.robot.generated.TunerConstants;
@@ -64,7 +65,7 @@ public class RobotContainer {
     private static final Camera mod3Camera = new Camera(kMod3CameraName, kRobotToMod3CameraTransform);
 
     /* Simulation */
-    private final Vision visionSimulation = new Vision(() -> drivetrainSubsys.getState().Pose, drivetrainSubsys);
+    private final Vision visionSimulation = new Vision(drivetrainSubsys);
     //   .addCamera(mod0Camera)
     //   .addCamera(mod1Camera)
     //   .addCamera(mod2Camera)
