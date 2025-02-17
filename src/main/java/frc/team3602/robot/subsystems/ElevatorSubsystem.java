@@ -61,13 +61,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     //public final TalonFX elevatorFollower = new TalonFX(1);
 
     // Simulation
-    private final ElevatorSim elevatorSim = new ElevatorSim(ElevatorConstants.simKV, ElevatorConstants.simKA, DCMotor.getKrakenX60(2), 0, ElevatorConstants.kMaxHeightMeters, true, 0.1);
+    private final ElevatorSim elevatorSim = new ElevatorSim(ElevatorConstants.simKV, ElevatorConstants.simKA, DCMotor.getKrakenX60(2), 1, ElevatorConstants.kMaxHeightMeters, true, 0.1);
   //  private final SingleJointedArmSim elevatorSim = new SingleJointedArmSim(DCMotor.getFalcon500(2), 1, 6, 0.5, 1.57,
         // 1.58, false, Math.PI / 180);
     public final Mechanism2d elevatorSimMech = new Mechanism2d(1.5, 1.5);
     private final MechanismRoot2d elevatorRoot = elevatorSimMech.getRoot("Elevator Root", 0.75, 0.1);
     public final MechanismLigament2d elevatorViz = elevatorRoot
             .append(new MechanismLigament2d("Elevator Ligament", 0.6, 90, 70.0, new Color8Bit(Color.kBlanchedAlmond)));
+
+    // public Translation3d translation;
+    // public Pose3d ElevatorPose;
+
+    // StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+    // .getStructTopic("Elevator Pose", Pose3d.struct).publish();
 
     public ElevatorSubsystem() {
         SmartDashboard.putData("Elevator Viz", elevatorSimMech);
@@ -99,9 +105,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Sim Elevator Motor Output", simElevatorMotor.getMotorVoltage());
         SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
         SmartDashboard.putNumber("Elevator Height", height);
-        SmartDashboard.putNumber("ElevatorSim.getPosiitonMeters()", elevatorSim.getPositionMeters());
         SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
         SmartDashboard.putNumber("Sim Elevator PID Effort", simElevatorController.calculate(simElevatorEncoder, height));
+
+        // elevatorPose = new Pose3d(0,0,0, simElevatorEncoder);
+        // publisher.set(elevatorPose);
 
         simElevatorEncoder = elevatorViz.getLength();
         elevatorEncoder = elevatorMotor.getPosition().getValueAsDouble(); // TODO <- figure out when using real robot
