@@ -15,10 +15,14 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.team3602.robot.Constants.VisionConstants.*;
@@ -44,10 +48,10 @@ public class Vision {
     
     /* Camera Simulation */
     private final SimCameraProperties cameraProperties = new SimCameraProperties();
-      private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera, cameraProperties);
-      private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera, cameraProperties);
-      private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera, cameraProperties);
-      private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
+    //   private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera, cameraProperties);
+    //   private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera, cameraProperties);
+    //   private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera, cameraProperties);
+    //   private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
 
 
  /*vision constructor */      
@@ -59,10 +63,10 @@ public class Vision {
         photonPoseEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         visionSim.addAprilTags(kFieldLayout);
-        visionSim.addCamera(camera0Sim, kRobotToMod0CameraTransform);
-        visionSim.addCamera(camera1Sim, kRobotToMod1CameraTransform);
-        visionSim.addCamera(camera2Sim, kRobotToMod2CameraTransform);
-        visionSim.addCamera(camera3Sim, kRobotToMod3CameraTransform);
+        // visionSim.addCamera(camera0Sim, kRobotToMod0CameraTransform);
+        // visionSim.addCamera(camera1Sim, kRobotToMod1CameraTransform);
+        // visionSim.addCamera(camera2Sim, kRobotToMod2CameraTransform);
+        // visionSim.addCamera(camera3Sim, kRobotToMod3CameraTransform);
 
         cameraProperties.setCalibration(640, 480, Rotation2d.fromDegrees(100));
         cameraProperties.setCalibError(0.25, 0.08);
@@ -150,40 +154,43 @@ public class Vision {
 
   public void update(Pose2d pose) {
 
+
     try {
         getEstimatedPoseMod0(pose);
+        driveSubsys.addVisionMeasurement(mod0Pose2d, lastEstimateTimestampMod0);
     } catch (Exception e) {
-        mod0Pose2d = pose;
+       // mod0Pose2d = pose;
         Commands.print("mod0 pose failed");
     }
 
     try {
         getEstimatedPoseMod1(pose);
+        driveSubsys.addVisionMeasurement(mod1Pose2d, lastEstimateTimestampMod1);
     } catch (Exception e) {
-        mod1Pose2d = pose;
+        //mod1Pose2d = pose;
         Commands.print("mod1 pose failed");
     } 
     
     try {
         getEstimatedPoseMod2(pose);
+        driveSubsys.addVisionMeasurement(mod2Pose2d, lastEstimateTimestampMod2);
     } catch (Exception e) {
-        mod2Pose2d = pose;
+       // mod2Pose2d = pose;
         Commands.print("mod2 pose failed");
     } 
    
     try {
         getEstimatedPoseMod3(pose);
+        driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
     } catch (Exception e) {
-        mod3Pose2d = pose;
+        //mod3Pose2d = pose;
         Commands.print("mod3 pose failed");
     }    
    
-     driveSubsys.addVisionMeasurement(mod0Pose2d, lastEstimateTimestampMod0);
-     driveSubsys.addVisionMeasurement(mod1Pose2d, lastEstimateTimestampMod1);
-     driveSubsys.addVisionMeasurement(mod2Pose2d, lastEstimateTimestampMod2);
-     driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
 
         visionSim.update(pose);
         visionSim.getDebugField();
+
+
   }
 }

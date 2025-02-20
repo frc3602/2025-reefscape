@@ -17,40 +17,48 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
+import frc.team3602.robot.Constants.GripperConstants;
 
 public class GripperSubsystem extends SubsystemBase {
 
     // Motor
-    public final TalonFX gripperWheelMotor = new TalonFX(3);
+    public final TalonFX gripperMotor = new TalonFX(GripperConstants.kGripperMotorId);
 
     // Simulation
-    private final SingleJointedArmSim gripperWheelSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 1, 0.001, 0, 0, 0, false, 0);
-    private final MechanismRoot2d gripperWheelRoot;
-    private final MechanismLigament2d gripperWheelViz;
+    private final SingleJointedArmSim gripperSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 1, 0.001, 0, 0, 0, false, 0);
+    private final MechanismRoot2d gripperRoot;
+    private final MechanismLigament2d gripperViz;
     DoubleSupplier elevatorVizLength;
     DoubleSupplier pivotSimAngleRads;
     
     public GripperSubsystem(MechanismRoot2d gripperWheelRoot, DoubleSupplier elevatorVizLength, DoubleSupplier pivotSimAngleRads) {  
         // Simulation Initiation
-        this.gripperWheelRoot = gripperWheelRoot;    
-        this.gripperWheelViz = this.gripperWheelRoot.append(new MechanismLigament2d("Gripper Wheel Ligament", 0.05, 70, 10.0, new Color8Bit(Color.kSpringGreen)));
+        this.gripperRoot = gripperWheelRoot;    
+        this.gripperViz = this.gripperRoot.append(new MechanismLigament2d("Gripper Wheel Ligament", 0.05, 70, 10.0, new Color8Bit(Color.kSpringGreen)));
         this.elevatorVizLength = elevatorVizLength;
         this.pivotSimAngleRads = pivotSimAngleRads;
     }
 
-    public Command testGripperWheel(double voltage){
+    public Command testGripper(double voltage){
         return runEnd(() -> {
-            gripperWheelMotor.setVoltage(voltage);
+            gripperMotor.set(voltage);
         }, () -> {
-            gripperWheelMotor.setVoltage(0.0);
+            gripperMotor.setVoltage(0.0);
+        });
+    }
+    public Command runGripper(double speed){
+        return runEnd(() -> {
+            gripperMotor.set(speed);
+        }, () -> {
+            gripperMotor.set(0.0);
         });
     }
 
     @Override
     public void periodic() {
         // Updating Simulation
-        gripperWheelViz.setAngle(gripperWheelViz.getAngle() + (gripperWheelMotor.getMotorVoltage().getValueAsDouble() ));
-        gripperWheelRoot.setPosition(0.75 + (0.4 * Math.cos(pivotSimAngleRads.getAsDouble())), (elevatorVizLength.getAsDouble()) + (0.4 * Math.sin(pivotSimAngleRads.getAsDouble())));
+        gripperViz.setAngle(gripperViz.getAngle() + (gripperMotor.getMotorVoltage().getValueAsDouble() ));
+        gripperRoot.setPosition(0.75 + (0.4 * Math.cos(pivotSimAngleRads.getAsDouble())), (elevatorVizLength.getAsDouble()) + (0.4 * Math.sin(pivotSimAngleRads.getAsDouble())));
     }
 
 }

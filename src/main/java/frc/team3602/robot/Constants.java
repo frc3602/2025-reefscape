@@ -35,57 +35,28 @@ public final class Constants {
     public final class flyPathPosesConstants {
 
       //TODO- change with real life robot testing
-      public static final Pose2d blueNONBargeCoralIntakePose = new Pose2d(1.22, 1.68, Rotation2d.fromDegrees(142));
+      public static final Pose2d blueNONBargeCoralIntakePose = new Pose2d(1.22, 1.68, Rotation2d.fromDegrees(145));
       public static final Pose2d blueBargeCoralIntakePose = new Pose2d(0.8, 7.07, Rotation2d.fromDegrees(34.6));
       public static final Pose2d redNONBargeCoralIntakePose = new Pose2d(16.5, 7.5, Rotation2d.fromDegrees(-36.7));
       public static final Pose2d redBargeCoralIntakePose = new Pose2d(16.5, 1.68, Rotation2d.fromDegrees(-145));
-
     }
 
-    public final class VisionConstants {
-      public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+   
 
-      public static final int kWidthOfCamera = 4656;
-      public static final int kHeightOfCamera = 3496;
-      public static final Rotation2d kCameraFOV = Rotation2d.fromDegrees(90.0);
-
-      public static final String kMod0CameraName = "mod0Camera";
-      public static final String kMod1CameraName = "mod1Camera";
-      public static final String kMod2CameraName = "mod2Camera";
-      public static final String kMod3CameraName = "mod3Camera";
-
-
-      //TODO
-      //TRANFORM 3D VALUES 
-      //ARE MADE UP
-      //THEY MUST BE CHANGED eventually
-      public static final Transform3d kRobotToMod0CameraTransform = new Transform3d(
-        new Translation3d(-1.0, 1.0, 0.0),
-        new Rotation3d(0.0, 0.0, Units.degreesToRadians(135.0))
-      );
-      public static final Transform3d kRobotToMod1CameraTransform = new Transform3d(
-        new Translation3d(1.0, 1.0, 0.0),
-        new Rotation3d(0.0, 0.0, Units.degreesToRadians(45.0))
-      );
-      public static final Transform3d kRobotToMod2CameraTransform = new Transform3d(
-        new Translation3d(1.0, -1.0, 0.0),
-        new Rotation3d(0.0, 0.0, Units.degreesToRadians(315.0))
-      );
-      public static final Transform3d kRobotToMod3CameraTransform = new Transform3d(
-        new Translation3d(-1.0, -1.0, 0.0),
-        new Rotation3d(0.0, 0.0, Units.degreesToRadians(225.0))
-      );
-
-      public static final Measure<DistanceUnit> kCameraHeight = Inches.of(4);
-      public static final Measure<AngleUnit> kCameraPitch = Degrees.of(45); //23.5
-
-      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-    }
-    
     public final class ElevatorConstants {
+      //Pre set heights
+      //TODO- change with real robot testing
+        public final static int kElevatorMotorId = 13;//TODO - change with real life--THIS IS A RANDOM NUMBER
+
+        public final static double coralIntakeHeight = 2;
+        public final static double scoreLevelOne = 1.5;
+        public final static double scoreLevelTwo = 2;
+        public final static double scoreLevelThree = 2.5;
+        public final static double scoreLevelFour = 3;
+
+
             // PID Constants
-            public final static double KP = 1.0;
+            public final static double KP = 0.0;
             public final static double KI = 0.0;
             public final static double KD = 0.0;
       
@@ -107,9 +78,16 @@ public final class Constants {
             public final static double simKG = 0; 
             public final static double simKV = 0.4;
             public final static double simKA = 0.1;
+        
       }
 
+      public final class GripperConstants{
+        public final static int kGripperMotorId = 14;//TODO change- this is a random number!!!!!!
+      }
 
+      public final class IntakeConstants{
+        public final static int kIntakeMotorId = 15;//TODO change- this is a random number!!!!!!
+      }
     
 
     public final class PivotConstants {
@@ -139,6 +117,48 @@ public final class Constants {
       public final static double simPivotKG = 1.315; //1.4> -> 1.3<
       public final static double simPivotKV = 0.4;
       public final static double simPivotKA = 0.1;
+    }
+
+    public final class VisionConstants {
+      public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+      public static final int kWidthOfCamera = 4656;
+      public static final int kHeightOfCamera = 3496;
+      public static final Rotation2d kCameraFOV = Rotation2d.fromDegrees(90.0);
+
+      public static final String kMod0CameraName = "mod0Camera";
+      public static final String kMod1CameraName = "mod1Camera";
+      public static final String kMod2CameraName = "mod2Camera";
+      public static final String kMod3CameraName = "mod3Camera";
+
+
+      //TODO
+      //TRANFORM 3D VALUES 
+      //ARE MADE UP
+      //THEY MUST BE CHANGED eventually
+      //I believe x&y coordinates are meters
+      public static final Transform3d kRobotToMod0CameraTransform = new Transform3d(
+        new Translation3d(-1.0, 1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(135.0))
+      );
+      public static final Transform3d kRobotToMod1CameraTransform = new Transform3d(
+        new Translation3d(1.0, 1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(45.0))
+      );
+      public static final Transform3d kRobotToMod2CameraTransform = new Transform3d(
+        new Translation3d(1.0, -1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(315.0))
+      );
+      public static final Transform3d kRobotToMod3CameraTransform = new Transform3d(
+        new Translation3d(-1.0, -1.0, 0.0),
+        new Rotation3d(0.0, 0.0, Units.degreesToRadians(225.0))
+      );
+
+      public static final Measure<DistanceUnit> kCameraHeight = Inches.of(4);
+      public static final Measure<AngleUnit> kCameraPitch = Degrees.of(45); //23.5
+
+      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
   
 }
