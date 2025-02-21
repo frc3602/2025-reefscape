@@ -48,6 +48,8 @@ public final class Constants {
       //TODO- change with real robot testing
         public final static int kElevatorMotorId = 13;//TODO - change with real life--THIS IS A RANDOM NUMBER
 
+        public final static double tolerance = 0.1;
+
         public final static double coralIntakeHeight = 2;
         public final static double scoreLevelOne = 1.5;
         public final static double scoreLevelTwo = 2;
