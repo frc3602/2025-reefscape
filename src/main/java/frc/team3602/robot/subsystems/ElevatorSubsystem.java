@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -98,6 +99,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     // elevatorMotor.setVoltage(0.0);
     // });
     // }
+
+    public boolean isNearGoalHeight(){
+        return MathUtil.isNear(height, elevatorEncoder, ElevatorConstants.tolerance);
+    }
+
 
     @Override
     public void periodic() {

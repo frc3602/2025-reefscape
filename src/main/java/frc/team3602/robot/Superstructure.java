@@ -6,13 +6,16 @@
 
 package frc.team3602.robot;
 
+import edu.wpi.first.wpilibj2.command.*;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.GripperSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
-public class Superstructure {
+public class Superstructure extends SubsystemBase{
     private DrivetrainSubsystem driveSubsys;
     private ElevatorSubsystem elevatorSubsys;
     private GripperSubsystem gripperSubsys;
@@ -30,5 +33,18 @@ public class Superstructure {
         this.pivotSubsys = pivotSubsys;
         this.vision = vision;
     }
+
+    public Command scoreCoral(double elevatorHeight){
+        return runOnce(() -> {
+            elevatorSubsys.setHeight(elevatorHeight);
+            if(elevatorSubsys.isNearGoalHeight()){
+                intakeSubsys.runIntake(3.0);
+            }
+
+        });
+    }
+         
+
+
 
 }
