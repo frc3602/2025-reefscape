@@ -8,6 +8,10 @@ package frc.team3602.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import au.grapplerobotics.ConfigurationFailedException;
+import au.grapplerobotics.LaserCan;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -134,6 +138,33 @@ public class RobotContainer {
         drivetrainSubsys.registerTelemetry(logger::telemeterize);
         }
     }
+
+//      private LaserCan lc;
+
+//   @Override
+//   public void robotInit() {
+//     lc = new LaserCan(0);
+//     // Optionally initialise the settings of the LaserCAN, if you haven't already done so in GrappleHook
+//     try {
+//       lc.setRangingMode(LaserCan.RangingMode.SHORT);
+//       lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+//       lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+//     } catch (ConfigurationFailedException e) {
+//       System.out.println("Configuration failed! " + e);
+//     }
+//   }
+
+//   @Override
+//   public void robotPeriodic() {
+//     LaserCan.Measurement measurement = lc.getMeasurement();
+//     if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+//       System.out.println("The target is " + measurement.distance_mm + "mm away!");
+//     } else {
+//       System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
+//       // You can still use distance_mm in here, if you're ok tolerating a clamped value or an unreliable measurement.
+//     }
+//   }
+
 
     /**
      * Function that returns the currently selected autonomous routine in the
