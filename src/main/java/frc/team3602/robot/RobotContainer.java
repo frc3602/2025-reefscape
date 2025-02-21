@@ -27,6 +27,7 @@ import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.GripperSubsystem;
+import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
@@ -57,19 +58,10 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
     private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
     private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Gripper Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
+    private final IntakeSubsystem intakeSubsys = new IntakeSubsystem();
 
-    /* Camerae */
-    private static final Camera mod0Camera = new Camera(kMod0CameraName, kRobotToMod0CameraTransform);
-    private static final Camera mod1Camera = new Camera(kMod1CameraName, kRobotToMod1CameraTransform);
-    private static final Camera mod2Camera = new Camera(kMod2CameraName, kRobotToMod2CameraTransform);
-    private static final Camera mod3Camera = new Camera(kMod3CameraName, kRobotToMod3CameraTransform);
-
-    /* Simulation */
-    private final Vision visionSimulation = new Vision(drivetrainSubsys);
-    //   .addCamera(mod0Camera)
-    //   .addCamera(mod1Camera)
-    //   .addCamera(mod2Camera)
-    //   .addCamera(mod3Camera);
+    private final Vision vision = new Vision(drivetrainSubsys);
+    private final Superstructure superstructure = new Superstructure(drivetrainSubsys, elevatorSubsys, gripperSubsys, intakeSubsys, pivotSubsys, vision);
 
     /* Autonomous */
     private  final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
@@ -162,11 +154,17 @@ public class RobotContainer {
     }
 
     public void resetSimulation() {
-        visionSimulation.reset();
+        vision.reset();
     }
 
     public void updateSimulation() {
-      visionSimulation.update(getPose());
+      vision.update(getPose());
+
+    //     RoboRioSim.setVInVoltage(
+    //         BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrainSubsys.getDriveCurrentDraw())
+    //         + BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrainSubsys.getSteerCurrentDraw())
+    //   );
+
     }
 
 }

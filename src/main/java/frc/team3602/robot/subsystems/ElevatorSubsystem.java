@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double height = 0.0;
 
     // Controls, Actual
-    private final PIDController elevatorController = new PIDController(ElevatorConstants.KD, ElevatorConstants.KI,
+    private final PIDController elevatorController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI,
             ElevatorConstants.KD);
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.KS,
             ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
@@ -56,7 +56,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double totalEffort = 0.0;
 
     // Motors
-    public final TalonFX elevatorMotor = new TalonFX(0);
+    public final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.kElevatorMotorId);
     private final TalonFXSimState simElevatorMotor = new TalonFXSimState(elevatorMotor);
     //public final TalonFX elevatorFollower = new TalonFX(1);
 
@@ -127,8 +127,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorSim.update(TimedRobot.kDefaultPeriod);
         
         elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.2));
-    
-        
     }
 
 }
