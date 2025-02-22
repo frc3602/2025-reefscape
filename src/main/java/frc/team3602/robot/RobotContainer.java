@@ -30,9 +30,9 @@ import static edu.wpi.first.units.Units.*;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
-import frc.team3602.robot.subsystems.GripperSubsystem;
-import frc.team3602.robot.subsystems.IntakeSubsystem;
-import frc.team3602.robot.subsystems.PivotSubsystem;
+// import frc.team3602.robot.subsystems.GripperSubsystem;
+// import frc.team3602.robot.subsystems.IntakeSubsystem;
+// import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
 import static frc.team3602.robot.Constants.VisionConstants.*;
@@ -60,12 +60,12 @@ public class RobotContainer {
     /* Subsystems */
     private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
-    private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
-    private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Gripper Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
-    private final IntakeSubsystem intakeSubsys = new IntakeSubsystem();
+    // private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
+    // private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Gripper Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
+    // private final IntakeSubsystem intakeSubsys = new IntakeSubsystem();
 
-    private final Vision vision = new Vision(drivetrainSubsys);
-    private final Superstructure superstructure = new Superstructure(drivetrainSubsys, elevatorSubsys, gripperSubsys, intakeSubsys, pivotSubsys, vision);
+   // private final Vision vision = new Vision(drivetrainSubsys);
+   // private final Superstructure superstructure = new Superstructure(drivetrainSubsys, elevatorSubsys, gripperSubsys, intakeSubsys, pivotSubsys, vision);
 
     /* Autonomous */
     private  final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
@@ -111,14 +111,14 @@ public class RobotContainer {
         if (Utils.isSimulation()) {         
        
             joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
-            joystick.button(2).whileTrue(elevatorSubsys.setHeight(1.0));
-            joystick.button(3).whileTrue(elevatorSubsys.setHeight(2.5));
+            joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
+           // joystick.button(3).onTrue(superstructure.scoreCoral());
             joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
 
-            joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
-            joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
-            joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
-            joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
+            // joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
+            // joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
+            // joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
+            // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
         } else {
             xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
             xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
@@ -131,6 +131,10 @@ public class RobotContainer {
         xboxController.back().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kReverse));
         xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kForward));
         xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kReverse));
+
+        xboxController.a().whileTrue(elevatorSubsys.testElevator(3));
+        xboxController.b().whileTrue(elevatorSubsys.testElevator(-3));
+        xboxController.x().onTrue(elevatorSubsys.stopMotors());
 
         // reset the field-centric heading on left bumper press
         xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
@@ -185,11 +189,11 @@ public class RobotContainer {
     }
 
     public void resetSimulation() {
-        vision.reset();
+ //       vision.reset();
     }
 
     public void updateSimulation() {
-      vision.update(getPose());
+ //     vision.update(getPose());
 
     //     RoboRioSim.setVInVoltage(
     //         BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrainSubsys.getDriveCurrentDraw())

@@ -34,16 +34,39 @@ public class Superstructure extends SubsystemBase{
         this.vision = vision;
     }
 
-    public Command scoreCoral(double elevatorHeight){
-        return runOnce(() -> {
-            elevatorSubsys.setHeight(elevatorHeight);
-            if(elevatorSubsys.isNearGoalHeight()){
-                intakeSubsys.runIntake(3.0);
-            }
+    //private final WaitUntilCommand waitForElevator = new WaitUntilCommand(() -> elevatorSubsys.isNearGoalHeight());
+    
 
-        });
-    }
+    // public Command scoreCoral(double elevatorHeight){
+    //     return runOnce(() -> {
+    //         Commands.sequence(
+    //         elevatorSubsys.setHeight(elevatorHeight),
+
+    //          waitForElevator.andThen(gripperSubsys.runGripper(3.0))
+                    
+    //         );
+    //     });
+    // }
          
+    public double newElevatorHeight;
+
+    public Command scoreCoral(){
+        newElevatorHeight = elevatorSubsys.elevatorHeight.getSelected().doubleValue();
+
+        return Commands.sequence(
+
+            Commands.print("starting sequence"),
+            elevatorSubsys.setHeight(newElevatorHeight),
+            Commands.print("Elevator Height set"),
+            Commands.none().until(() -> elevatorSubsys.isNearGoalHeight()),
+
+            
+            
+            gripperSubsys.runGripper(3.0)
+                
+        );
+    }
+
 
 
 
