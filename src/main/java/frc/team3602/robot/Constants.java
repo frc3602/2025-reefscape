@@ -46,15 +46,21 @@ public final class Constants {
     public final class ElevatorConstants {
       //Pre set heights
       //TODO- change with real robot testing
-        public final static int kElevatorMotorId = 13;//TODO - change with real life--THIS IS A RANDOM NUMBER
+        public final static int kElevatorMotorId = 56;
+        public final static int kElevatorFollowerId = 57;
 
         public final static double tolerance = 0.1;
 
-        public final static double coralIntakeHeight = 2;
-        public final static double scoreLevelOne = 1.5;
+        public final static double coralIntakeHeight = 1;
+        public final static double scoreLevelOne = 1;
         public final static double scoreLevelTwo = 2;
         public final static double scoreLevelThree = 2.5;
         public final static double scoreLevelFour = 3;
+        public final static double down = 0.1;
+        public final static double scoreAlgaeProcesser = 0.5;
+        public final static double scoreAlgaeBarge = 4;
+        public final static double removeAlgaeHigh = 2.7;
+        public final static double removeAlgaeLow = 2.2;
 
 
             // PID Constants
