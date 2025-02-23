@@ -129,8 +129,8 @@ public class RobotContainer {
         // xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kForward));
         // xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kReverse));
 
-        xboxController.a().whileTrue(elevatorSubsys.testElevator(9));
-        xboxController.b().whileTrue(elevatorSubsys.testElevator(-9));
+        xboxController.a().whileTrue(elevatorSubsys.testElevator(12));
+        xboxController.b().whileTrue(elevatorSubsys.testElevator(-12));
         xboxController.x().onTrue(elevatorSubsys.stopMotors());
 
         // reset the field-centric heading on left bumper press

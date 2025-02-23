@@ -172,11 +172,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private void configElevatorSubsys() {
         // Ensure our follower is following the respective leader and opposing it's direction
-        elevatorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), true));
+        elevatorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), false));
 
         var motorConfigs = new MotorOutputConfigs();
 
-        motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        motorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         elevatorFollower.getConfigurator().apply(motorConfigs);
   
         motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
