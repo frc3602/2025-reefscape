@@ -99,14 +99,16 @@ public final class Constants {
     
 
     public final class PivotConstants {
+      public final static int kPivotMotorId = 52;
+
       // PID Constants
-      public final static double KP = 1.0;
+      public final static double KP = 0.0;
       public final static double KI = 0.0;
       public final static double KD = 0.0;
 
       //  ffe Constants
-      public final static double KS = 5.0;
-      public final static double KG = 2.0;
+      public final static double KS = 0.8;
+      public final static double KG = 0.25;
       public final static double KV = 0.9;
       public final static double KA = 0.1;
 

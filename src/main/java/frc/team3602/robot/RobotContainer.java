@@ -29,7 +29,7 @@ import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 // import frc.team3602.robot.subsystems.GripperSubsystem;
 // import frc.team3602.robot.subsystems.IntakeSubsystem;
-// import frc.team3602.robot.subsystems.PivotSubsystem;
+import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
 import static frc.team3602.robot.Constants.VisionConstants.*;
@@ -57,7 +57,7 @@ public class RobotContainer {
     /* Subsystems */
     private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
-    // private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
+    private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
     // private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Gripper Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
     // private final IntakeSubsystem intakeSubsys = new IntakeSubsystem();
 
@@ -129,9 +129,16 @@ public class RobotContainer {
         // xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kForward));
         // xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kReverse));
 
-        xboxController.a().whileTrue(elevatorSubsys.testElevator(12));
-        xboxController.b().whileTrue(elevatorSubsys.testElevator(-12));
+        xboxController.a().onTrue(elevatorSubsys.testElevator(3));
+        xboxController.b().onTrue(elevatorSubsys.testElevator(-3));
         xboxController.x().onTrue(elevatorSubsys.stopMotors());
+        // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
+        // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
+        // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
+
+        xboxController.x().onTrue(pivotSubsys.stopPivot());
+
+        
 
         // reset the field-centric heading on left bumper press
         xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));

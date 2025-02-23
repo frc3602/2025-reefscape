@@ -8,9 +8,11 @@ package frc.team3602.robot.subsystems;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.MathUtil;
@@ -19,6 +21,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -38,7 +41,10 @@ import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.Constants.PivotConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
-
+    // Motors
+    public final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.kElevatorMotorId);
+    public final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.kElevatorFollowerId);
+    private final TalonFXSimState simElevatorMotor = new TalonFXSimState(elevatorMotor);
     private double height = 0.0;
 
     //Operator interface
@@ -49,7 +55,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.KS,
             ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
 
-    private final DutyCycleEncoder elevatorEncoder = new DutyCycleEncoder(2);
+    //private final DutyCycleEncoder elevatorEncoder = new DutyCycleEncoder(2);
+    private final AnalogEncoder elevatorEncoder = new AnalogEncoder(0);
 
     // Controls, Simulated
     private final PIDController simElevatorController = new PIDController(ElevatorConstants.simKP,
@@ -64,11 +71,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double simTotalEffort = 0.0;
     private double totalEffort = 0.0;
 
-    // Motors
-    public final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.kElevatorMotorId);
-    public final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.kElevatorFollowerId);
-    private final TalonFXSimState simElevatorMotor = new TalonFXSimState(elevatorMotor);
-    //public final TalonFX elevatorFollower = new TalonFX(1);
+
 
     // Simulation
     private final ElevatorSim elevatorSim = new ElevatorSim(ElevatorConstants.simKV, ElevatorConstants.simKA, DCMotor.getKrakenX60(2), 1, ElevatorConstants.kMaxHeightMeters, true, 0.1);
@@ -119,11 +122,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double getEffort() {
         return totalEffort = ((elevatorFeedforward.calculate(0,0))+(elevatorController.calculate(elevatorEncoder.get(), height)));
     }
+
+
     public Command testElevator(double voltage){
-    return runEnd(() -> {
+    return runOnce(() -> {
     elevatorMotor.setVoltage(voltage);
-    }, () -> {
-    elevatorMotor.setVoltage(0.0);
+
     });
     }
 
@@ -138,14 +142,27 @@ public class ElevatorSubsystem extends SubsystemBase {
         return MathUtil.isNear(height, elevatorEncoder.get(), ElevatorConstants.tolerance);
     }
 
+    public double getEncoder() {
+        return (elevatorEncoder.get() *360) - 0; 
+    }
 
     @Override
     public void periodic() {
          SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
-        // SmartDashboard.putNumber("Sim Elevator Motor Output", simElevatorMotor.getMotorVoltage());
+         SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0,0));
+        SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
+
+        //SmartDashboard.putNumber("Sim Elevator Motor Output", simElevatorMotor.getMotorVoltage());
         // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
+        SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
+
          SmartDashboard.putNumber("Elevator Set Height", height);
-         SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder.get());
+
+         SmartDashboard.putNumber("Elevator Encoder", getEncoder());
+
+       // SmartDashboard.putBoolean("elev enc connected", elevatorEncoder.);
         // SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
         // SmartDashboard.putNumber("Sim Elevator PID Effort", simElevatorController.calculate(simElevatorEncoder, height));
 
@@ -176,10 +193,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         var motorConfigs = new MotorOutputConfigs();
 
-        motorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+        motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        motorConfigs.NeutralMode = NeutralModeValue.Coast;
         elevatorFollower.getConfigurator().apply(motorConfigs);
   
         motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        motorConfigs.NeutralMode = NeutralModeValue.Coast;
         elevatorMotor.getConfigurator().apply(motorConfigs);
     }
 
