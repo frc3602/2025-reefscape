@@ -9,9 +9,6 @@ package frc.team3602.robot;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import au.grapplerobotics.ConfigurationFailedException;
-import au.grapplerobotics.LaserCan;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -120,20 +117,20 @@ public class RobotContainer {
             // joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
             // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
         } else {
-            xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
-            xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))
-        ));
+            // xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
+            // xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
+            // point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))
+    //    ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        xboxController.back().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kForward));
-        xboxController.back().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kReverse));
-        xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kForward));
-        xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kReverse));
+        // xboxController.back().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kForward));
+        // xboxController.back().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kReverse));
+        // xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kForward));
+        // xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kReverse));
 
-        xboxController.a().whileTrue(elevatorSubsys.testElevator(3));
-        xboxController.b().whileTrue(elevatorSubsys.testElevator(-3));
+        xboxController.a().whileTrue(elevatorSubsys.testElevator(9));
+        xboxController.b().whileTrue(elevatorSubsys.testElevator(-9));
         xboxController.x().onTrue(elevatorSubsys.stopMotors());
 
         // reset the field-centric heading on left bumper press

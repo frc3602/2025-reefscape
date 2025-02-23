@@ -46,7 +46,7 @@ public final class Constants {
     public final class ElevatorConstants {
       //Pre set heights
       //TODO- change with real robot testing
-        public final static int kElevatorMotorId = 56;
+        public final static int kElevatorMotorId = 53;
         public final static int kElevatorFollowerId = 57;
 
         public final static double tolerance = 0.1;
@@ -94,7 +94,7 @@ public final class Constants {
       }
 
       public final class IntakeConstants{
-        public final static int kIntakeMotorId = 15;//TODO change- this is a random number!!!!!!
+        public final static int kIntakeMotorId = 56;
       }
     
 

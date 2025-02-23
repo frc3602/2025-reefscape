@@ -7,8 +7,10 @@
 package frc.team3602.robot.subsystems;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.MathUtil;
@@ -171,6 +173,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     private void configElevatorSubsys() {
         // Ensure our follower is following the respective leader and opposing it's direction
         elevatorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), true));
+
+        var motorConfigs = new MotorOutputConfigs();
+
+        motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        elevatorFollower.getConfigurator().apply(motorConfigs);
+  
+        motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        elevatorMotor.getConfigurator().apply(motorConfigs);
     }
 
 }
