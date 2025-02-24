@@ -49,6 +49,7 @@ public class PivotSubsystem extends SubsystemBase {
     // Set Point for Pivot
     private double angleDeg = 0.4;
     private double absoluteOffset = 0.0;
+    private double pivotGearRatio = 12.0 / 1.0;
 
     // Controls, Actual
     private final PIDController pivotController = new PIDController(PivotConstants.KP, PivotConstants.KI,
@@ -116,7 +117,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     private double getEncoderDegrees() {
-        return ((pivotEncoder.get() * 120) -0 ); //absoluteOffset
+        return (pivotEncoder.get() * ((Math.PI * 2.0) - absoluteOffset) / pivotGearRatio); // TODO: Possibly change 2.0 to the proper radius of the gear.
     }
 
     public void periodic() {
