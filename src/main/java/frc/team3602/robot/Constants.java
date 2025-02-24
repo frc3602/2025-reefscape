@@ -89,10 +89,6 @@ public final class Constants {
         
       }
 
-      public final class GripperConstants{
-        public final static int kGripperMotorId = 14;//TODO change- this is a random number!!!!!!
-      }
-
       public final class IntakeConstants{
         public final static int kIntakeMotorId = 56;
       }

@@ -27,8 +27,7 @@ import static edu.wpi.first.units.Units.*;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
-// import frc.team3602.robot.subsystems.GripperSubsystem;
-// import frc.team3602.robot.subsystems.IntakeSubsystem;
+import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
@@ -58,11 +57,10 @@ public class RobotContainer {
     private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
     private final PivotSubsystem pivotSubsys = new PivotSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Pivot Root", 0.75, 0.7), () -> elevatorSubsys.elevatorViz.getLength());
-    // private final GripperSubsystem gripperSubsys = new GripperSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Gripper Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
-    // private final IntakeSubsystem intakeSubsys = new IntakeSubsystem();
+    private final IntakeSubsystem intakeSubsys = new IntakeSubsystem(elevatorSubsys.elevatorSimMech.getRoot("Intake Wheel Root", 0.75, 0.3), () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
-   // private final Vision vision = new Vision(drivetrainSubsys);
-   // private final Superstructure superstructure = new Superstructure(drivetrainSubsys, elevatorSubsys, gripperSubsys, intakeSubsys, pivotSubsys, vision);
+   //private final Vision vision = new Vision(drivetrainSubsys);
+   //private final Superstructure superstructure = new Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys, vision);
 
     /* Autonomous */
     private  final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
@@ -75,13 +73,7 @@ public class RobotContainer {
         configAutonomous();
     }
 
-    /**
-     * Function that is called in the constructor where we configure default
-     * commands for the subsytems.
-     */
     private void configDefaultCommands() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
         if (Utils.isSimulation()) {
             drivetrainSubsys.setDefaultCommand(
                 drivetrainSubsys.applyRequest(() ->
@@ -118,16 +110,8 @@ public class RobotContainer {
             // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
         } else {
             // xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
-            // xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
-            // point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))
-    //    ));
+            // xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() -> point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))));
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        // xboxController.back().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kForward));
-        // xboxController.back().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdDynamic(Direction.kReverse));
-        // xboxController.start().and(xboxController.y()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kForward));
-        // xboxController.start().and(xboxController.x()).whileTrue(drivetrainSubsys.sysIdQuasistatic(Direction.kReverse));
 
         xboxController.a().onTrue(elevatorSubsys.testElevator(3));
         xboxController.b().onTrue(elevatorSubsys.testElevator(-3));
@@ -136,7 +120,7 @@ public class RobotContainer {
         // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
         // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
 
-        xboxController.x().onTrue(pivotSubsys.stopPivot());
+        //xboxController.x().onTrue(pivotSubsys.stopPivot());
 
         
 
