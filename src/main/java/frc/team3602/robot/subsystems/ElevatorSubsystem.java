@@ -33,16 +33,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
 
+
 public class ElevatorSubsystem extends SubsystemBase {
     // Motors
     public final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.kElevatorMotorId);
     public final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.kElevatorFollowerId);
-    private final TalonFXSimState simElevatorMotor = new TalonFXSimState(elevatorMotor);
+
+    // Encoders, Real and Simulated
+    private final AnalogEncoder elevatorEncoder = new AnalogEncoder(0);//TODO maybe change channel?
+    private double absoluteOffset = 0;
+
+    private double simElevatorEncoder;
 
     //Operator interface
     public final SendableChooser<Double> elevatorHeight = new SendableChooser<>();
 
-    //height to set the elevator to
+    //set point of elevator
     private double height = 0.0;
 
     // Controls, Actual
@@ -60,16 +66,6 @@ public class ElevatorSubsystem extends SubsystemBase {
             ElevatorConstants.simKG, ElevatorConstants.simKV, ElevatorConstants.simKA);
     
     private double simTotalEffort = 0.0;
-
-
-    // Encoders, Real and Simulated
-    private final AnalogEncoder elevatorEncoder = new AnalogEncoder(0);//TODO maybe change channel?
-    private double absoluteOffset = 0;
-
-    private double simElevatorEncoder;
-
-
-
 
     // Simulation
     private final ElevatorSim elevatorSim = new ElevatorSim(ElevatorConstants.simKV, ElevatorConstants.simKA, DCMotor.getKrakenX60(2), 1, ElevatorConstants.kMaxHeightMeters, true, 0.1);
@@ -103,7 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     });
     }
 
-    public Command stopMotors(){
+    public Command stopElevator(){
         return runOnce(() -> {
         elevatorMotor.stopMotor();
         elevatorFollower.stopMotor();
@@ -117,7 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean isNearGoalHeight(){
-        return MathUtil.isNear(height, elevatorEncoder.get(), ElevatorConstants.tolerance);
+        return MathUtil.isNear(height, getEncoder(), ElevatorConstants.tolerance);
     }
 
     public double simGetEffort() {
@@ -145,30 +141,29 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorSim.update(TimedRobot.kDefaultPeriod);
         elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.2));
 
-        SmartDashboard.updateValues();
-        
-    //     //("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
-    //     SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
-    //     SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0,0));
-    //     SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
-
-    //     //SmartDashboard.putNumber("Sim Elevator Motor Output", simElevatorMotor.getMotorVoltage());
-    //     // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
-    //     SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
-    //     SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
-
-    //      SmartDashboard.putNumber("Elevator Set Height", height);
-
-    //      SmartDashboard.putNumber("Elevator Encoder", getEncoder());
-
-    //    // SmartDashboard.putBoolean("elev enc connected", elevatorEncoder.);
-    //     // SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
-    //     // SmartDashboard.putNumber("Sim Elevator PID Effort", simElevatorController.calculate(simElevatorEncoder, height));
-
-
     //STUFF for 3d model in advantage scope, not functional yet
         // elevatorPose = new Pose3d(0,0,0, simElevatorEncoder);
         // publisher.set(elevatorPose);
+
+
+        SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0,0));
+        SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
+
+        //SmartDashboard.putNumber("Sim Elevator Motor Output", simElevatorMotor.getMotorVoltage());
+        // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
+        SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
+
+         SmartDashboard.putNumber("Elevator Set Height", height);
+
+         SmartDashboard.putNumber("Elevator Encoder", getEncoder());
+
+       // SmartDashboard.putBoolean("elev enc connected", elevatorEncoder.);
+        // SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
+        // SmartDashboard.putNumber("Sim Elevator PID Effort", simElevatorController.calculate(simElevatorEncoder, height));
+
       
     }
 
@@ -202,24 +197,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorHeight.addOption("Score Algae Processer(low)", ElevatorConstants.scoreAlgaeProcesser);
         elevatorHeight.addOption("Score Algae Barge (high)", ElevatorConstants.scoreAlgaeBarge);
 
-        SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0,0));
-        SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
-
-        //SmartDashboard.putNumber("Sim Elevator Motor Output", simElevatorMotor.getMotorVoltage());
-        // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
-        SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
-
-         SmartDashboard.putNumber("Elevator Set Height", height);
-
-         SmartDashboard.putNumber("Elevator Encoder", getEncoder());
-
-       // SmartDashboard.putBoolean("elev enc connected", elevatorEncoder.);
-        // SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
-        // SmartDashboard.putNumber("Sim Elevator PID Effort", simElevatorController.calculate(simElevatorEncoder, height));
-
+      
     }
 
 }

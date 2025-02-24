@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3602.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
+    //Motors
     private final TalonFX intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorId);
     
     private double setSpeed;
@@ -28,8 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
     DoubleSupplier pivotSimAngleRads;
 
     public IntakeSubsystem(MechanismRoot2d intakeWheelRoot, DoubleSupplier elevatorVizLength, DoubleSupplier pivotSimAngleRads){
-        SmartDashboard.putNumber("intakeMotor Voltage", intakeMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("intake set speed", setSpeed);
+    
 
         //simulation stuff
         this.intakeRoot = intakeWheelRoot;    
@@ -54,7 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.updateValues();
+        SmartDashboard.putNumber("intakeMotor Voltage", intakeMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("intake set speed", setSpeed);
 
         // Updating Simulation
         intakeViz.setAngle(intakeViz.getAngle() + (intakeMotor.getMotorVoltage().getValueAsDouble() ));

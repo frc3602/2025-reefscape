@@ -104,10 +104,10 @@ public class RobotContainer {
            // joystick.button(3).onTrue(superstructure.scoreCoral());
             joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
 
-            // joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
-            // joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
-            // joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
-            // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
+            joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
+            joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
+            joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
+            joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
         } else {
             // xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
             // xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() -> point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))));
@@ -115,7 +115,7 @@ public class RobotContainer {
 
         xboxController.a().onTrue(elevatorSubsys.testElevator(3));
         xboxController.b().onTrue(elevatorSubsys.testElevator(-3));
-        xboxController.x().onTrue(elevatorSubsys.stopMotors());
+        xboxController.x().onTrue(elevatorSubsys.stopElevator());
         // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
         // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
         // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));

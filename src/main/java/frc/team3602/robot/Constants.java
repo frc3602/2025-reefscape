@@ -97,6 +97,8 @@ public final class Constants {
     public final class PivotConstants {
       public final static int kPivotMotorId = 52;
 
+      public final static double tolerance = 1; //TODO - this is random still
+
       // PID Constants
       public final static double KP = 0.0;
       public final static double KI = 0.0;
@@ -114,9 +116,9 @@ public final class Constants {
       public final static double massKg = 3.0;
 
       // sim pivot PID constants
-      public final static double simPivotKP = 0.3; // $$0.4
+      public final static double simPivotKP = 0.25; 
       public final static double simPivotKI = 0;
-      public final static double simPivotKD = 0.001;
+      public final static double simPivotKD = 0.01;
 
       // sim pivot ffe constants
       public final static double simPivotKS = 4.0;
