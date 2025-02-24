@@ -109,7 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     //CALCULATIONS
     public double getEncoder() {
-        return (elevatorEncoder.get() *360) - absoluteOffset; 
+        return (elevatorEncoder.get() * ((Math.PI * 2.0) - absoluteOffset)); // TODO: Possibly change 2.0 to the proper radius of the gear.
     }
 
     public boolean isNearGoalHeight(){

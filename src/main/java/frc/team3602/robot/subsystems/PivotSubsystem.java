@@ -47,6 +47,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     // Set Point for Pivot
     private double angleDeg = 0.4;
+    private double pivotGearRatio = 12.0 / 1.0;
 
     // Controls, Actual
     private final PIDController pivotController = new PIDController(PivotConstants.KP, PivotConstants.KI,
