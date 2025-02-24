@@ -12,6 +12,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import au.grapplerobotics.*;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -47,9 +49,14 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    /*laser can */
+    private LaserCan lc;
+
+
     /* Operator interfaces */
     private final CommandXboxController xboxController = new CommandXboxController(kXboxControllerPort);
     // private final CommandXboxController controlPanel = new CommandXboxController(kControlPanelPort);
+    //for simulation
     private final CommandJoystick joystick = new CommandJoystick(0);
     private final CommandJoystick joystick2 = new CommandJoystick(1);
 
@@ -68,6 +75,7 @@ public class RobotContainer {
         public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser();
 
+        laserCanInit();
         configDefaultCommands();
         configButtonBindings();
         configAutonomous();
@@ -131,31 +139,28 @@ public class RobotContainer {
         }
     }
 
-//      private LaserCan lc;
 
-//   @Override
-//   public void robotInit() {
-//     lc = new LaserCan(0);
-//     // Optionally initialise the settings of the LaserCAN, if you haven't already done so in GrappleHook
-//     try {
-//       lc.setRangingMode(LaserCan.RangingMode.SHORT);
-//       lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-//       lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
-//     } catch (ConfigurationFailedException e) {
-//       System.out.println("Configuration failed! " + e);
-//     }
-//   }
+  public void laserCanInit() {
+    lc = new LaserCan(0);
+    // Optionally initialise the settings of the LaserCAN, if you haven't already done so in GrappleHook
+    try {
+      lc.setRangingMode(LaserCan.RangingMode.SHORT);
+      lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+      lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+    } catch (ConfigurationFailedException e) {
+      System.out.println("Configuration failed! " + e);
+    }
+  }
 
-//   @Override
-//   public void robotPeriodic() {
-//     LaserCan.Measurement measurement = lc.getMeasurement();
-//     if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-//       System.out.println("The target is " + measurement.distance_mm + "mm away!");
-//     } else {
-//       System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
-//       // You can still use distance_mm in here, if you're ok tolerating a clamped value or an unreliable measurement.
-//     }
-//   }
+  public void laserCanPeriodic() {
+    LaserCan.Measurement measurement = lc.getMeasurement();
+    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      System.out.println("The target is " + measurement.distance_mm + "mm away!");
+    } else {
+      System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
+      // You can still use distance_mm in here, if you're ok tolerating a clamped value or an unreliable measurement.
+    }
+  }
 
 
     /**
@@ -182,12 +187,6 @@ public class RobotContainer {
 
     public void updateSimulation() {
  //     vision.update(getPose());
-
-    //     RoboRioSim.setVInVoltage(
-    //         BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrainSubsys.getDriveCurrentDraw())
-    //         + BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrainSubsys.getSteerCurrentDraw())
-    //   );
-
     }
 
 }

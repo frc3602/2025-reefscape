@@ -42,12 +42,12 @@ public class PivotSubsystem extends SubsystemBase {
     // Encoders, Real and Simulated
     private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(1);//TODO change encoder type and channel??
     private double absoluteOffset = 0.0;
+    private double pivotGearRatio = 12.0 / 1.0;
 
     private double simPivotEncoder;
 
     // Set Point for Pivot
     private double angleDeg = 0.4;
-    private double pivotGearRatio = 12.0 / 1.0;
 
     // Controls, Actual
     private final PIDController pivotController = new PIDController(PivotConstants.KP, PivotConstants.KI,
@@ -138,19 +138,18 @@ public class PivotSubsystem extends SubsystemBase {
         pivotViz.setAngle(Units.radiansToDegrees(pivotSim.getAngleRads()));
         pivotRoot.setPosition(0.75, (0.1 + elevatorVizLength.getAsDouble()));
 
-        SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Sim Pivot Motor Output", simPivotMotor.getMotorVoltage());
         SmartDashboard.putNumber("Sim Pivot Encoder Deg", simPivotEncoder);
-        SmartDashboard.putNumber("Pivot Angle Deg", angleDeg);
         SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, angleDeg));
 
+        SmartDashboard.putNumber("Pivot Angle Deg", angleDeg);
 
-        SmartDashboard.putBoolean("encoder connection", pivotEncoder.isConnected());
-        SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.get());
-        SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
+        SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Pivot FFE Effort", pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
         SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getEncoderDegrees(), angleDeg));
-
+        SmartDashboard.putBoolean("Pivot encoder connection", pivotEncoder.isConnected());
+        SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.get());
+        SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
     }
 
     private void configPivotSubsys(){
@@ -159,7 +158,5 @@ public class PivotSubsystem extends SubsystemBase {
 
         motorConfigs.NeutralMode = NeutralModeValue.Coast;
         pivotMotor.getConfigurator().apply(motorConfigs);
-
-
         }
 }
