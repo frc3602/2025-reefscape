@@ -117,7 +117,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     private double getEncoderDegrees() {
-        return (pivotEncoder.get() * ((Math.PI * 2.0) - absoluteOffset) / pivotGearRatio); // TODO: Possibly change 2.0 to the proper radius of the gear.
+        return (pivotEncoder.get() * ((360 / pivotGearRatio) - absoluteOffset);
     }
 
     public void periodic() {
