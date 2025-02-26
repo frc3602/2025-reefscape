@@ -48,10 +48,10 @@ public class Vision {
     
     /* Camera Simulation */
     private final SimCameraProperties cameraProperties = new SimCameraProperties();
-    //   private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera, cameraProperties);
-    //   private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera, cameraProperties);
-    //   private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera, cameraProperties);
-    //   private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
+      private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera, cameraProperties);
+      private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera, cameraProperties);
+      private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera, cameraProperties);
+      private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
 
 
  /*vision constructor */      
@@ -63,10 +63,10 @@ public class Vision {
         photonPoseEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         visionSim.addAprilTags(kFieldLayout);
-        // visionSim.addCamera(camera0Sim, kRobotToMod0CameraTransform);
-        // visionSim.addCamera(camera1Sim, kRobotToMod1CameraTransform);
-        // visionSim.addCamera(camera2Sim, kRobotToMod2CameraTransform);
-        // visionSim.addCamera(camera3Sim, kRobotToMod3CameraTransform);
+        visionSim.addCamera(camera0Sim, kRobotToMod0CameraTransform);
+        visionSim.addCamera(camera1Sim, kRobotToMod1CameraTransform);
+        visionSim.addCamera(camera2Sim, kRobotToMod2CameraTransform);
+        visionSim.addCamera(camera3Sim, kRobotToMod3CameraTransform);
 
         cameraProperties.setCalibration(640, 480, Rotation2d.fromDegrees(100));
         cameraProperties.setCalibError(0.25, 0.08);

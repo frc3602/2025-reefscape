@@ -57,7 +57,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.KS,
             ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
 
-    private double totalEffort = 0.0;
+    private double totalEffort;
+
 
     // Controls, Simulated
     private final PIDController simElevatorController = new PIDController(ElevatorConstants.simKP,
