@@ -131,14 +131,17 @@ public class RobotContainer {
       // point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(),
       // -xboxController.getLeftX()))));
 
-      xboxController.a().onTrue(elevatorSubsys.setHeight(10.0));
-      xboxController.b().onTrue(elevatorSubsys.setHeight(15.0));
-      xboxController.x().onTrue(elevatorSubsys.setHeight(0.0));
+      xboxController.a().onTrue(pivotSubsys.setAngle(30));
+      xboxController.b().onTrue(pivotSubsys.setAngle(6));
+      xboxController.y().onTrue(pivotSubsys.setAngle(15));
+      xboxController.leftTrigger().onTrue(elevatorSubsys.setHeight(0));
+      //xboxController.b().onTrue(elevatorSubsys.setHeight(15.0));
+      //xboxController.x().onTrue(elevatorSubsys.setHeight(0.0));
       // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
       // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
       // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
 
-      // xboxController.x().onTrue(pivotSubsys.stopPivot());
+       xboxController.x().onTrue(pivotSubsys.stopPivot());
 
       // reset the field-centric heading on left bumper press
       xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));

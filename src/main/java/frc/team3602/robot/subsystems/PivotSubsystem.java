@@ -7,9 +7,11 @@
 package frc.team3602.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
+import java.lang.Math;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.QuadratureConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -20,8 +22,11 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -35,19 +40,32 @@ import frc.team3602.robot.Constants.PivotConstants;
 
 
 public class PivotSubsystem extends SubsystemBase {
+
+
+
     // Motors
     private final TalonFX pivotMotor = new TalonFX(PivotConstants.kPivotMotorId);
     private final TalonFXSimState simPivotMotor = new TalonFXSimState(pivotMotor);
 
+
+
+
+
     // Encoders, Real and Simulated
-    private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(1);//TODO change encoder type and channel??
+   // private final Encoder pivotEncoder2 = new Encoder(0,1);
+
+
+       private final AnalogEncoder pivotEncoder = new AnalogEncoder(0, 1.0, 3.0);
+
     private double absoluteOffset = 0.0;
     private double pivotGearRatio = 12.0 / 1.0;
 
     private double simPivotEncoder;
 
     // Set Point for Pivot
-    private double angleDeg = 0.4;
+    private double setAngle = 0.0;
+    private int turns = 0;
+    private int direction = 0;
 
     // Controls, Actual
     private final PIDController pivotController = new PIDController(PivotConstants.KP, PivotConstants.KI,
@@ -84,9 +102,13 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     //COMMANDS TO REFERENCE
-    public Command setAngle(double newAngleDeg) {
+    public Command setAngle(double setAngle) {
         return runOnce(() -> {
-            angleDeg = newAngleDeg;
+            if (setAngle != this.setAngle) {
+                direction = (int) Math.signum(setAngle - getAngle());
+
+                this.setAngle = setAngle;
+            }
         });
     }
 
@@ -104,21 +126,25 @@ public class PivotSubsystem extends SubsystemBase {
 
     //CALCULATIONS
     private double getEncoderDegrees() {
-        return ((pivotEncoder.get() * 120) -0 ); //absoluteOffset
+        return (pivotEncoder.get() * 120); //absoluteOffset
     }
 
-    public boolean isNearGoalAngle(){
-        return MathUtil.isNear(angleDeg, getEncoderDegrees(), PivotConstants.tolerance);
+    private double getAngle() {
+        return getEncoderDegrees() + 120 * (turns % 3);
+    }
+
+    public boolean isNearGoalAngle() {
+        return MathUtil.isNear(setAngle, getAngle(), PivotConstants.tolerance);
     }
 
     public double simGetEffort() {
         return simTotalEffort = ((simPivotFeedforward.calculate(Units.degreesToRadians(simPivotEncoder), 0))
-                + (simPivotController.calculate(simPivotEncoder, angleDeg)));
+                + (simPivotController.calculate(simPivotEncoder, setAngle)));
     }
 
     public double getEffort() {
-        return totalEffort = ((pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0))
-                + (pivotController.calculate(getEncoderDegrees(), angleDeg)));
+        return totalEffort = ((pivotFeedforward.calculate(Units.degreesToRadians((getAngle())), 0))
+                + (pivotController.calculate(getAngle(), setAngle)));
     }
 
     
@@ -129,8 +155,10 @@ public class PivotSubsystem extends SubsystemBase {
             simPivotEncoder = pivotViz.getAngle();
             pivotMotor.setVoltage(simGetEffort());
         } else {
-           // pivotMotor.setVoltage(getEffort());
+            // TODO: Count Turns.
+            pivotMotor.setVoltage(getEffort());
         }
+
 
         // Update Simulation
         pivotSim.setInput(simPivotMotor.getMotorVoltage());
@@ -140,19 +168,21 @@ public class PivotSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Sim Pivot Motor Output", simPivotMotor.getMotorVoltage());
         SmartDashboard.putNumber("Sim Pivot Encoder Deg", simPivotEncoder);
-        SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, angleDeg));
+        SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, setAngle));
 
-        SmartDashboard.putNumber("Pivot Angle Deg", angleDeg);
+        SmartDashboard.putNumber("Pivot Angle Deg", setAngle);
 
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Pivot FFE Effort", pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
-        SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getEncoderDegrees(), angleDeg));
-        SmartDashboard.putBoolean("Pivot encoder connection", pivotEncoder.isConnected());
+        SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getAngle(), setAngle));
+       // SmartDashboard.putBoolean("Pivot encoder connection", pivotEncoder.isConnected());
         SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.get());
         SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
     }
 
     private void configPivotSubsys(){
+        
+
         //Motor configs
         var motorConfigs = new MotorOutputConfigs();
 
