@@ -61,13 +61,13 @@ public final class Constants {
     public final static double removeAlgaeLow = 2.2;
 
     // PID Constants
-    public final static double KP = 0.3;
+    public final static double KP = 0.6;
     public final static double KI = 0.0;
-    public final static double KD = 0.0;
+    public final static double KD = 0.05;
 
     // ffe Constants
     public final static double KS = 5.0;
-    public final static double KG = 2.0;
+    public final static double KG = 0.25;
     public final static double KV = 0.9;
     public final static double KA = 0.1;
 

@@ -156,7 +156,7 @@ public class PivotSubsystem extends SubsystemBase {
             pivotMotor.setVoltage(simGetEffort());
         } else {
             if((getEncoderDegrees() == 0.0) && !((getAngle() == 0.0) && (setAngle == 0.0))) turns += direction;
-            pivotMotor.setVoltage(getEffort());
+           // pivotMotor.setVoltage(getEffort());
         }
 
 
@@ -166,11 +166,14 @@ public class PivotSubsystem extends SubsystemBase {
         pivotViz.setAngle(Units.radiansToDegrees(pivotSim.getAngleRads()));
         pivotRoot.setPosition(0.75, (0.1 + elevatorVizLength.getAsDouble()));
 
-        SmartDashboard.putNumber("Sim Pivot Motor Output", simPivotMotor.getMotorVoltage());
-        SmartDashboard.putNumber("Sim Pivot Encoder Deg", simPivotEncoder);
-        SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, setAngle));
+        // SmartDashboard.putNumber("Sim Pivot Motor Output", simPivotMotor.getMotorVoltage());
+        // SmartDashboard.putNumber("Sim Pivot Encoder Deg", simPivotEncoder);
+        // SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, setAngle));
 
         SmartDashboard.putNumber("Pivot Angle Deg", setAngle);
+        SmartDashboard.putNumber("new pivot encoder", getAngle());
+
+
 
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Pivot FFE Effort", pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
