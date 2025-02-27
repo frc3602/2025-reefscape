@@ -130,7 +130,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     private double getAngle() {
-        return getEncoderDegrees() + 120 * (turns % 3);
+        return getEncoderDegrees() + (double) (120 * (turns % 3));
     }
 
     public boolean isNearGoalAngle() {
@@ -155,7 +155,7 @@ public class PivotSubsystem extends SubsystemBase {
             simPivotEncoder = pivotViz.getAngle();
             pivotMotor.setVoltage(simGetEffort());
         } else {
-            // TODO: Count Turns.
+            if((getEncoderDegrees() == 0.0) && !((getAngle() == 0.0) && (setAngle == 0.0))) turns += direction;
             pivotMotor.setVoltage(getEffort());
         }
 
