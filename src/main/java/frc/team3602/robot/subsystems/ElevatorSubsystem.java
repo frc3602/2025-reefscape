@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
+import frc.team3602.robot.subsystems.PivotSubsystem;
 
 public class ElevatorSubsystem extends SubsystemBase {
   // Motors
@@ -55,16 +56,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private double totalEffort = 0.0;
 
-<<<<<<< HEAD
-    private double totalEffort;
-
-=======
   // Controls, Simulated
   private final PIDController simElevatorController = new PIDController(ElevatorConstants.simKP,
       ElevatorConstants.simKI, ElevatorConstants.simKD);
   private final ElevatorFeedforward simElevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.simKS,
       ElevatorConstants.simKG, ElevatorConstants.simKV, ElevatorConstants.simKA);
->>>>>>> 405c896c20f063ac7507b93f3dbda5f6cf2ea7c0
 
   private double simTotalEffort = 0.0;
 
@@ -82,6 +78,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   // StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
   // .getStructTopic("Elevator Pose", Pose3d.struct).publish();
+
+  private PivotSubsystem pivotSubsys;
 
   public ElevatorSubsystem() {
     // Zero encoder
@@ -129,6 +127,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         + (elevatorController.calculate(getEncoder(), height)));
   }
 
+  // public Command movePivot(){
+  //   return run(() -> {
+  //     if(isNearGoalHeight()){
+  //       pivotSubsys.setAngle(height)
+  //     }
+  //   });
+  // }
+
   @Override
   public void periodic() {
     if (Utils.isSimulation()) {
@@ -139,6 +145,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       totalEffort = getEffort();
       elevatorMotor.setVoltage(totalEffort * -1.0);
     }
+
+   // movePivot();
 
     // Update Simulation
     elevatorSim.setInput(elevatorMotor.getMotorVoltage().getValueAsDouble());

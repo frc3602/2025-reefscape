@@ -95,6 +95,12 @@ public final class Constants {
 
     public final static double tolerance = 1; // TODO - this is random still
 
+    public final static double coralIntakeAngle = 100;
+    public final static double stowAngle = -20;
+    public final static double scoreLevelFourAngle = -15;
+    public final static double scoreCoralAngle = -40;
+
+
     // PID Constants
     public final static double KP = 0.0;
     public final static double KI = 0.0;
