@@ -155,7 +155,7 @@ public class PivotSubsystem extends SubsystemBase {
             simPivotEncoder = pivotViz.getAngle();
             pivotMotor.setVoltage(simGetEffort());
         } else {
-            if((getEncoderDegrees() == 0.0) && !((getAngle() == 0.0) && (setAngle == 0.0))) turns += direction;
+            if((getEncoderDegrees() == 0.0) && (getAngle() != setAngle)) turns += direction;
            // pivotMotor.setVoltage(getEffort());
         }
 
