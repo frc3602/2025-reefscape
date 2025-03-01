@@ -9,7 +9,9 @@ package frc.team3602.robot.subsystems;
 import java.io.ObjectInputFilter.Config;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -36,21 +38,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.PivotConstants;
 
-
 public class PivotSubsystem extends SubsystemBase {
-
-
 
     // Motors
     private final TalonFX pivotMotor = new TalonFX(PivotConstants.kPivotMotorId);
     private final TalonFXSimState simPivotMotor = new TalonFXSimState(pivotMotor);
 
-
-
-
-
     // Encoders, Real and Simulated
-   // private final Encoder pivotEncoder2 = new Encoder(0,1);
+    // private final Encoder pivotEncoder2 = new Encoder(0,1);
 
     private final CANcoder pivotEncoder = new CANcoder(PivotConstants.kPivotEncoderId);
 
@@ -96,10 +91,10 @@ public class PivotSubsystem extends SubsystemBase {
         configPivotSubsys();
     }
 
-    //COMMANDS TO REFERENCE
+    // COMMANDS TO REFERENCE
     public Command setAngle(double setAngle) {
         return runOnce(() -> {
-                this.setAngle = setAngle;
+            this.setAngle = setAngle;
         });
     }
 
@@ -115,9 +110,9 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
-    //CALCULATIONS
+    // CALCULATIONS
     private double getEncoderDegrees() {
-        return ((pivotEncoder.getPosition().getValueAsDouble() * 360.0) % 360); //absoluteOffset // + 170.0
+        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0); //absoluteOffset
     }
 
     public boolean isNearGoalAngle() {
@@ -134,8 +129,6 @@ public class PivotSubsystem extends SubsystemBase {
                 + (pivotController.calculate(getEncoderDegrees(), setAngle)));
     }
 
-    
-
     public void periodic() {
 
         if (Utils.isSimulation()) {
@@ -145,26 +138,27 @@ public class PivotSubsystem extends SubsystemBase {
             pivotMotor.setVoltage(getEffort());
         }
 
-
         // Update Simulation
         pivotSim.setInput(simPivotMotor.getMotorVoltage());
         pivotSim.update(TimedRobot.kDefaultPeriod);
         pivotViz.setAngle(Units.radiansToDegrees(pivotSim.getAngleRads()));
         pivotRoot.setPosition(0.75, (0.1 + elevatorVizLength.getAsDouble()));
 
-        // SmartDashboard.putNumber("Sim Pivot Motor Output", simPivotMotor.getMotorVoltage());
+        // SmartDashboard.putNumber("Sim Pivot Motor Output",
+        // simPivotMotor.getMotorVoltage());
         // SmartDashboard.putNumber("Sim Pivot Encoder Deg", simPivotEncoder);
-        // SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, setAngle));
+        // SmartDashboard.putNumber("Sim Pivot PID Effort",
+        // simPivotController.calculate(simPivotEncoder, setAngle));
 
         SmartDashboard.putNumber("Pivot Angle Deg", setAngle);
         SmartDashboard.putNumber("new pivot encoder", getEncoderDegrees());
 
-
-
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Pivot FFE Effort", pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
+        SmartDashboard.putNumber("Pivot FFE Effort",
+                pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
         SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getEncoderDegrees(), setAngle));
-       // SmartDashboard.putBoolean("Pivot encoder connection", pivotEncoder.isConnected());
+        // SmartDashboard.putBoolean("Pivot encoder connection",
+        // pivotEncoder.isConnected());
         SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
         SmartDashboard.putBoolean("pivot near goal", isNearGoalAngle());
@@ -174,14 +168,11 @@ public class PivotSubsystem extends SubsystemBase {
 
     private void configPivotSubsys(){
         
-        var pivotPos = pivotEncoder.getPosition().getValueAsDouble() * 360.0;
 
-        offset= -40 - pivotPos;
-
-        //Motor configs
+        // Motor configs
         var motorConfigs = new MotorOutputConfigs();
 
         motorConfigs.NeutralMode = NeutralModeValue.Coast;
         pivotMotor.getConfigurator().apply(motorConfigs);
-        }
+    }
 }
