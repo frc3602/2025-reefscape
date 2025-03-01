@@ -92,6 +92,8 @@ public final class Constants {
   public final class PivotConstants {
     public final static int kPivotMotorId = 52;
 
+    public final static int kPivotEncoderId = 30;
+
     public final static double tolerance = 1; // TODO - this is random still
 
     public final static double coralIntakeAngle = 100;

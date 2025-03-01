@@ -16,16 +16,16 @@ import frc.team3602.robot.subsystems.PivotSubsystem;
 
 public class Superstructure extends SubsystemBase{
     private DrivetrainSubsystem driveSubsys;
-    // private ElevatorSubsystem elevatorSubsys;
+    private ElevatorSubsystem elevatorSubsys;
     private IntakeSubsystem intakeSubsys;
     private PivotSubsystem pivotSubsys;
     private Vision vision;
 
     public double mostRecentElevatorHeight;
 
-    public Superstructure(DrivetrainSubsystem driveSubsys, /* ElevatorSubsystem elevatorSubsys, */ IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys, Vision vision){
+    public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys, Vision vision){
         this.driveSubsys = driveSubsys;
-        // this.elevatorSubsys = elevatorSubsys;
+        this.elevatorSubsys = elevatorSubsys;
         this.intakeSubsys = intakeSubsys;
         this.pivotSubsys = pivotSubsys;
         this.vision = vision;

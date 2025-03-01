@@ -7,13 +7,11 @@
 package frc.team3602.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
-import java.lang.Math;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.QuadratureConfigs;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -23,10 +21,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogEncoder;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -54,8 +50,7 @@ public class PivotSubsystem extends SubsystemBase {
     // Encoders, Real and Simulated
    // private final Encoder pivotEncoder2 = new Encoder(0,1);
 
-
-       private final AnalogEncoder pivotEncoder = new AnalogEncoder(0, 1.0, 3.0);
+    private final CANcoder pivotEncoder = new CANcoder(PivotConstants.kPivotEncoderId);
 
     private double absoluteOffset = 0.0;
     private double pivotGearRatio = 12.0 / 1.0;
@@ -64,8 +59,6 @@ public class PivotSubsystem extends SubsystemBase {
 
     // Set Point for Pivot
     private double setAngle = 0.0;
-    private int turns = 0;
-    private int direction = 0;
 
     // Controls, Actual
     private final PIDController pivotController = new PIDController(PivotConstants.KP, PivotConstants.KI,
@@ -104,11 +97,7 @@ public class PivotSubsystem extends SubsystemBase {
     //COMMANDS TO REFERENCE
     public Command setAngle(double setAngle) {
         return runOnce(() -> {
-            if (setAngle != this.setAngle) {
-                direction = (int) Math.signum(setAngle - getAngle());
-
                 this.setAngle = setAngle;
-            }
         });
     }
 
@@ -126,15 +115,11 @@ public class PivotSubsystem extends SubsystemBase {
 
     //CALCULATIONS
     private double getEncoderDegrees() {
-        return (pivotEncoder.get() * 120); //absoluteOffset
-    }
-
-    private double getAngle() {
-        return getEncoderDegrees() + (double) (120 * (turns % 3));
+        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0); //absoluteOffset
     }
 
     public boolean isNearGoalAngle() {
-        return MathUtil.isNear(setAngle, getAngle(), PivotConstants.tolerance);
+        return MathUtil.isNear(setAngle, getEncoderDegrees(), PivotConstants.tolerance);
     }
 
     public double simGetEffort() {
@@ -143,8 +128,8 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getEffort() {
-        return totalEffort = ((pivotFeedforward.calculate(Units.degreesToRadians((getAngle())), 0))
-                + (pivotController.calculate(getAngle(), setAngle)));
+        return totalEffort = ((pivotFeedforward.calculate(Units.degreesToRadians((getEncoderDegrees())), 0))
+                + (pivotController.calculate(getEncoderDegrees(), setAngle)));
     }
 
     
@@ -155,8 +140,7 @@ public class PivotSubsystem extends SubsystemBase {
             simPivotEncoder = pivotViz.getAngle();
             pivotMotor.setVoltage(simGetEffort());
         } else {
-            if((getEncoderDegrees() == 0.0) && (getAngle() != setAngle)) turns += direction;
-           // pivotMotor.setVoltage(getEffort());
+            pivotMotor.setVoltage(getEffort());
         }
 
 
@@ -171,15 +155,15 @@ public class PivotSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("Sim Pivot PID Effort", simPivotController.calculate(simPivotEncoder, setAngle));
 
         SmartDashboard.putNumber("Pivot Angle Deg", setAngle);
-        SmartDashboard.putNumber("new pivot encoder", getAngle());
+        SmartDashboard.putNumber("new pivot encoder", getEncoderDegrees());
 
 
 
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Pivot FFE Effort", pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
-        SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getAngle(), setAngle));
+        SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getEncoderDegrees(), setAngle));
        // SmartDashboard.putBoolean("Pivot encoder connection", pivotEncoder.isConnected());
-        SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.get());
+        SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
     }
 
