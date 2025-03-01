@@ -9,6 +9,8 @@ package frc.team3602.robot;
 import edu.wpi.first.wpilibj2.command.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3602.robot.Constants.ElevatorConstants;
+import frc.team3602.robot.Constants.PivotConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
@@ -23,12 +25,27 @@ public class Superstructure extends SubsystemBase{
 
     public double mostRecentElevatorHeight;
 
-    public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys, Vision vision){
+    public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys){
         this.driveSubsys = driveSubsys;
         this.elevatorSubsys = elevatorSubsys;
         this.intakeSubsys = intakeSubsys;
         this.pivotSubsys = pivotSubsys;
         this.vision = vision;
+    }
+
+    public Command scoreL4CoralCommand() {
+        return Commands.sequence(
+            Commands.print("start seq"),
+                    pivotSubsys.setAngle(PivotConstants.stowAngle),
+                    Commands.none().until(() -> pivotSubsys.isNearGoalAngle()),
+                    Commands.print("pivot in stow angle"),
+                    elevatorSubsys.setHeight(ElevatorConstants.scoreLevelFour),
+                    Commands.print("elev in place"),
+
+                    Commands.none().until(() -> elevatorSubsys.isNearGoalHeight()),
+                pivotSubsys.setAngle(PivotConstants.scoreL4Angle)
+
+            );
     }
 
     //private final WaitUntilCommand waitForElevator = new WaitUntilCommand(() -> elevatorSubsys.isNearGoalHeight());

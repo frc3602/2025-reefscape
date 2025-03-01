@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import static edu.wpi.first.units.Units.*;
 
+import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
@@ -69,10 +70,10 @@ public class RobotContainer {
       elevatorSubsys.elevatorSimMech.getRoot("Intake Wheel Root", 0.75, 0.3),
       () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
-  // private final Vision vision = new Vision(drivetrainSubsys);
-  // private final Superstructure superstructure = new
-  // Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys,
-  // vision);
+  // // private final Vision vision = new Vision(drivetrainSubsys);
+  private final Superstructure superstructure = new
+  Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys
+  );
 
   /* Autonomous */
   private final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
@@ -131,18 +132,18 @@ public class RobotContainer {
       // point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(),
       // -xboxController.getLeftX()))));
 
-      // xboxController.a().onTrue(pivotSubsys.setAngle(30));
-      // xboxController.b().onTrue(pivotSubsys.setAngle(6));
-      // xboxController.y().onTrue(pivotSubsys.setAngle(15));
+      xboxController.a().onTrue(superstructure.scoreL4CoralCommand());
+      xboxController.b().onTrue(pivotSubsys.setAngle(0));
+      xboxController.y().onTrue(pivotSubsys.setAngle(30));
       // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
       // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
       // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
 
       xboxController.leftTrigger().onTrue(elevatorSubsys.setHeight(0));
-      xboxController.a().onTrue(elevatorSubsys.setHeight(25.0));
-      xboxController.b().onTrue(elevatorSubsys.setHeight(15.0));
-      xboxController.x().onTrue(intakeSubsys.runIntake(0.5));
-      xboxController.y().onTrue(intakeSubsys.runIntake(-0.5));
+      // xboxController.a().onTrue(pivotSubsys.testPivot(1.5));
+      // xboxController.b().onTrue(pivotSubsys.testPivot(-1.5));
+      xboxController.x().onTrue(pivotSubsys.stopPivot());
+      //xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
 
     //bxController.x().onTrue(intakeSubsys.stopIntake());
 

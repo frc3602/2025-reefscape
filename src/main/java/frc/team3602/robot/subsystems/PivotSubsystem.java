@@ -6,9 +6,11 @@
 
 package frc.team3602.robot.subsystems;
 
+import java.io.ObjectInputFilter.Config;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -115,7 +117,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     //CALCULATIONS
     private double getEncoderDegrees() {
-        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0); //absoluteOffset
+        return ((pivotEncoder.getPosition().getValueAsDouble() * 360.0) % 360); //absoluteOffset // + 170.0
     }
 
     public boolean isNearGoalAngle() {
@@ -165,10 +167,16 @@ public class PivotSubsystem extends SubsystemBase {
        // SmartDashboard.putBoolean("Pivot encoder connection", pivotEncoder.isConnected());
         SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
+        SmartDashboard.putBoolean("pivot near goal", isNearGoalAngle());
     }
+
+    public double offset;
 
     private void configPivotSubsys(){
         
+        var pivotPos = pivotEncoder.getPosition().getValueAsDouble() * 360.0;
+
+        offset= -40 - pivotPos;
 
         //Motor configs
         var motorConfigs = new MotorOutputConfigs();
