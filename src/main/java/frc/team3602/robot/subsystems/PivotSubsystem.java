@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.PivotConstants;
 
-public class PivotSubsystem extends SubsystemBase {
+public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
 
     // Motors
     private final TalonFX pivotMotor = new TalonFX(PivotConstants.kPivotMotorId);
@@ -121,7 +121,7 @@ public class PivotSubsystem extends SubsystemBase {
         return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0); //absoluteOffset
     }
 
-    public boolean isNearGoalAngle() {
+    public boolean isNearGoal() {
         return MathUtil.isNear(setAngle, getEncoderDegrees(), PivotConstants.tolerance);
     }
 
@@ -167,7 +167,7 @@ public class PivotSubsystem extends SubsystemBase {
         // pivotEncoder.isConnected());
         SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
-        SmartDashboard.putBoolean("pivot near goal", isNearGoalAngle());
+        SmartDashboard.putBoolean("pivot near goal", isNearGoal());
     }
 
     public double offset;

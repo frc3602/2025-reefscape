@@ -48,6 +48,8 @@ public final class Constants {
 
     public final static double tolerance = 2;
 
+    public final static double pivotStowHeight = 30.0; // TODO: This number is nonsense.
+
     public final static double coralIntakeHeight = 1;
     public final static double scoreLevelOne = 1;
     public final static double scoreLevelTwo = 2;

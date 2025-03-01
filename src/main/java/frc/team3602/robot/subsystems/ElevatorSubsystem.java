@@ -18,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -32,9 +31,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
-import frc.team3602.robot.subsystems.PivotSubsystem;
 
-public class ElevatorSubsystem extends SubsystemBase {
+public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsystem {
   // Motors
   public final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.kElevatorMotorId);
   public final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.kElevatorFollowerId);
@@ -113,7 +111,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return (elevatorMotor.getRotorPosition().getValueAsDouble() * (Math.PI * 2.15) / 12.0) * -1.0;
   }
 
-  public boolean isNearGoalHeight() {
+  public boolean isNearGoal() {
     return MathUtil.isNear(height, getEncoder(), ElevatorConstants.tolerance);
   }
 

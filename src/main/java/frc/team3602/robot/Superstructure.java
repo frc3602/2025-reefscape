@@ -15,6 +15,7 @@ import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
+import frc.team3602.robot.subsystems.WaitableSubsystem;
 
 public class Superstructure extends SubsystemBase{
     private DrivetrainSubsystem driveSubsys;
@@ -33,16 +34,20 @@ public class Superstructure extends SubsystemBase{
         this.vision = vision;
     }
 
+    public Command waitOn(WaitableSubsystem subsystem) {
+        return Commands.none().until(() -> subsystem.isNearGoal());
+    }
+
     public Command scoreL4CoralCommand() {
         return Commands.sequence(
             Commands.print("start seq"),
                     pivotSubsys.stowPivot(),
-                    Commands.none().until(() -> pivotSubsys.isNearGoalAngle()),
+                    waitOn(pivotSubsys),
                     Commands.print("pivot in stow angle"),
                     elevatorSubsys.setHeight(ElevatorConstants.scoreLevelFour),
                     Commands.print("elev in place"),
 
-                    Commands.none().until(() -> elevatorSubsys.isNearGoalHeight()),
+                    waitOn(elevatorSubsys),
                 pivotSubsys.setAngle(PivotConstants.scoreL4Angle)
 
             );
