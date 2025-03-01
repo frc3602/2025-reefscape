@@ -36,7 +36,7 @@ public class Superstructure extends SubsystemBase{
     public Command scoreL4CoralCommand() {
         return Commands.sequence(
             Commands.print("start seq"),
-                    pivotSubsys.setAngle(PivotConstants.stowAngle),
+                    pivotSubsys.stowPivot(),
                     Commands.none().until(() -> pivotSubsys.isNearGoalAngle()),
                     Commands.print("pivot in stow angle"),
                     elevatorSubsys.setHeight(ElevatorConstants.scoreLevelFour),

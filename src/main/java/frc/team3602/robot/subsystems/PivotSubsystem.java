@@ -98,6 +98,12 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
+    public Command stowPivot() {
+        return runOnce(() -> {
+            this.setAngle = PivotConstants.stowAngle;
+        });
+    }
+
     public Command testPivot(double voltage) {
         return runOnce(() -> {
             pivotMotor.setVoltage(voltage);
