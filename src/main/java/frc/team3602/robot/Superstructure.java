@@ -25,7 +25,7 @@ public class Superstructure extends SubsystemBase{
 
     public double mostRecentElevatorHeight;
 
-    public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys) {
+    public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys, Vision vision) {
         this.driveSubsys = driveSubsys;
         this.elevatorSubsys = elevatorSubsys;
         this.intakeSubsys = intakeSubsys;
@@ -62,7 +62,7 @@ public class Superstructure extends SubsystemBase{
             ) : Commands.none()),
             elevatorSubsys.setHeight(0.0),
             waitOn(elevatorSubsys),
-            pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
+            pivotSubsys.setAngle(PivotConstants.coralIntakeAngle)
         );
     }
 
@@ -78,38 +78,5 @@ public class Superstructure extends SubsystemBase{
             pivotSubsys.setAngle(PivotConstants.scoreL4Angle)
         );
     }
-  
-
-    // public Command scoreCoral(double elevatorHeight){
-    //     return runOnce(() -> {
-    //         Commands.sequence(
-    //         elevatorSubsys.setHeight(elevatorHeight),
-
-    //          waitForElevator.andThen(intakeSubsys.runIntake(3.0))
-                    
-    //         );
-    //     });
-    // }
-         
-    // public double newElevatorHeight;
-
-    // public Command scoreCoral(){
-    //     newElevatorHeight = elevatorSubsys.elevatorHeight.getSelected().doubleValue();
-
-    //     return Commands.sequence(
-
-    //         Commands.print("starting sequence"),
-    //         elevatorSubsys.setHeight(newElevatorHeight),
-    //         Commands.print("Elevator Height set"),
-    //         Commands.none().until(() -> elevatorSubsys.isNearGoalHeight()),
-
-            
-            
-    //         intakeSubsys.runIntake(3.0)                
-    //     );
-    // }
-
-
-
 
 }

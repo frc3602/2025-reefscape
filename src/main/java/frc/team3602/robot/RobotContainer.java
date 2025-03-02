@@ -15,17 +15,14 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import au.grapplerobotics.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import static edu.wpi.first.units.Units.*;
 
-import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
@@ -33,7 +30,6 @@ import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
-import static frc.team3602.robot.Constants.VisionConstants.*;
 
 public class RobotContainer {
 
@@ -68,9 +64,9 @@ public class RobotContainer {
       elevatorSubsys.elevatorSimMech.getRoot("Intake Wheel Root", 0.75, 0.3),
       () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
-  // // private final Vision vision = new Vision(drivetrainSubsys);
+  private final Vision vision = new Vision(drivetrainSubsys);
   private final Superstructure superstructure = new
-  Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys
+  Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys, vision
   );
 
   /* Autonomous */
