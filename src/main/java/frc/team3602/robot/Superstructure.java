@@ -6,24 +6,20 @@
 
 package frc.team3602.robot;
 
-import com.ctre.phoenix6.Utils;
-
 import edu.wpi.first.wpilibj2.command.*;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 public class Superstructure extends SubsystemBase {
+
     private DrivetrainSubsystem driveSubsys;
     private ElevatorSubsystem elevatorSubsys;
     private IntakeSubsystem intakeSubsys;
     private PivotSubsystem pivotSubsys;
     private Vision vision;
-
-    public double mostRecentElevatorHeight;
 
     public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys, Vision vision) {
         this.driveSubsys = driveSubsys;
@@ -33,35 +29,4 @@ public class Superstructure extends SubsystemBase {
         this.vision = vision;
     }
 
-    //private final WaitUntilCommand waitForElevator = new WaitUntilCommand(() -> elevatorSubsys.isNearGoalHeight());
-    
-
-    // public Command scoreCoral(double elevatorHeight){
-    //     return runOnce(() -> {
-    //         Commands.sequence(
-    //         elevatorSubsys.setHeight(elevatorHeight),
-
-    //          waitForElevator.andThen(intakeSubsys.runIntake(3.0))
-                    
-    //         );
-    //     });
-    // }
-         
-    // public double newElevatorHeight;
-
-    // public Command scoreCoral(){
-    //     newElevatorHeight = elevatorSubsys.elevatorHeight.getSelected().doubleValue();
-
-    //     return Commands.sequence(
-
-    //         Commands.print("starting sequence"),
-    //         elevatorSubsys.setHeight(newElevatorHeight),
-    //         Commands.print("Elevator Height set"),
-    //         Commands.none().until(() -> elevatorSubsys.isNearGoalHeight()),
-
-            
-            
-    //         intakeSubsys.runIntake(3.0)                
-    //     );
-    // }
 }

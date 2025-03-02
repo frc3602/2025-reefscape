@@ -15,36 +15,34 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 
-import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.team3602.robot.Constants.VisionConstants.*;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 
 public class Vision {
+
     private DrivetrainSubsystem driveSubsys;
 
-/*Cameras */
-  private final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
-  private final PhotonCamera mod1Camera = new PhotonCamera("mod1Cam");
-  private final PhotonCamera mod2Camera = new PhotonCamera("mod2Cam");
-  private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
+    /* Cameras */
+    private final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
+    private final PhotonCamera mod1Camera = new PhotonCamera("mod1Cam");
+    private final PhotonCamera mod2Camera = new PhotonCamera("mod2Cam");
+    private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
 
     /* Field Simulation */
     private final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2025ReefscapeWelded.loadAprilTagLayoutField();
     public final VisionSystemSim visionSim = new VisionSystemSim("ALL_CAMS");
-        /* pose estimators */
-        private final PhotonPoseEstimator photonPoseEstimator0 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod0CameraTransform);
-        private final PhotonPoseEstimator photonPoseEstimator1 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod1CameraTransform);
-        private final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod2CameraTransform);
-        private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
+    
+    /* Pose Estimators */
+    private final PhotonPoseEstimator photonPoseEstimator0 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod0CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator1 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod1CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod2CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
     
     /* Camera Simulation */
     private final SimCameraProperties cameraProperties = new SimCameraProperties();
