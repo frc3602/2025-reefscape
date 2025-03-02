@@ -55,8 +55,6 @@ public class RobotContainer {
 
   /* Operator interfaces */
   private final CommandXboxController xboxController = new CommandXboxController(kXboxControllerPort);
-  // private final CommandXboxController controlPanel = new
-  // CommandXboxController(kControlPanelPort);
   // for simulation
   private final CommandJoystick joystick = new CommandJoystick(0);
   private final CommandJoystick joystick2 = new CommandJoystick(1);

@@ -77,8 +77,6 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
   // StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
   // .getStructTopic("Elevator Pose", Pose3d.struct).publish();
 
-  private PivotSubsystem pivotSubsys;
-
   public ElevatorSubsystem() {
     // Zero encoder
     elevatorMotor.setPosition(0.0);
@@ -125,14 +123,6 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
         + (elevatorController.calculate(getEncoder(), height)));
   }
 
-  // public Command movePivot(){
-  //   return run(() -> {
-  //     if(isNearGoalHeight()){
-  //       pivotSubsys.setAngle(height)
-  //     }
-  //   });
-  // }
-
   @Override
   public void periodic() {
     if (Utils.isSimulation()) {
@@ -143,8 +133,6 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
       totalEffort = getEffort();
       elevatorMotor.setVoltage(totalEffort * -1.0);
     }
-
-   // movePivot();
 
     // Update Simulation
     elevatorSim.setInput(elevatorMotor.getMotorVoltage().getValueAsDouble());
