@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -72,6 +73,9 @@ public class PivotSubsystem extends SubsystemBase {
             PivotConstants.simPivotKG, PivotConstants.simPivotKV, PivotConstants.simPivotKA);
 
     private double simTotalEffort = 0.0;
+
+    //Operator interface
+    public final SendableChooser<Double> pivotAngle = new SendableChooser<>();
 
     // Simulation
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing,
@@ -175,5 +179,15 @@ public class PivotSubsystem extends SubsystemBase {
 
         motorConfigs.NeutralMode = NeutralModeValue.Coast;
         pivotMotor.getConfigurator().apply(motorConfigs);
+
+        //user interface thing
+        SmartDashboard.putData("Pivot angle", pivotAngle);
+
+        pivotAngle.setDefaultOption("Stow Angle", PivotConstants.stowAngle);
+        pivotAngle.addOption("Corale Intake Angle ", PivotConstants.coralIntakeAngle);
+        pivotAngle.addOption("Score L4 Angle", PivotConstants.scoreL4Angle);
+        pivotAngle.addOption("Score L1-L3 Angle", PivotConstants.scoreCoralAngle);
+    
+
     }
 }
