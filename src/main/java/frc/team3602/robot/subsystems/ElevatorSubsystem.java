@@ -40,8 +40,14 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
   // Encoders, Simulated
   private double simElevatorEncoder;
 
+<<<<<<< Updated upstream
   // Operator interface
   public final SendableChooser<Double> elevatorHeight = new SendableChooser<>();
+=======
+    // Encoders, Real and Simulated
+   // private final AnalogEncoder elevatorEncoder = new AnalogEncoder(1);//TODO maybe change channel?
+    private double absoluteOffset = 0;
+>>>>>>> Stashed changes
 
   // Set point of elevator
   private double height = 0.0;
@@ -139,9 +145,18 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
     elevatorSim.update(TimedRobot.kDefaultPeriod);
     elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.2));
 
+<<<<<<< Updated upstream
     // STUFF for 3d model in advantage scope, not functional yet
     // elevatorPose = new Pose3d(0,0,0, simElevatorEncoder);
     // publisher.set(elevatorPose);
+=======
+    //CALCULATIONS
+    public double getEncoder() {
+        return elevatorMotor.getPosition().getValueAsDouble();
+
+      //  return (elevatorEncoder.get() * ((Math.PI * 2.0) - absoluteOffset)); // TODO: Possibly change 2.0 to the proper radius of the gear.
+    }
+>>>>>>> Stashed changes
 
     SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
@@ -159,10 +174,28 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
 
     SmartDashboard.putNumber("Elevator Encoder", getEncoder());
 
+<<<<<<< Updated upstream
     // SmartDashboard.putBoolean("elev enc connected", elevatorEncoder.);
     // SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
     // SmartDashboard.putNumber("Sim Elevator PID Effort",
     // simElevatorController.calculate(simElevatorEncoder, height));
+=======
+    @Override
+    public void periodic() {
+        if(Utils.isSimulation()){
+            simElevatorEncoder = elevatorViz.getLength();
+            simTotalEffort = simGetEffort();
+            elevatorMotor.setVoltage(simTotalEffort);
+        }else{
+            totalEffort = getEffort();
+            elevatorMotor.setVoltage(totalEffort);
+        }
+    
+        // Update Simulation
+        elevatorSim.setInput(elevatorMotor.getMotorVoltage().getValueAsDouble());
+        elevatorSim.update(TimedRobot.kDefaultPeriod);
+        elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.2));
+>>>>>>> Stashed changes
 
   }
 
@@ -177,12 +210,58 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
     motorConfigs.NeutralMode = NeutralModeValue.Brake;
     elevatorFollower.getConfigurator().apply(motorConfigs);
 
+<<<<<<< Updated upstream
     motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
     motorConfigs.NeutralMode = NeutralModeValue.Brake;
     elevatorMotor.getConfigurator().apply(motorConfigs);
 
     SmartDashboard.putData("Elevator Viz", elevatorSimMech);
     SmartDashboard.putData("Elevator Height", elevatorHeight);
+=======
+        //  SmartDashboard.putNumber("Elevator Set Height", height);
+
+        //  SmartDashboard.putNumber("Elevator Encoder", getEncoder());
+
+       // SmartDashboard.putBoolean("elev enc connected", elevatorEncoder.);
+        // SmartDashboard.putNumber("Sim Elevator total Effort", simTotalEffort);
+        // SmartDashboard.putNumber("Sim Elevator PID Effort", simElevatorController.calculate(simElevatorEncoder, height));
+
+      
+    }
+
+    private void configElevatorSubsys() {
+      // Ensure our follower is following the respective leader and opposing it's direction
+        elevatorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), false));
+
+        var motorConfigs = new MotorOutputConfigs();
+
+        motorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;//clockwise pos
+        motorConfigs.NeutralMode = NeutralModeValue.Coast;
+        elevatorFollower.getConfigurator().apply(motorConfigs);
+  
+        motorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;//clockwise pos
+        motorConfigs.NeutralMode = NeutralModeValue.Coast;
+        elevatorMotor.getConfigurator().apply(motorConfigs);
+
+        SmartDashboard.putData("Elevator Viz", elevatorSimMech);
+        SmartDashboard.putData("Elevator Height", elevatorHeight);
+
+      //Options for the user interface-preset elevator heights
+        elevatorHeight.setDefaultOption("Down", ElevatorConstants.down);
+        elevatorHeight.addOption("Intake", ElevatorConstants.coralIntakeHeight);
+        elevatorHeight.addOption("Reef Level 1", ElevatorConstants.scoreLevelOne);
+        elevatorHeight.addOption("Reef Level 2", ElevatorConstants.scoreLevelTwo);
+        elevatorHeight.addOption("Reef Level 3", ElevatorConstants.scoreLevelThree);
+        elevatorHeight.addOption("Reef Level 4", ElevatorConstants.scoreLevelFour);
+        elevatorHeight.addOption("Down", ElevatorConstants.down);
+        elevatorHeight.addOption("Remove Algae Low", ElevatorConstants.removeAlgaeLow);
+        elevatorHeight.addOption("Remove Algae High", ElevatorConstants.removeAlgaeHigh);
+        elevatorHeight.addOption("Score Algae Processer(low)", ElevatorConstants.scoreAlgaeProcesser);
+        elevatorHeight.addOption("Score Algae Barge (high)", ElevatorConstants.scoreAlgaeBarge);
+
+      
+    }
+>>>>>>> Stashed changes
 
     // Options for the user interface-preset elevator heights
     elevatorHeight.setDefaultOption("Down", ElevatorConstants.down);
