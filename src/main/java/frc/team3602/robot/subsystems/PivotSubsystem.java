@@ -6,11 +6,15 @@
 
 package frc.team3602.robot.subsystems;
 
+import java.io.ObjectInputFilter.Config;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -22,6 +26,8 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -35,18 +41,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.PivotConstants;
 
-public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
+public class PivotSubsystem extends SubsystemBase {
 
     // Motors
     private final TalonFX pivotMotor = new TalonFX(PivotConstants.kPivotMotorId);
     private final TalonFXSimState simPivotMotor = new TalonFXSimState(pivotMotor);
 
     // Encoders, Real and Simulated
+    // private final Encoder pivotEncoder2 = new Encoder(0,1);
+
     private final CANcoder pivotEncoder = new CANcoder(PivotConstants.kPivotEncoderId);
-    private double simPivotEncoder;
 
     private double absoluteOffset = 0.0;
     private double pivotGearRatio = 12.0 / 1.0;
+
+    private double simPivotEncoder;
 
     // Set Point for Pivot
     private double setAngle = 0.0;
@@ -186,6 +195,8 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
         var magnetSensorConfigs = new MagnetSensorConfigs();
         magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = 1;
         pivotEncoder.getConfigurator().apply(magnetSensorConfigs);
+        
+        
 
         // Motor configs
         var motorConfigs = new MotorOutputConfigs();

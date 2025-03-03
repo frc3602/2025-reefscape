@@ -151,7 +151,54 @@ public class RobotContainer {
 
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
     }
+<<<<<<< Updated upstream
   }
+=======
+
+    /**
+     * Function that is called in the constructor where we configure operator
+     * interface button bindings.
+     */
+    private void configButtonBindings() {
+        if (Utils.isSimulation()) {         
+       
+            joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
+            joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
+           // joystick.button(3).onTrue(superstructure.scoreCoral());
+            joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
+
+            joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
+            joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
+            joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
+            joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
+        } else {
+            // xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
+            // xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() -> point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))));
+
+
+            //xboxController.a().onTrue(pivotSubsys.testPivot(1.5));
+            //xboxController.b().onTrue(pivotSubsys.testPivot(-1.5));
+            //xboxController.x().onTrue(pivotSubsys.stopPivot());
+         xboxController.a().onTrue(elevatorSubsys.setHeight(5));
+        xboxController.b().onTrue(elevatorSubsys.setHeight(20));
+         xboxController.x().onTrue(elevatorSubsys.stopElevator());
+         xboxController.y().onTrue(elevatorSubsys.setHeight(40));
+        // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
+        // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
+        // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
+
+        //xboxController.x().onTrue(pivotSubsys.stopPivot());
+
+        
+
+        // reset the field-centric heading on left bumper press
+        xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
+
+        drivetrainSubsys.registerTelemetry(logger::telemeterize);
+        }
+    }
+
+>>>>>>> Stashed changes
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
