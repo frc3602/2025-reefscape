@@ -6,9 +6,13 @@
 
 package frc.team3602.robot.subsystems;
 
+import java.io.ObjectInputFilter.Config;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -20,11 +24,12 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -33,18 +38,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.PivotConstants;
 
-public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
+public class PivotSubsystem extends SubsystemBase {
 
     // Motors
     private final TalonFX pivotMotor = new TalonFX(PivotConstants.kPivotMotorId);
     private final TalonFXSimState simPivotMotor = new TalonFXSimState(pivotMotor);
 
     // Encoders, Real and Simulated
+    // private final Encoder pivotEncoder2 = new Encoder(0,1);
+
     private final CANcoder pivotEncoder = new CANcoder(PivotConstants.kPivotEncoderId);
-    private double simPivotEncoder;
 
     private double absoluteOffset = 0.0;
     private double pivotGearRatio = 12.0 / 1.0;
+
+    private double simPivotEncoder;
 
     // Set Point for Pivot
     private double setAngle = 0.0;
@@ -64,9 +72,6 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
             PivotConstants.simPivotKG, PivotConstants.simPivotKV, PivotConstants.simPivotKA);
 
     private double simTotalEffort = 0.0;
-
-    //Operator interface
-    public final SendableChooser<Double> pivotAngle = new SendableChooser<>();
 
     // Simulation
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing,
@@ -93,12 +98,6 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
         });
     }
 
-    public Command stowPivot() {
-        return runOnce(() -> {
-            this.setAngle = PivotConstants.stowAngle;
-        });
-    }
-
     public Command testPivot(double voltage) {
         return runOnce(() -> {
             pivotMotor.setVoltage(voltage);
@@ -116,7 +115,7 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
         return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0); //absoluteOffset
     }
 
-    public boolean isNearGoal() {
+    public boolean isNearGoalAngle() {
         return MathUtil.isNear(setAngle, getEncoderDegrees(), PivotConstants.tolerance);
     }
 
@@ -162,12 +161,13 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
         // pivotEncoder.isConnected());
         SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
-        SmartDashboard.putBoolean("pivot near goal", isNearGoal());
+        SmartDashboard.putBoolean("pivot near goal", isNearGoalAngle());
     }
 
     public double offset;
 
     private void configPivotSubsys(){
+        
         
 
         // Motor configs
@@ -175,15 +175,5 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
 
         motorConfigs.NeutralMode = NeutralModeValue.Coast;
         pivotMotor.getConfigurator().apply(motorConfigs);
-
-        //user interface thing
-        SmartDashboard.putData("Pivot angle", pivotAngle);
-
-        pivotAngle.setDefaultOption("Stow Angle", PivotConstants.stowAngle);
-        pivotAngle.addOption("Corale Intake Angle ", PivotConstants.coralIntakeAngle);
-        pivotAngle.addOption("Score L4 Angle", PivotConstants.scoreL4Angle);
-        pivotAngle.addOption("Score L1-L3 Angle", PivotConstants.scoreCoralAngle);
-    
-
     }
 }

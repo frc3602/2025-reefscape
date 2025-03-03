@@ -89,8 +89,6 @@ public final class Constants {
 
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
-
-    public final static int kInLaserId = 31; 
   }
 
   public final class PivotConstants {
@@ -104,14 +102,40 @@ public final class Constants {
     public final static double stowAngle = 47;
     public final static double scoreL4Angle = 47;
     public final static double scoreCoralAngle = -40;
-    public final static double removeAlgaeAngle = -40;
 
 
-
+<<<<<<< Updated upstream
     // PID Constants
     public final static double KP = 0.056;
     public final static double KI = 0.0;
     public final static double KD = 0;
+=======
+            // PID Constants
+            public final static double KP = 1.0;
+            public final static double KI = 0.0;
+            public final static double KD = 0.0;
+      
+            //  ffe Constants
+            public final static double KS = 5.0;
+            public final static double KG = 0.15;
+            public final static double KV = 0.9;
+            public final static double KA = 0.1;
+      
+        // simulation constants
+            public final static double kMaxHeightMeters = 1.5;
+            // sim elevator PID constants
+            public final static double simKP = 2; 
+            public final static double simKI = 0;
+            public final static double simKD = 0.01;
+      
+            // sim elevator ffe constants
+            public final static double simKS = 4.0;
+            public final static double simKG = 0; 
+            public final static double simKV = 0.4;
+            public final static double simKA = 0.1;
+        
+      }
+>>>>>>> Stashed changes
 
     // ffe Constants
     public final static double KS = 0.8;
