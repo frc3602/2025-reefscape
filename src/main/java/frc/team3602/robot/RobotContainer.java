@@ -75,7 +75,6 @@ public class RobotContainer {
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    laserCanInit();
     configDefaultCommands();
     configButtonBindings();
     configAutonomous();
@@ -126,9 +125,15 @@ public class RobotContainer {
       // point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(),
       // -xboxController.getLeftX()))));
 
-      xboxController.a().onTrue(superstructure.scoreL4CoralCommand());
-      xboxController.b().onTrue(pivotSubsys.setAngle(0));
-      xboxController.y().onTrue(pivotSubsys.setAngle(30));
+      //xboxController.a().onTrue(superstructure.scoreL4CoralCommand());
+      //xboxController.a().onTrue(superstructure.scoreL4CoralCommand());
+      xboxController.a().onTrue(superstructure.score());
+
+      xboxController.b().onTrue(superstructure.intakeCommand());
+      xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
+      xboxController.y().onFalse(intakeSubsys.stopIntake());
+
+
       // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
       // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
       // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
@@ -136,7 +141,7 @@ public class RobotContainer {
       xboxController.leftTrigger().onTrue(elevatorSubsys.setHeight(0));
       // xboxController.a().onTrue(pivotSubsys.testPivot(1.5));
       // xboxController.b().onTrue(pivotSubsys.testPivot(-1.5));
-      xboxController.x().onTrue(pivotSubsys.stopPivot());
+      xboxController.x().onTrue(superstructure.ridIntakeOfCoral());
       //xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
 
     //bxController.x().onTrue(intakeSubsys.stopIntake());
@@ -148,36 +153,6 @@ public class RobotContainer {
     }
   }
 
-  public void laserCanInit() {
-    lc = new LaserCan(0);
-    // Optionally initialise the settings of the LaserCAN, if you haven't already
-    // done so in GrappleHook
-    try {
-      lc.setRangingMode(LaserCan.RangingMode.SHORT);
-      lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-      lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
-    } catch (ConfigurationFailedException e) {
-      System.out.println("Configuration failed! " + e);
-    }
-  }
-
-  public void laserCanPeriodic() {
-    LaserCan.Measurement measurement = lc.getMeasurement();
-    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-      System.out.println("The target is " + measurement.distance_mm + "mm away!");
-    } else {
-      System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
-      // You can still use distance_mm in here, if you're ok tolerating a clamped
-      // value or an unreliable measurement.
-    }
-  }
-
-  /**
-   * Function that returns the currently selected autonomous routine in the
-   * SendableChooser.
-   * 
-   * @return Currently selected autonomous routine.
-   */
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }

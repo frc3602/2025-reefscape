@@ -7,7 +7,9 @@
 package frc.team3602.robot.subsystems;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -41,7 +43,7 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
   private double simElevatorEncoder;
 
   // Operator interface
-  public final SendableChooser<Double> elevatorHeight = new SendableChooser<>();
+  public SendableChooser<Double> elevatorHeight = new SendableChooser<>();
 
   // Set point of elevator
   private double height = 0.0;
@@ -172,6 +174,13 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
     elevatorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), false));
 
     var motorConfigs = new MotorOutputConfigs();
+    var limitConfigs = new CurrentLimitsConfigs();
+
+    limitConfigs.StatorCurrentLimit = 35;
+    limitConfigs.StatorCurrentLimitEnable = true;
+
+    elevatorFollower.getConfigurator().apply(limitConfigs);
+    elevatorMotor.getConfigurator().apply(limitConfigs);
 
     motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
     motorConfigs.NeutralMode = NeutralModeValue.Brake;

@@ -9,6 +9,8 @@ package frc.team3602.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -64,6 +67,8 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
 
     private double simTotalEffort = 0.0;
 
+    public SendableChooser<Double> pivotAngle = new SendableChooser<>();
+
     // Simulation
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing,
             SingleJointedArmSim.estimateMOI(PivotConstants.lengthMeters, PivotConstants.massKg), 0.2, -12, 24,
@@ -91,7 +96,8 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
 
     public Command stowPivot() {
         return runOnce(() -> {
-            this.setAngle = PivotConstants.stowAngle;
+            setAngle = PivotConstants.stowAngle;
+            //this.setAngle = PivotConstants.stowAngle;
         });
     }
 
@@ -109,7 +115,7 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
 
     // CALCULATIONS
     private double getEncoderDegrees() {
-        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0); //absoluteOffset
+        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0) - 210; //absoluteOffset
     }
 
     public boolean isNearGoal() {
@@ -132,8 +138,14 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
             simPivotEncoder = pivotViz.getAngle();
             pivotMotor.setVoltage(simGetEffort());
         } else {
-            pivotMotor.setVoltage(getEffort());
+            if(getEncoderDegrees()  > -100){
+                pivotMotor.setVoltage(getEffort());
+            }else{
+                pivotMotor.setVoltage(-3);
+            }
         }
+
+       
 
         // Update Simulation
         pivotSim.setInput(simPivotMotor.getMotorVoltage());
@@ -161,13 +173,28 @@ public class PivotSubsystem extends SubsystemBase implements WaitableSubsystem {
         SmartDashboard.putBoolean("pivot near goal", isNearGoal());
     }
 
-    public double offset;
 
     private void configPivotSubsys(){
-        
+        SmartDashboard.putData("pivot angle", pivotAngle);
+        pivotAngle.setDefaultOption("stow angle", PivotConstants.stowAngle);
+        pivotAngle.addOption("coral intake angle", PivotConstants.coralIntakeAngle);
+        pivotAngle.addOption("level 4 score angle", PivotConstants.scoreL4Angle);
+        pivotAngle.addOption("level 1-3 score angle", PivotConstants.scoreCoralAngle);
+
+
+        //encoder configs
+        var magnetSensorConfigs = new MagnetSensorConfigs();
+        magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = 1;
+        pivotEncoder.getConfigurator().apply(magnetSensorConfigs);
 
         // Motor configs
         var motorConfigs = new MotorOutputConfigs();
+        var limitConfigs = new CurrentLimitsConfigs();
+
+        limitConfigs.StatorCurrentLimit = 35;
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        pivotMotor.getConfigurator().apply(limitConfigs);
 
         motorConfigs.NeutralMode = NeutralModeValue.Coast;
         pivotMotor.getConfigurator().apply(motorConfigs);

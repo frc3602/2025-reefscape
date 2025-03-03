@@ -9,8 +9,12 @@ package frc.team3602.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -28,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private double setSpeed;
 
+    private final LaserCan laser = new LaserCan(31);
+
     // Simulation
     private final SingleJointedArmSim intakeSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 1, 0.001, 0.0, 0.0, 0.0, false, 0.0);
     private final MechanismRoot2d intakeRoot;
@@ -36,6 +42,17 @@ public class IntakeSubsystem extends SubsystemBase {
     private DoubleSupplier pivotSimAngleRads;
 
     public IntakeSubsystem(MechanismRoot2d intakeWheelRoot, DoubleSupplier elevatorVizLength, DoubleSupplier pivotSimAngleRads){
+          // Motor configs
+        var motorConfigs = new MotorOutputConfigs();
+        var limitConfigs = new CurrentLimitsConfigs();
+
+        limitConfigs.StatorCurrentLimit = 20;
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        intakeMotor.getConfigurator().apply(limitConfigs);
+
+        motorConfigs.NeutralMode = NeutralModeValue.Brake;
+        intakeMotor.getConfigurator().apply(motorConfigs);
         // Simulation Initiation
         this.intakeRoot = intakeWheelRoot;    
         this.intakeViz = this.intakeRoot.append(new MechanismLigament2d("intake Wheel Ligament", 0.05, 70, 10.0, new Color8Bit(Color.kSpringGreen)));
@@ -48,8 +65,8 @@ public class IntakeSubsystem extends SubsystemBase {
     /* Fundamental Commands */
     public Command runIntake(Double speed) {
         return runOnce(() ->{
-            setSpeed = speed;
-            intakeMotor.set(speed);
+            setSpeed = -speed;
+            intakeMotor.set(-speed);
         });
     }
 
@@ -60,6 +77,10 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public boolean sensorIsTriggered(){
+        LaserCan.Measurement laserMeasurement = laser.getMeasurement();
+        return (laserMeasurement.distance_mm <50.0);
+    }
 
 
     public void periodic() {

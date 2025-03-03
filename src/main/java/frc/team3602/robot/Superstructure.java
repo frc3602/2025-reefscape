@@ -6,8 +6,10 @@
 
 package frc.team3602.robot;
 
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team3602.robot.Constants.ElevatorConstants;
+import frc.team3602.robot.Constants.IntakeConstants;
 import frc.team3602.robot.Constants.PivotConstants;
 import frc.team3602.robot.scoring.CoralScoreDescriptor;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
@@ -66,16 +68,67 @@ public class Superstructure extends SubsystemBase{
         );
     }
 
+    public Command intakeCommand() {
+        return Commands.sequence(
+
+            // (elevatorSubsys.getEncoder() > ElevatorConstants.pivotStowHeight) ? Commands.sequence(
+            //     pivotSubsys.stowPivot(),
+            //     waitOn(pivotSubsys)
+            // ) : Commands.none(),
+            pivotSubsys.setAngle(PivotConstants.stowAngle),
+            Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+            elevatorSubsys.setHeight(0.0),
+            Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
+            pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
+            Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+            intakeSubsys.runIntake(0.2),
+            Commands.waitUntil(() -> intakeSubsys.sensorIsTriggered()),
+            intakeSubsys.stopIntake()
+
+            
+        );
+    }
+
     public Command scoreL4CoralCommand() {
         return Commands.sequence(
             Commands.print("start seq"),
             pivotSubsys.stowPivot(),
-            waitOn(pivotSubsys),
+            Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
             Commands.print("pivot in stow angle"),
             elevatorSubsys.setHeight(ElevatorConstants.scoreLevelFour),
+            Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
             Commands.print("elev in place"),
-            waitOn(elevatorSubsys),
-            pivotSubsys.setAngle(PivotConstants.scoreL4Angle)
+            pivotSubsys.setAngle(PivotConstants.scoreL4Angle),
+            Commands.waitUntil(() -> pivotSubsys.isNearGoal())
+            // intakeSubsys.runIntake(IntakeConstants.coralSpeed),
+            // Commands.waitUntil(() -> ! intakeSubsys.sensorIsTriggered()),
+            // intakeSubsys.stopIntake()
+        );
+    }
+
+    public Command ridIntakeOfCoral() {
+        return Commands.sequence(
+            intakeSubsys.runIntake(IntakeConstants.coralSpeed),
+            Commands.waitUntil(() -> ! intakeSubsys.sensorIsTriggered()),
+            intakeSubsys.stopIntake()
+        );
+    }
+
+
+    public Command score(){
+           return Commands.sequence(
+            Commands.print("start seq"),
+            pivotSubsys.setAngle(PivotConstants.stowAngle),
+            Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+            Commands.print("pivot in stow angle"),
+            elevatorSubsys.setHeight(elevatorSubsys.elevatorHeight.getSelected().doubleValue()),
+            Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
+            Commands.print("elev in place"),
+            pivotSubsys.setAngle(pivotSubsys.pivotAngle.getSelected().doubleValue()),//TODO .doubleValue() is new and untested
+            Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+            intakeSubsys.runIntake(IntakeConstants.coralSpeed),
+            Commands.waitUntil(() -> ! intakeSubsys.sensorIsTriggered()),
+            intakeSubsys.stopIntake()
         );
     }
 

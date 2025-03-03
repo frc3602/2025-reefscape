@@ -46,14 +46,14 @@ public final class Constants {
     public final static int kElevatorMotorId = 53;
     public final static int kElevatorFollowerId = 57;
 
-    public final static double tolerance = 2;
+    public final static double tolerance = 3;
 
-    public final static double pivotStowHeight = 30.0; // TODO: This number is nonsense.
+    public final static double pivotStowHeight = 13.0;
 
-    public final static double coralIntakeHeight = 1;
-    public final static double scoreLevelOne = 1;
-    public final static double scoreLevelTwo = 2;
-    public final static double scoreLevelThree = 2.5;
+    public final static double coralIntakeHeight = 0.1;
+    public final static double scoreLevelOne = 0.1;
+    public final static double scoreLevelTwo = 20;
+    public final static double scoreLevelThree = 25;
     public final static double scoreLevelFour = 30.7;
     public final static double down = 0.1;
     public final static double scoreAlgaeProcesser = 0.5;
@@ -89,6 +89,7 @@ public final class Constants {
 
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
+    public final static double coralSpeed = 3;
   }
 
   public final class PivotConstants {
@@ -98,9 +99,9 @@ public final class Constants {
 
     public final static double tolerance = 3; // TODO - this is random still
 
-    public final static double coralIntakeAngle = 122.45;
-    public final static double stowAngle = 47;
-    public final static double scoreL4Angle = 47;
+    public final static double coralIntakeAngle = 102;
+    public final static double stowAngle = -5;
+    public final static double scoreL4Angle = 70;
     public final static double scoreCoralAngle = -40;
 
 
