@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -26,7 +27,9 @@ public class IntakeSubsystem extends SubsystemBase {
     //Motors
     private final TalonFX intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorId);
 
-    private double setSpeed;
+    //private double setSpeed;
+    
+    private final LaserCan laser = new LaserCan(IntakeConstants.kInLaserId);
 
     // Simulation
     private final SingleJointedArmSim intakeSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 1, 0.001, 0.0, 0.0, 0.0, false, 0.0);
@@ -48,16 +51,21 @@ public class IntakeSubsystem extends SubsystemBase {
     /* Fundamental Commands */
     public Command runIntake(Double speed) {
         return runOnce(() ->{
-            setSpeed = speed;
+            //setSpeed = speed;
             intakeMotor.set(speed);
         });
     }
 
     public Command stopIntake() {
         return runOnce(() -> {
-            setSpeed = 0.0;
+            //setSpeed = 0.0;
             intakeMotor.stopMotor();
         });
+    }
+
+    public boolean sensorTriggered(){
+        LaserCan.Measurement laserMeasurement = laser.getMeasurement();
+        return (laserMeasurement.distance_mm < 50.0);
     }
 
 
@@ -71,7 +79,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         // Log Values
         SmartDashboard.putNumber("intakeMotor Voltage", intakeMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("intake set speed", setSpeed);
+       // SmartDashboard.putNumber("intake set speed", setSpeed);
     }
 }
 

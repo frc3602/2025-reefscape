@@ -89,6 +89,8 @@ public final class Constants {
 
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
+
+    public final static int kInLaserId = 31; 
   }
 
   public final class PivotConstants {
@@ -102,6 +104,8 @@ public final class Constants {
     public final static double stowAngle = 47;
     public final static double scoreL4Angle = 47;
     public final static double scoreCoralAngle = -40;
+    public final static double removeAlgaeAngle = -40;
+
 
 
 <<<<<<< Updated upstream
