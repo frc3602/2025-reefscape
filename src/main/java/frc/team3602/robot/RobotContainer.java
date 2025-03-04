@@ -18,18 +18,25 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.*;
 
+import frc.team3602.robot.Constants.ElevatorConstants;
+import frc.team3602.robot.Constants.PivotConstants;
 import frc.team3602.robot.generated.TunerConstants;
+import frc.team3602.robot.scoring.CoralScoreDescriptor;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class RobotContainer {
 
@@ -71,14 +78,23 @@ public class RobotContainer {
 
   /* Autonomous */
   private final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
+  private final SendableChooser<Command> coralDestinationChooser = new SendableChooser<Command>();
 
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    laserCanInit();
+    populateCoralDestinationChooser();
+    SmartDashboard.putData("Coral Destination Chooser", coralDestinationChooser);
+
     configDefaultCommands();
     configButtonBindings();
     configAutonomous();
+  }
+
+  private void populateCoralDestinationChooser() {
+    coralDestinationChooser.setDefaultOption("None", Commands.none());
+    coralDestinationChooser.addOption("L4", superstructure.scoreCoral(new CoralScoreDescriptor(null, ElevatorConstants.scoreLevelFour, PivotConstants.scoreL4Angle)));
+    coralDestinationChooser.addOption("L3", superstructure.scoreCoral(new CoralScoreDescriptor(null, ElevatorConstants.scoreLevelThree, PivotConstants.scoreCoralAngle)));
   }
 
   private void configDefaultCommands() {
@@ -113,8 +129,8 @@ public class RobotContainer {
 
       joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
       joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
-      // joystick.button(3).onTrue(superstructure.scoreCoral());
-      joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
+      joystick.button(3).onTrue(coralDestinationChooser.getSelected());
+      //joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
 
       joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
       joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
@@ -126,7 +142,7 @@ public class RobotContainer {
       // point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(),
       // -xboxController.getLeftX()))));
 
-      xboxController.a().onTrue(superstructure.scoreL4CoralCommand());
+      xboxController.a().onTrue(coralDestinationChooser.getSelected());
       xboxController.b().onTrue(pivotSubsys.setAngle(0));
       xboxController.y().onTrue(pivotSubsys.setAngle(30));
       // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
@@ -146,54 +162,7 @@ public class RobotContainer {
 
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
     }
-<<<<<<< Updated upstream
   }
-=======
-
-    /**
-     * Function that is called in the constructor where we configure operator
-     * interface button bindings.
-     */
-    private void configButtonBindings() {
-        if (Utils.isSimulation()) {         
-       
-            joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
-            joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
-           // joystick.button(3).onTrue(superstructure.scoreCoral());
-            joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
-
-            joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
-            joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
-            joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
-            joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
-        } else {
-            // xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
-            // xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() -> point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(), -xboxController.getLeftX()))));
-
-
-            //xboxController.a().onTrue(pivotSubsys.testPivot(1.5));
-            //xboxController.b().onTrue(pivotSubsys.testPivot(-1.5));
-            //xboxController.x().onTrue(pivotSubsys.stopPivot());
-         xboxController.a().onTrue(elevatorSubsys.setHeight(5));
-        xboxController.b().onTrue(elevatorSubsys.setHeight(20));
-         xboxController.x().onTrue(elevatorSubsys.stopElevator());
-         xboxController.y().onTrue(elevatorSubsys.setHeight(40));
-        // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
-        // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
-        // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
-
-        //xboxController.x().onTrue(pivotSubsys.stopPivot());
-
-        
-
-        // reset the field-centric heading on left bumper press
-        xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
-
-        drivetrainSubsys.registerTelemetry(logger::telemeterize);
-        }
-    }
-
->>>>>>> Stashed changes
 
   public void laserCanInit() {
     lc = new LaserCan(0);

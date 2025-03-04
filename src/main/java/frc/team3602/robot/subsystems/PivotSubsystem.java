@@ -119,6 +119,10 @@ public class PivotSubsystem extends SubsystemBase {
         return MathUtil.isNear(setAngle, getEncoderDegrees(), PivotConstants.tolerance);
     }
 
+    public boolean isStowed(){
+        return getEncoderDegrees() < 37.0;
+    }
+
     public double simGetEffort() {
         return simTotalEffort = ((simPivotFeedforward.calculate(Units.degreesToRadians(simPivotEncoder), 0))
                 + (simPivotController.calculate(simPivotEncoder, setAngle)));
