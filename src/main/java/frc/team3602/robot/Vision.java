@@ -35,7 +35,7 @@ public class Vision {
   private final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
   private final PhotonCamera mod1Camera = new PhotonCamera("mod1Cam");
   private final PhotonCamera mod2Camera = new PhotonCamera("mod2Cam");
-  private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
+ // private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
 
     /* Field Simulation */
     private final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2025ReefscapeWelded.loadAprilTagLayoutField();
@@ -44,14 +44,15 @@ public class Vision {
         private final PhotonPoseEstimator photonPoseEstimator0 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod0CameraTransform);
         private final PhotonPoseEstimator photonPoseEstimator1 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod1CameraTransform);
         private final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod2CameraTransform);
-        private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
-    
-    /* Camera Simulation */
-    private final SimCameraProperties cameraProperties = new SimCameraProperties();
-      private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera, cameraProperties);
-      private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera, cameraProperties);
-      private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera, cameraProperties);
-      private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
+       // private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
+    //
+
+    // /* Camera Simulation */
+    // private final SimCameraProperties cameraProperties = new SimCameraProperties();
+    //   private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera, cameraProperties);
+    //   private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera, cameraProperties);
+    //   private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera, cameraProperties);
+    //   private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
 
 
  /*vision constructor */      
@@ -60,20 +61,20 @@ public class Vision {
         photonPoseEstimator0.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimator1.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        photonPoseEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        //photonPoseEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-        visionSim.addAprilTags(kFieldLayout);
-        visionSim.addCamera(camera0Sim, kRobotToMod0CameraTransform);
-        visionSim.addCamera(camera1Sim, kRobotToMod1CameraTransform);
-        visionSim.addCamera(camera2Sim, kRobotToMod2CameraTransform);
-        visionSim.addCamera(camera3Sim, kRobotToMod3CameraTransform);
+        // visionSim.addAprilTags(kFieldLayout);
+        // visionSim.addCamera(camera0Sim, kRobotToMod0CameraTransform);
+        // visionSim.addCamera(camera1Sim, kRobotToMod1CameraTransform);
+        // visionSim.addCamera(camera2Sim, kRobotToMod2CameraTransform);
+        // visionSim.addCamera(camera3Sim, kRobotToMod3CameraTransform);
 
-        cameraProperties.setCalibration(640, 480, Rotation2d.fromDegrees(100));
-        cameraProperties.setCalibError(0.25, 0.08);
-        cameraProperties.setFPS(20);
-        cameraProperties.setAvgLatencyMs(35.0);
-        cameraProperties.setLatencyStdDevMs(5);
-        cameraProperties.setCalibration(kWidthOfCamera, kHeightOfCamera, kCameraFOV);
+        // cameraProperties.setCalibration(640, 480, Rotation2d.fromDegrees(100));
+        // cameraProperties.setCalibError(0.25, 0.08);
+        // cameraProperties.setFPS(20);
+        // cameraProperties.setAvgLatencyMs(35.0);
+        // cameraProperties.setLatencyStdDevMs(5);
+        // cameraProperties.setCalibration(kWidthOfCamera, kHeightOfCamera, kCameraFOV);
         
    
     }
@@ -135,22 +136,22 @@ public class Vision {
 
     }
 
-    private double lastEstimateTimestampMod3 = 0.0;
-    private Pose2d mod3Pose2d = new Pose2d();
+    // private double lastEstimateTimestampMod3 = 0.0;
+    // private Pose2d mod3Pose2d = new Pose2d();
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseMod3(Pose2d prevEstimatedRobotPose){
-        double latestTimestamp = mod3Camera.getLatestResult().getTimestampSeconds();
-        boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod3) > 1e-5;
+    // public Optional<EstimatedRobotPose> getEstimatedPoseMod3(Pose2d prevEstimatedRobotPose){
+    //     double latestTimestamp = mod3Camera.getLatestResult().getTimestampSeconds();
+    //     boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod3) > 1e-5;
 
-        if (newResult){
-            lastEstimateTimestampMod3 = latestTimestamp;
-        }
+    //     if (newResult){
+    //         lastEstimateTimestampMod3 = latestTimestamp;
+    //     }
 
-        photonPoseEstimator3.setReferencePose(prevEstimatedRobotPose);
-        mod3Pose2d = photonPoseEstimator3.update(mod3Camera.getLatestResult()).get().estimatedPose.toPose2d();
-        return photonPoseEstimator3.update(mod3Camera.getLatestResult());
+    //     photonPoseEstimator3.setReferencePose(prevEstimatedRobotPose);
+    //     mod3Pose2d = photonPoseEstimator3.update(mod3Camera.getLatestResult()).get().estimatedPose.toPose2d();
+    //     return photonPoseEstimator3.update(mod3Camera.getLatestResult());
 
-    }
+    // }
 
   public void update(Pose2d pose) {
 
@@ -179,13 +180,13 @@ public class Vision {
         Commands.print("mod2 pose failed");
     } 
    
-    try {
-        getEstimatedPoseMod3(pose);
-        driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
-    } catch (Exception e) {
-        //mod3Pose2d = pose;
-        Commands.print("mod3 pose failed");
-    }    
+    // try {
+    //     getEstimatedPoseMod3(pose);
+    //     driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
+    // } catch (Exception e) {
+    //     //mod3Pose2d = pose;
+    //     Commands.print("mod3 pose failed");
+    // }    
    
 
         visionSim.update(pose);

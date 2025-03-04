@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -34,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
 
-public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsystem {
+public class ElevatorSubsystem extends SubsystemBase {
   // Motors
   public final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.kElevatorMotorId);
   public final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.kElevatorFollowerId);
@@ -42,11 +41,9 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
   // Encoders, Simulated
   private double simElevatorEncoder;
 
-  // Operator interface
-  public SendableChooser<Double> elevatorHeight = new SendableChooser<>();
 
   // Set point of elevator
-  private double height = 0.0;
+  public double height = 0.0;
 
   // Controls, Actual
   private final PIDController elevatorController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI,
@@ -134,7 +131,7 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
             elevatorMotor.setVoltage(simTotalEffort);
         }else{
             totalEffort = getEffort();
-            elevatorMotor.setVoltage(totalEffort);
+            elevatorMotor.setVoltage(-totalEffort);
         }
     
         // Update Simulation
@@ -159,6 +156,8 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
           SmartDashboard.putNumber("Elevator Set Height", height);
       
           SmartDashboard.putNumber("Elevator Encoder", getEncoder());
+      
+          
       
 
   }
@@ -186,21 +185,6 @@ public class ElevatorSubsystem extends SubsystemBase implements WaitableSubsyste
     elevatorMotor.getConfigurator().apply(motorConfigs);
 
     SmartDashboard.putData("Elevator Viz", elevatorSimMech);
-    SmartDashboard.putData("Elevator Height", elevatorHeight);
-
-
-
-    // Options for the user interface-preset elevator heights
-    elevatorHeight.setDefaultOption("Down", ElevatorConstants.down);
-    elevatorHeight.addOption("Intake", ElevatorConstants.coralIntakeHeight);
-    elevatorHeight.addOption("Reef Level 1", ElevatorConstants.scoreLevelOne);
-    elevatorHeight.addOption("Reef Level 2", ElevatorConstants.scoreLevelTwo);
-    elevatorHeight.addOption("Reef Level 3", ElevatorConstants.scoreLevelThree);
-    elevatorHeight.addOption("Reef Level 4", ElevatorConstants.scoreLevelFour);
-    elevatorHeight.addOption("Down", ElevatorConstants.down);
-    elevatorHeight.addOption("Remove Algae Low", ElevatorConstants.removeAlgaeLow);
-    elevatorHeight.addOption("Remove Algae High", ElevatorConstants.removeAlgaeHigh);
-    elevatorHeight.addOption("Score Algae Processer(low)", ElevatorConstants.scoreAlgaeProcesser);
-    elevatorHeight.addOption("Score Algae Barge (high)", ElevatorConstants.scoreAlgaeBarge);
+   
   }
 }

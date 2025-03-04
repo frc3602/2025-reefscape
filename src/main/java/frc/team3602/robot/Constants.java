@@ -33,6 +33,8 @@ public final class Constants {
   // in case we want the flypath stuff in superstructure or something
   public final class flyPathPosesConstants {
 
+      public static final Pose2d startingPose = new Pose2d(7.6, 0.5, Rotation2d.fromDegrees(180));
+
     // TODO- change with real life robot testing
     public static final Pose2d blueNONBargeCoralIntakePose = new Pose2d(1.22, 1.68, Rotation2d.fromDegrees(145));
     public static final Pose2d blueBargeCoralIntakePose = new Pose2d(0.8, 7.07, Rotation2d.fromDegrees(34.6));
@@ -41,21 +43,22 @@ public final class Constants {
   }
 
   public final class ElevatorConstants {
-    // Pre set heights
-    // TODO- change with real robot testing
     public final static int kElevatorMotorId = 53;
     public final static int kElevatorFollowerId = 57;
 
     public final static double tolerance = 3;
 
     public final static double pivotStowHeight = 13.0;
+    // Pre set heights
 
     public final static double coralIntakeHeight = 0.1;
-    public final static double scoreLevelOne = 0.1;
-    public final static double scoreLevelTwo = 20;
-    public final static double scoreLevelThree = 25;
+    public final static double scoreLevelOne = 2;
+    public final static double scoreLevelTwo = 6;
+    public final static double scoreLevelThree = 16;
     public final static double scoreLevelFour = 30.7;
     public final static double down = 0.1;
+
+    //the rest of these are bs numbers still
     public final static double scoreAlgaeProcesser = 0.5;
     public final static double scoreAlgaeBarge = 4;
     public final static double removeAlgaeHigh = 2.7;
@@ -89,7 +92,7 @@ public final class Constants {
 
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
-    public final static double coralSpeed = 3;
+    public final static double coralSpeed = 0.7;
   }
 
   public final class PivotConstants {
@@ -97,16 +100,17 @@ public final class Constants {
 
     public final static int kPivotEncoderId = 34;
 
-    public final static double tolerance = 3; // TODO - this is random still
+    public final static double tolerance = 5; // TODO - this is random still
 
-    public final static double coralIntakeAngle = 102;
-    public final static double stowAngle = -5;
-    public final static double scoreL4Angle = 70;
-    public final static double scoreCoralAngle = -40;
+    public final static double coralIntakeAngle = 100;
+    public final static double lowStowAngle = 87;//35
+    public final static double highStowAngle = 30;//35
+    public final static double scoreL4Angle = 89;
+    public final static double scoreCoralAngle = 80;
 
 
     // PID Constants
-    public final static double KP = 0.056;
+    public final static double KP = 0.05;//.056
     public final static double KI = 0.0;
     public final static double KD = 0;
 
@@ -152,16 +156,16 @@ public final class Constants {
     // THEY MUST BE CHANGED eventually
     // I believe x&y coordinates are meters
     public static final Transform3d kRobotToMod0CameraTransform = new Transform3d(
-        new Translation3d(-1.0, 1.0, 0.0),
+        new Translation3d(-0.5, 0.5, 0.0),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(135.0)));
     public static final Transform3d kRobotToMod1CameraTransform = new Transform3d(
-        new Translation3d(1.0, 1.0, 0.0),
+        new Translation3d(0.5, 0.5, 0.0),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(45.0)));
     public static final Transform3d kRobotToMod2CameraTransform = new Transform3d(
-        new Translation3d(1.0, -1.0, 0.0),
+        new Translation3d(0.5, -0.5, 0.0),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(315.0)));
     public static final Transform3d kRobotToMod3CameraTransform = new Transform3d(
-        new Translation3d(-1.0, -1.0, 0.0),
+        new Translation3d(-0.5, -0.5, 0.0),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(225.0)));
 
     public static final Measure<DistanceUnit> kCameraHeight = Inches.of(4);

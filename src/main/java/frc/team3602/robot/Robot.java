@@ -23,12 +23,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    robotContainer.startPose();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    robotContainer.updateSimulation();
+    robotContainer.updateVision();
   }
 
   @Override
