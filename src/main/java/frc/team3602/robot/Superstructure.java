@@ -53,7 +53,7 @@ public class Superstructure extends SubsystemBase{
             intakeSubsys.runIntake(-0.5).withTimeout(1),
             intakeSubsys.stopIntake()
         );
-    }
+   }
 
     public Command scoreL4CoralCommand() {
         return Commands.sequence(
