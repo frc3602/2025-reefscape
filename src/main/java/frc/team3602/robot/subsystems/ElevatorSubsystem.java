@@ -7,7 +7,9 @@
 package frc.team3602.robot.subsystems;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -23,7 +25,6 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -40,14 +41,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   // Encoders, Simulated
   private double simElevatorEncoder;
 
-  // Operator interface
-  public final SendableChooser<Double> elevatorHeight = new SendableChooser<>();
-    // Encoders, Real and Simulated
-   // private final AnalogEncoder elevatorEncoder = new AnalogEncoder(1);//TODO maybe change channel?
-    private double absoluteOffset = 0;
 
   // Set point of elevator
-  private double height = 0.0;
+  public double height = 0.0;
 
   // Controls, Actual
   private final PIDController elevatorController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI,
@@ -126,66 +122,69 @@ public class ElevatorSubsystem extends SubsystemBase {
         + (elevatorController.calculate(getEncoder(), height)));
   }
 
-  @Override
-  public void periodic() {
-    if (Utils.isSimulation()) {
-      simElevatorEncoder = elevatorViz.getLength();
-      simTotalEffort = simGetEffort();
-      elevatorMotor.setVoltage(simTotalEffort);
-    } else {
-      totalEffort = getEffort();
-      elevatorMotor.setVoltage(totalEffort * -1.0);
-    }
-
-   
-    SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0, 0));
-    SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
-
-    // SmartDashboard.putNumber("Sim Elevator Motor Output",
-    // simElevatorMotor.getMotorVoltage());
-    // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
-    SmartDashboard.putNumber("elev get enc", getEncoder());
-    SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
-
-    SmartDashboard.putNumber("Elevator Set Height", height);
-
-    SmartDashboard.putNumber("Elevator Encoder", getEncoder());
-    }
-
-
-    private void configElevatorSubsys() {
-      // Ensure our follower is following the respective leader and opposing it's direction
-        elevatorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), false));
-
-        var motorConfigs = new MotorOutputConfigs();
-
-        motorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;//clockwise pos
-        motorConfigs.NeutralMode = NeutralModeValue.Coast;
-        elevatorFollower.getConfigurator().apply(motorConfigs);
+ 
+    @Override
+    public void periodic() {
+        if(Utils.isSimulation()){
+            simElevatorEncoder = elevatorViz.getLength();
+            simTotalEffort = simGetEffort();
+            elevatorMotor.setVoltage(simTotalEffort);
+        }else{
+            totalEffort = getEffort();
+            elevatorMotor.setVoltage(-totalEffort);
+        }
+    
+        // Update Simulation
+        elevatorSim.setInput(elevatorMotor.getMotorVoltage().getValueAsDouble());
+        elevatorSim.update(TimedRobot.kDefaultPeriod);
+        elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.2));
   
-        motorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;//clockwise pos
-        motorConfigs.NeutralMode = NeutralModeValue.Coast;
-        elevatorMotor.getConfigurator().apply(motorConfigs);
-
-        SmartDashboard.putData("Elevator Viz", elevatorSimMech);
-        SmartDashboard.putData("Elevator Height", elevatorHeight);
-
-      //Options for the user interface-preset elevator heights
-        elevatorHeight.setDefaultOption("Down", ElevatorConstants.down);
-        elevatorHeight.addOption("Intake", ElevatorConstants.coralIntakeHeight);
-        elevatorHeight.addOption("Reef Level 1", ElevatorConstants.scoreLevelOne);
-        elevatorHeight.addOption("Reef Level 2", ElevatorConstants.scoreLevelTwo);
-        elevatorHeight.addOption("Reef Level 3", ElevatorConstants.scoreLevelThree);
-        elevatorHeight.addOption("Reef Level 4", ElevatorConstants.scoreLevelFour);
-        elevatorHeight.addOption("Down", ElevatorConstants.down);
-        elevatorHeight.addOption("Remove Algae Low", ElevatorConstants.removeAlgaeLow);
-        elevatorHeight.addOption("Remove Algae High", ElevatorConstants.removeAlgaeHigh);
-        elevatorHeight.addOption("Score Algae Processer(low)", ElevatorConstants.scoreAlgaeProcesser);
-        elevatorHeight.addOption("Score Algae Barge (high)", ElevatorConstants.scoreAlgaeBarge);
-
       
-    }
+      
+          SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
+          SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
+          SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0, 0));
+          SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
+      
+          // SmartDashboard.putNumber("Sim Elevator Motor Output",
+          // simElevatorMotor.getMotorVoltage());
+          // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
+          SmartDashboard.putNumber("elev get enc", getEncoder());
+          SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
+          SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
+      
+          SmartDashboard.putNumber("Elevator Set Height", height);
+      
+          SmartDashboard.putNumber("Elevator Encoder", getEncoder());
+      
+          
+      
+
+  }
+
+  private void configElevatorSubsys() {
+    // Ensure our follower is following the respective leader and opposing it's
+    // direction
+    elevatorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), false));
+
+    var motorConfigs = new MotorOutputConfigs();
+    var limitConfigs = new CurrentLimitsConfigs();
+
+    limitConfigs.StatorCurrentLimit = 35;
+    limitConfigs.StatorCurrentLimitEnable = true;
+
+    elevatorFollower.getConfigurator().apply(limitConfigs);
+    elevatorMotor.getConfigurator().apply(limitConfigs);
+
+    motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfigs.NeutralMode = NeutralModeValue.Brake;
+    elevatorFollower.getConfigurator().apply(motorConfigs);
+
+    motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfigs.NeutralMode = NeutralModeValue.Brake;
+    elevatorMotor.getConfigurator().apply(motorConfigs);
+
+    SmartDashboard.putData("Elevator Viz", elevatorSimMech);
+   
+  }
 }

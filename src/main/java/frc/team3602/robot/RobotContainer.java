@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import static edu.wpi.first.units.Units.*;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
-import frc.team3602.robot.Constants.PivotConstants;
+import frc.team3602.robot.Constants.flyPathPosesConstants;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.scoring.CoralScoreDescriptor;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
@@ -59,8 +59,8 @@ public class RobotContainer {
   /* Operator interfaces */
   private final CommandXboxController xboxController = new CommandXboxController(kXboxControllerPort);
   // for simulation
-  private final CommandJoystick joystick = new CommandJoystick(0);
-  private final CommandJoystick joystick2 = new CommandJoystick(1);
+  //private final CommandJoystick joystick = new CommandJoystick(0);
+  private final CommandJoystick joystick = new CommandJoystick(1);
 
   /* Subsystems */
   private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
@@ -78,42 +78,42 @@ public class RobotContainer {
 
   /* Autonomous */
   private final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
-  private final SendableChooser<Command> coralDestinationChooser = new SendableChooser<Command>();
+  private SendableChooser<Double> polarityChooser = new SendableChooser<>();
 
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    populateCoralDestinationChooser();
-    SmartDashboard.putData("Coral Destination Chooser", coralDestinationChooser);
+    SmartDashboard.putData("Drive Polarity", polarityChooser);
+    polarityChooser.setDefaultOption("Default", 1.0);
+    polarityChooser.addOption("Positive", 1.0);
+    polarityChooser.addOption("Negative", -1.0);
+
 
     configDefaultCommands();
     configButtonBindings();
     configAutonomous();
   }
 
-  private void populateCoralDestinationChooser() {
-    coralDestinationChooser.setDefaultOption("None", Commands.none());
-    coralDestinationChooser.addOption("L4", superstructure.scoreCoral(new CoralScoreDescriptor(null, ElevatorConstants.scoreLevelFour, PivotConstants.scoreL4Angle)));
-    coralDestinationChooser.addOption("L3", superstructure.scoreCoral(new CoralScoreDescriptor(null, ElevatorConstants.scoreLevelThree, PivotConstants.scoreCoralAngle)));
-  }
+  public double driveLimiter;
 
   private void configDefaultCommands() {
+
     if (Utils.isSimulation()) {
-      drivetrainSubsys.setDefaultCommand(
-          drivetrainSubsys.applyRequest(() -> drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward
-                                                                                                      // with negative Y
-                                                                                                      // (forward)
-              .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative X (left)
-              .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate)) // Drive counterclockwise with negative X
-                                                                              // (left)
-      );
+      // drivetrainSubsys.setDefaultCommand(
+      //     drivetrainSubsys.applyRequest(() -> drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward
+      //                                                                                                 // with negative Y
+      //                                                                                                 // (forward)
+      //         .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative X (left)
+      //         .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate)) // Drive counterclockwise with negative X
+      //                                                                         // (left)
+      // );
     } else {
       drivetrainSubsys.setDefaultCommand(
-          drivetrainSubsys.applyRequest(() -> drive.withVelocityX(-xboxController.getLeftY() * MaxSpeed) // Drive
+          drivetrainSubsys.applyRequest(() -> drive.withVelocityX( 0.5 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed) // Drive
                                                                                                          // forward with
                                                                                                          // negative Y
                                                                                                          // (forward)
-              .withVelocityY(-xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+              .withVelocityY(0.5 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
               .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative
                                                                                 // X (left)
           ));
@@ -127,35 +127,47 @@ public class RobotContainer {
   private void configButtonBindings() {
     if (Utils.isSimulation()) {
 
-      joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
-      joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
-      joystick.button(3).onTrue(coralDestinationChooser.getSelected());
-      //joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
+      // // joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
+      // // joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
+      // // // joystick.button(3).onTrue(superstructure.scoreCoral());
+      // // joystick.button(4).onTrue(drivetrainSubsys.flypathToCoralStation());
 
-      joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
-      joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
-      joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
-      joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
+      // joystick2.button(1).onTrue(pivotSubsys.setAngle(-90));
+      // joystick2.button(2).onTrue(pivotSubsys.setAngle(0));
+      // joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
+      // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
     } else {
-      // xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> brake));
-      // xboxController.b().whileTrue(drivetrainSubsys.applyRequest(() ->
-      // point.withModuleDirection(new Rotation2d(-xboxController.getLeftY(),
-      // -xboxController.getLeftX()))));
 
-      xboxController.a().onTrue(coralDestinationChooser.getSelected());
-      xboxController.b().onTrue(pivotSubsys.setAngle(0));
-      xboxController.y().onTrue(pivotSubsys.setAngle(30));
-      // xboxController.a().whileTrue(pivotSubsys.setAngle(0.6));
-      // xboxController.b().whileTrue(pivotSubsys.setAngle(0.2));
-      // xboxController.y().whileTrue(pivotSubsys.setAngle(0.4));
+      
 
-      xboxController.leftTrigger().onTrue(elevatorSubsys.setHeight(0));
-      // xboxController.a().onTrue(pivotSubsys.testPivot(1.5));
-      // xboxController.b().onTrue(pivotSubsys.testPivot(-1.5));
-      xboxController.x().onTrue(pivotSubsys.stopPivot());
+
+      xboxController.a().onTrue(pivotSubsys.setAngle(-50));
+      xboxController.x().onTrue(intakeSubsys.runIntake(0.05));
+      xboxController.b().onTrue(pivotSubsys.setAngle(80));
+      xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
+      //xboxController.y().onTrue(superstructure.scoreL4CoralCommand());
+      //xboxController.a().onTrue(superstructure.score(elevatorHeight.getSelected()));
+
+      //xboxController.b().onTrue(superstructure.getCoral());
+      // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
+      // xboxController.y().onFalse(intakeSubsys.stopIntake());
+      xboxController.rightBumper().onTrue(superstructure.getCoral());
+
+
+      joystick.button(5).onTrue(superstructure.scoreL1CoralCommand());
+      joystick.button(6).onTrue(superstructure.scoreL2CoralCommand());
+      joystick.button(3).onTrue(superstructure.scoreL3CoralCommand());
+      joystick.button(4).onTrue(superstructure.scoreL4CoralCommand());
+      joystick.trigger().onTrue(superstructure.score());
       //xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
 
     //bxController.x().onTrue(intakeSubsys.stopIntake());
+      xboxController.leftTrigger().whileTrue(
+        drivetrainSubsys.applyRequest(() -> drive.withVelocityX(0.1 *  polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
+
+            .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(0.1 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative
+                                                                              // X (left)
 
       // reset the field-centric heading on left bumper press
       xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
@@ -164,36 +176,10 @@ public class RobotContainer {
     }
   }
 
-  public void laserCanInit() {
-    lc = new LaserCan(0);
-    // Optionally initialise the settings of the LaserCAN, if you haven't already
-    // done so in GrappleHook
-    try {
-      lc.setRangingMode(LaserCan.RangingMode.SHORT);
-      lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-      lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
-    } catch (ConfigurationFailedException e) {
-      System.out.println("Configuration failed! " + e);
-    }
+  public void startPose(){
+     drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);
   }
 
-  public void laserCanPeriodic() {
-    LaserCan.Measurement measurement = lc.getMeasurement();
-    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-      System.out.println("The target is " + measurement.distance_mm + "mm away!");
-    } else {
-      System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
-      // You can still use distance_mm in here, if you're ok tolerating a clamped
-      // value or an unreliable measurement.
-    }
-  }
-
-  /**
-   * Function that returns the currently selected autonomous routine in the
-   * SendableChooser.
-   * 
-   * @return Currently selected autonomous routine.
-   */
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
@@ -207,11 +193,11 @@ public class RobotContainer {
   }
 
   public void resetSimulation() {
-    // vision.reset();
+     vision.reset();
   }
 
-  public void updateSimulation() {
-    // vision.update(getPose());
+  public void updateVision() {
+     vision.update(getPose());
   }
 
 }

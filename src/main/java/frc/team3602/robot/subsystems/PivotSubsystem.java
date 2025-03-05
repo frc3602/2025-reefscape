@@ -11,6 +11,8 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -73,6 +76,8 @@ public class PivotSubsystem extends SubsystemBase {
 
     private double simTotalEffort = 0.0;
 
+    public SendableChooser<Double> pivotAngle = new SendableChooser<>();
+
     // Simulation
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), PivotConstants.gearing,
             SingleJointedArmSim.estimateMOI(PivotConstants.lengthMeters, PivotConstants.massKg), 0.2, -12, 24,
@@ -112,15 +117,15 @@ public class PivotSubsystem extends SubsystemBase {
 
     // CALCULATIONS
     private double getEncoderDegrees() {
-        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0); //absoluteOffset
+        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0) - 210; //absoluteOffset
     }
 
-    public boolean isNearGoalAngle() {
+    public boolean isNearGoal() {
         return MathUtil.isNear(setAngle, getEncoderDegrees(), PivotConstants.tolerance);
     }
 
     public boolean isStowed(){
-        return getEncoderDegrees() < 37.0;
+        return getEncoderDegrees() < 35;
     }
 
     public double simGetEffort() {
@@ -139,8 +144,14 @@ public class PivotSubsystem extends SubsystemBase {
             simPivotEncoder = pivotViz.getAngle();
             pivotMotor.setVoltage(simGetEffort());
         } else {
-            pivotMotor.setVoltage(getEffort());
+            if(getEncoderDegrees()  > -100){
+                pivotMotor.setVoltage(getEffort());
+            }else{
+                pivotMotor.setVoltage(-3);
+            }
         }
+
+       
 
         // Update Simulation
         pivotSim.setInput(simPivotMotor.getMotorVoltage());
@@ -155,27 +166,35 @@ public class PivotSubsystem extends SubsystemBase {
         // simPivotController.calculate(simPivotEncoder, setAngle));
 
         SmartDashboard.putNumber("Pivot Angle Deg", setAngle);
-        SmartDashboard.putNumber("new pivot encoder", getEncoderDegrees());
-
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Pivot FFE Effort",
-                pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
+        SmartDashboard.putNumber("Pivot FFE Effort", pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
         SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getEncoderDegrees(), setAngle));
-        // SmartDashboard.putBoolean("Pivot encoder connection",
-        // pivotEncoder.isConnected());
-        SmartDashboard.putNumber("Pivot Duty Encoder", pivotEncoder.getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("Pivot Encoder with offsets", getEncoderDegrees());
-        SmartDashboard.putBoolean("pivot near goal", isNearGoalAngle());
+        SmartDashboard.putNumber("Pivot Encoder ", getEncoderDegrees());
+        SmartDashboard.putBoolean("pivot near goal", isNearGoal());
     }
 
-    public double offset;
 
     private void configPivotSubsys(){
-        
-        
+        // SmartDashboard.putData("pivot angle", pivotAngle);
+        // pivotAngle.setDefaultOption("high stow angle", PivotConstants.highStowAngle);
+        // pivotAngle.setDefaultOption("low stow angle", PivotConstants.lowStowAngle);
+        // pivotAngle.addOption("coral intake angle", PivotConstants.coralIntakeAngle);
+        // pivotAngle.addOption("level 4 score angle", PivotConstants.scoreL4Angle);
+        // pivotAngle.addOption("level 1-3 score angle", PivotConstants.scoreCoralAngle);
 
+        //encoder configs
+        var magnetSensorConfigs = new MagnetSensorConfigs();
+        magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = 1;
+        pivotEncoder.getConfigurator().apply(magnetSensorConfigs);
+        
         // Motor configs
         var motorConfigs = new MotorOutputConfigs();
+        var limitConfigs = new CurrentLimitsConfigs();
+
+        limitConfigs.StatorCurrentLimit = 35;
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        pivotMotor.getConfigurator().apply(limitConfigs);
 
         motorConfigs.NeutralMode = NeutralModeValue.Coast;
         pivotMotor.getConfigurator().apply(motorConfigs);

@@ -2,11 +2,14 @@ package frc.team3602.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.lang.ModuleLayer.Controller;
 import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -32,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
 
@@ -399,7 +403,25 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private void configDrivetrainSubsys() {
     try {
       var config = RobotConfig.fromGUISettings();
-
+      var moduleZeroDrive = this.getModules()[0].getDriveMotor().getConfigurator();
+      var moduleOneDrive = this.getModules()[1].getDriveMotor().getConfigurator();
+      var moduleTwoDrive = this.getModules()[2].getDriveMotor().getConfigurator();
+      var moduleThreeDrive = this.getModules()[3].getDriveMotor().getConfigurator();
+  
+      var moduleZeroSteer = this.getModules()[0].getSteerMotor().getConfigurator();
+      var moduleOneSteer = this.getModules()[1].getSteerMotor().getConfigurator();
+      var moduleTwoSteer = this.getModules()[2].getSteerMotor().getConfigurator();
+      var moduleThreeSteer = this.getModules()[3].getSteerMotor().getConfigurator();
+  
+      moduleZeroDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
+      moduleOneDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
+      moduleTwoDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
+      moduleThreeDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
+  
+      moduleZeroSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
+      moduleOneSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
+      moduleTwoSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
+      moduleThreeSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
       AutoBuilder.configure(
           () -> getState().Pose,
           this::resetPose,
