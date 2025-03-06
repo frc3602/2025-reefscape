@@ -11,8 +11,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveRequest.ApplyChassisSpeeds;
-import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -25,7 +23,6 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -446,16 +443,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     } catch (Exception ex) {
       DriverStation.reportError("something may or may not be broken, idk", ex.getStackTrace());
     }
-  }
-
-  public Command driveToPose(Pose2d pose) {
-    return run(() -> {
-      double vx = 0.0;
-      double vy = 0.0;
-      double ω = 0.0;
-
-      this.setControl(new ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(vx, vy, ω)));
-    });
   }
 
 }

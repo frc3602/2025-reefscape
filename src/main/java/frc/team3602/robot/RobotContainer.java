@@ -221,7 +221,7 @@ public class RobotContainer {
     return new Pose2d(
       ((finalRadius * Math.cos(Math.acos(nearestPose.getX() / initialRadius) + modAngle)) + reefCenterPose.getX()),
       ((finalRadius * Math.sin(Math.asin(nearestPose.getY() / initialRadius) + modAngle)) + reefCenterPose.getY()),
-      new Rotation2d(-nearestPose.getRotation().getRadians())
+      new Rotation2d(nearestPose.getRotation().getRadians() + Math.PI)
     );
   }
 }
