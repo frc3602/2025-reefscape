@@ -1,0 +1,103 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left to c6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepElevL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepPivotL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "c6 fine tune"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "c6 back away"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepElevCoralIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepPivotCoralIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "c6-left station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left station-c5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepElevL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepPivotL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "c5 fine tune"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Autons With Commands",
+  "choreoAuto": false
+}
