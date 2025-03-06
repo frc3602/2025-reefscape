@@ -9,23 +9,11 @@
           "data": {
             "pathName": "s2 to c5"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "c5 to g1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "g1 to c5"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Probably Wont Use",
+  "folder": null,
   "choreoAuto": false
 }
