@@ -16,6 +16,8 @@ import au.grapplerobotics.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -166,7 +168,7 @@ public class RobotContainer {
       
 
 
-      xboxController.a().onTrue(pivotSubsys.setAngle(-50));
+      xboxController.a().onTrue(drivetrainSubsys.driveToPose(getPose().plus(new Transform2d(new Translation2d(-1.0, -1.0), new Rotation2d(0))))).onFalse(drivetrainSubsys.applyRequest(() -> brake));
       xboxController.x().onTrue(intakeSubsys.runIntake(0.05));
       xboxController.b().onTrue(pivotSubsys.setAngle(80));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
