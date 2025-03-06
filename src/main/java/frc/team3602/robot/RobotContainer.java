@@ -8,7 +8,7 @@ package frc.team3602.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
-
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.*;
 
+import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.Constants.VisionConstants;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
 import frc.team3602.robot.generated.TunerConstants;
@@ -82,6 +83,29 @@ public class RobotContainer {
   private SendableChooser<Double> polarityChooser = new SendableChooser<>();
 
   public RobotContainer() {
+
+     //auton commands
+    NamedCommands.registerCommand("elevDown", elevatorSubsys.setHeight(ElevatorConstants.down));
+    NamedCommands.registerCommand("prepElevL4", superstructure.autonPrepElevL4());
+    NamedCommands.registerCommand("prepElevL3", superstructure.autonPrepElevL3());
+    NamedCommands.registerCommand("prepElevL2", superstructure.autonPrepElevL2());
+    NamedCommands.registerCommand("prepElevL1", superstructure.autonPrepElevL1());
+    NamedCommands.registerCommand("prepElevCoralIntake", superstructure.autonPrepElevCoralIntake());
+
+    NamedCommands.registerCommand("prepPivotL4", superstructure.autonPrepPivotL4());
+    NamedCommands.registerCommand("prepPivotReef", superstructure.autonPrepPivotReef());
+    NamedCommands.registerCommand("prepPivotCoralIntake", superstructure.autonPrepPivotCoralIntake());
+    NamedCommands.registerCommand("prepPivotAlgae", superstructure.autonPrepPivotAlgae());
+
+    NamedCommands.registerCommand("shoot", superstructure.autonShoot());
+    NamedCommands.registerCommand("intake", superstructure.autonIntake());
+    
+    NamedCommands.registerCommand("grabAlgaeHigh", superstructure.autonGrabAlgaeHigh());
+    NamedCommands.registerCommand("grabAlgaeLow", superstructure.autonGrabAlgaeLow());
+    NamedCommands.registerCommand("holdAlgae", superstructure.autonHoldAlgae());
+
+
+    drivetrainSubsys.configDrivetrainSubsys();
     autoChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Drive Polarity", polarityChooser);
@@ -155,10 +179,10 @@ public class RobotContainer {
       xboxController.rightBumper().onTrue(superstructure.getCoral());
 
 
-      joystick.button(5).onTrue(superstructure.scoreL1CoralCommand());
-      joystick.button(6).onTrue(superstructure.scoreL2CoralCommand());
-      joystick.button(3).onTrue(superstructure.scoreL3CoralCommand());
-      joystick.button(4).onTrue(superstructure.scoreL4CoralCommand());
+      joystick.button(5).onTrue(superstructure.scoreL1Coral());
+      joystick.button(6).onTrue(superstructure.scoreL2Coral());
+      joystick.button(3).onTrue(superstructure.scoreL3Coral());
+      joystick.button(4).onTrue(superstructure.scoreL4Coral());
       joystick.trigger().onTrue(superstructure.score());
       //xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
 

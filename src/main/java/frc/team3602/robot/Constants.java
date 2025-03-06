@@ -93,6 +93,7 @@ public final class Constants {
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
     public final static double coralSpeed = 0.7;
+    public final static double algaeSpeed = -0.5;
   }
 
   public final class PivotConstants {
@@ -107,6 +108,7 @@ public final class Constants {
     public final static double highStowAngle = 30;//35
     public final static double scoreL4Angle = 89;
     public final static double scoreCoralAngle = 80;
+    public final static double intakeAlgaeAngle = -50;
 
 
     // PID Constants

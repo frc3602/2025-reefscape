@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
-import frc.team3602.robot.Direction;
+// import frc.team3602.robot.Direction;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -144,7 +144,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    configDrivetrainSubsys();
   }
 
   /**
@@ -170,7 +169,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    configDrivetrainSubsys();
   }
 
   /**
@@ -211,7 +209,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    configDrivetrainSubsys();
   }
 
   /**
@@ -399,36 +396,10 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
             }
     }
 
-    public Command navigateToCoralReef(Direction direction) {
-      
-
-      return runOnce(() -> {
-          
-      });
-  }
-
-  private void configDrivetrainSubsys() {
+  public void configDrivetrainSubsys() {
     try {
       var config = RobotConfig.fromGUISettings();
-      var moduleZeroDrive = this.getModules()[0].getDriveMotor().getConfigurator();
-      var moduleOneDrive = this.getModules()[1].getDriveMotor().getConfigurator();
-      var moduleTwoDrive = this.getModules()[2].getDriveMotor().getConfigurator();
-      var moduleThreeDrive = this.getModules()[3].getDriveMotor().getConfigurator();
-  
-      var moduleZeroSteer = this.getModules()[0].getSteerMotor().getConfigurator();
-      var moduleOneSteer = this.getModules()[1].getSteerMotor().getConfigurator();
-      var moduleTwoSteer = this.getModules()[2].getSteerMotor().getConfigurator();
-      var moduleThreeSteer = this.getModules()[3].getSteerMotor().getConfigurator();
-  
-      moduleZeroDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
-      moduleOneDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
-      moduleTwoDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
-      moduleThreeDrive.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(40));
-  
-      moduleZeroSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
-      moduleOneSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
-      moduleTwoSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
-      moduleThreeSteer.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
+      
       AutoBuilder.configure(
           () -> getState().Pose,
           this::resetPose,
@@ -452,9 +423,9 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     return run(() -> {
       double vx = 0.0;
       double vy = 0.0;
-      double ω = 0.0;
+      double w = 0.0;
 
-      this.setControl(new ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(vx, vy, ω)));
+      this.setControl(new ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(vx, vy, w)));
     });
   }
 
