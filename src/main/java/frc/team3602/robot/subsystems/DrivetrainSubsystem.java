@@ -2,14 +2,12 @@ package frc.team3602.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.lang.ModuleLayer.Controller;
 import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -35,9 +33,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
+import frc.team3602.robot.Direction;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -398,7 +396,13 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
             }
     }
 
+    public Command navigateToCoralReef(Direction direction) {
+      
 
+      return runOnce(() -> {
+          
+      });
+  }
 
   private void configDrivetrainSubsys() {
     try {

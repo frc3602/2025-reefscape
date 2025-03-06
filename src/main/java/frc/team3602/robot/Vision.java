@@ -11,18 +11,11 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.simulation.PhotonCameraSim;
-import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-
-import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.team3602.robot.Constants.VisionConstants.*;
@@ -35,17 +28,17 @@ public class Vision {
   private final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
   private final PhotonCamera mod1Camera = new PhotonCamera("mod1Cam");
   private final PhotonCamera mod2Camera = new PhotonCamera("mod2Cam");
- // private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
+  private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
 
     /* Field Simulation */
     private final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2025ReefscapeWelded.loadAprilTagLayoutField();
     public final VisionSystemSim visionSim = new VisionSystemSim("ALL_CAMS");
-        /* pose estimators */
-        private final PhotonPoseEstimator photonPoseEstimator0 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod0CameraTransform);
-        private final PhotonPoseEstimator photonPoseEstimator1 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod1CameraTransform);
-        private final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod2CameraTransform);
-       // private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
-    //
+
+    /* Pose Estimators */
+    private final PhotonPoseEstimator photonPoseEstimator0 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod0CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator1 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod1CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod2CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
 
     // /* Camera Simulation */
     // private final SimCameraProperties cameraProperties = new SimCameraProperties();
@@ -55,13 +48,13 @@ public class Vision {
     //   private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
 
 
- /*vision constructor */      
+    /* Vision Constructor */      
     public Vision(DrivetrainSubsystem driveSubsys) {
         this.driveSubsys = driveSubsys;
         photonPoseEstimator0.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimator1.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        //photonPoseEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        photonPoseEstimator3.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         // visionSim.addAprilTags(kFieldLayout);
         // visionSim.addCamera(camera0Sim, kRobotToMod0CameraTransform);
@@ -75,11 +68,7 @@ public class Vision {
         // cameraProperties.setAvgLatencyMs(35.0);
         // cameraProperties.setLatencyStdDevMs(5);
         // cameraProperties.setCalibration(kWidthOfCamera, kHeightOfCamera, kCameraFOV);
-        
-   
     }
-
-
 
     public void reset() {
         visionSim.clearAprilTags();
@@ -136,26 +125,24 @@ public class Vision {
 
     }
 
-    // private double lastEstimateTimestampMod3 = 0.0;
-    // private Pose2d mod3Pose2d = new Pose2d();
+    private double lastEstimateTimestampMod3 = 0.0;
+    private Pose2d mod3Pose2d = new Pose2d();
 
-    // public Optional<EstimatedRobotPose> getEstimatedPoseMod3(Pose2d prevEstimatedRobotPose){
-    //     double latestTimestamp = mod3Camera.getLatestResult().getTimestampSeconds();
-    //     boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod3) > 1e-5;
+    public Optional<EstimatedRobotPose> getEstimatedPoseMod3(Pose2d prevEstimatedRobotPose){
+        double latestTimestamp = mod3Camera.getLatestResult().getTimestampSeconds();
+        boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod3) > 1e-5;
 
-    //     if (newResult){
-    //         lastEstimateTimestampMod3 = latestTimestamp;
-    //     }
+        if (newResult){
+            lastEstimateTimestampMod3 = latestTimestamp;
+        }
 
-    //     photonPoseEstimator3.setReferencePose(prevEstimatedRobotPose);
-    //     mod3Pose2d = photonPoseEstimator3.update(mod3Camera.getLatestResult()).get().estimatedPose.toPose2d();
-    //     return photonPoseEstimator3.update(mod3Camera.getLatestResult());
+        photonPoseEstimator3.setReferencePose(prevEstimatedRobotPose);
+        mod3Pose2d = photonPoseEstimator3.update(mod3Camera.getLatestResult()).get().estimatedPose.toPose2d();
+        return photonPoseEstimator3.update(mod3Camera.getLatestResult());
 
-    // }
+    }
 
   public void update(Pose2d pose) {
-
-
     try {
         getEstimatedPoseMod0(pose);
         driveSubsys.addVisionMeasurement(mod0Pose2d, lastEstimateTimestampMod0);
@@ -180,18 +167,16 @@ public class Vision {
         Commands.print("mod2 pose failed");
     } 
    
-    // try {
-    //     getEstimatedPoseMod3(pose);
-    //     driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
-    // } catch (Exception e) {
-    //     //mod3Pose2d = pose;
-    //     Commands.print("mod3 pose failed");
-    // }    
+    try {
+         getEstimatedPoseMod3(pose);
+         driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
+    } catch (Exception e) {
+         //mod3Pose2d = pose;
+         Commands.print("mod3 pose failed");
+    }    
    
 
-        visionSim.update(pose);
-        visionSim.getDebugField();
-
-
+    visionSim.update(pose);
+    visionSim.getDebugField();
   }
 }

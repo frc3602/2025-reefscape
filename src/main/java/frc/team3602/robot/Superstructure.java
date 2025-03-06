@@ -6,14 +6,10 @@
 
 package frc.team3602.robot;
 
-import java.util.function.DoubleSupplier;
-
-import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.Constants.IntakeConstants;
 import frc.team3602.robot.Constants.PivotConstants;
-import frc.team3602.robot.scoring.CoralScoreDescriptor;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
@@ -152,8 +148,4 @@ public class Superstructure extends SubsystemBase{
             intakeSubsys.stopIntake()
         );
     }
-
-
-
-
 }

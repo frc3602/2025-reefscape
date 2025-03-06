@@ -15,28 +15,29 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import au.grapplerobotics.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.*;
 
-import frc.team3602.robot.Constants.ElevatorConstants;
+import frc.team3602.robot.Constants.VisionConstants;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
 import frc.team3602.robot.generated.TunerConstants;
-import frc.team3602.robot.scoring.CoralScoreDescriptor;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
+import static frc.team3602.robot.Constants.VisionConstants.kFieldLayout;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class RobotContainer {
 
@@ -176,7 +177,7 @@ public class RobotContainer {
     }
   }
 
-  public void startPose(){
+  public void startPose() {
      drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);
   }
 
@@ -200,4 +201,27 @@ public class RobotContainer {
      vision.update(getPose());
   }
 
+  public Pose2d getNearestCoralScoringPose(Direction direction) {
+    List<Pose2d> tagPoses = Collections.emptyList();
+
+    int sideModifier = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 0 : 11;
+
+    for (int i = (22 - sideModifier); i <= (17 - sideModifier); i--) {
+      tagPoses.add(VisionConstants.kFieldLayout.getTagPose(i).get().toPose2d());
+    }
+
+    Pose2d reefCenterPose = new Pose2d(4.026, ((DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 4.489 : (kFieldLayout.getFieldLength() - 4.489)), new Rotation2d(0.0));
+    Pose2d nearestPose = getPose().nearest(tagPoses);
+    nearestPose = nearestPose.transformBy(nearestPose.minus(reefCenterPose));
+
+    double initialRadius = 0.832;
+    double finalRadius = initialRadius + 0.5;
+    double modAngle = ((direction == Direction.Left) ? -1.0 : 1.0) * Math.atan(0.162 / finalRadius);
+
+    return new Pose2d(
+      ((finalRadius * Math.cos(Math.acos(nearestPose.getX() / initialRadius) + modAngle)) + reefCenterPose.getX()),
+      ((finalRadius * Math.sin(Math.asin(nearestPose.getY() / initialRadius) + modAngle)) + reefCenterPose.getY()),
+      new Rotation2d(nearestPose.getRotation().getRadians() + Math.PI)
+    );
+  }
 }
