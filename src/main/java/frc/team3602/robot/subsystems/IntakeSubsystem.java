@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
         var motorConfigs = new MotorOutputConfigs();
         var limitConfigs = new CurrentLimitsConfigs();
 
-        limitConfigs.StatorCurrentLimit = 20;
+        limitConfigs.StatorCurrentLimit = 30;
         limitConfigs.StatorCurrentLimitEnable = true;
 
         intakeMotor.getConfigurator().apply(limitConfigs);
@@ -64,9 +64,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     /* Fundamental Commands */
     public Command runIntake(Double speed) {
-        return runOnce(() ->{
+        return runEnd(() ->{
             setSpeed = -speed;
             intakeMotor.set(-speed);
+        }, () ->{
+            setSpeed = 0;
+            intakeMotor.set(0);
         });
     }
 

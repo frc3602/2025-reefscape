@@ -93,7 +93,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("prepElevL2", superstructure.autonPrepElevL2());
     NamedCommands.registerCommand("prepElevL1", superstructure.autonPrepElevL1());
     NamedCommands.registerCommand("prepElevCoralIntake", superstructure.autonPrepElevCoralIntake());
-
+    NamedCommands.registerCommand("down", superstructure.down());
     NamedCommands.registerCommand("prepPivotL4", superstructure.autonPrepPivotL4());
     NamedCommands.registerCommand("prepPivotReef", superstructure.autonPrepPivotReef());
     NamedCommands.registerCommand("prepPivotCoralIntake", superstructure.autonPrepPivotCoralIntake());
@@ -164,16 +164,10 @@ public class RobotContainer {
       // joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
       // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
     } else {
-
-      
-
-
-      xboxController.a().onTrue(drivetrainSubsys.driveToPose(getPose().plus(new Transform2d(new Translation2d(-1.0, -1.0), new Rotation2d(0))))).onFalse(drivetrainSubsys.applyRequest(() -> brake));
-      xboxController.x().onTrue(intakeSubsys.runIntake(0.05));
+      // xboxController.a().onTrue(drivetrainSubsys.driveToPose(getPose().plus(new Transform2d(new Translation2d(-1.0, -1.0), new Rotation2d(0))))).onFalse(drivetrainSubsys.applyRequest(() -> brake));
+      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.b().onTrue(pivotSubsys.setAngle(80));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
-      //xboxController.y().onTrue(superstructure.scoreL4CoralCommand());
-      //xboxController.a().onTrue(superstructure.score(elevatorHeight.getSelected()));
 
       //xboxController.b().onTrue(superstructure.getCoral());
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
@@ -186,6 +180,8 @@ public class RobotContainer {
       joystick.button(3).onTrue(superstructure.scoreL3Coral());
       joystick.button(4).onTrue(superstructure.scoreL4Coral());
       joystick.trigger().onTrue(superstructure.score());
+      joystick.button(2).onTrue(superstructure.down());
+      joystick.button(11).onTrue(superstructure.getCoral());
       //xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
 
     //bxController.x().onTrue(intakeSubsys.stopIntake());

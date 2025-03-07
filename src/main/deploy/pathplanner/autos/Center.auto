@@ -3,7 +3,38 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": []
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "strait one"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepElevL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepPivotL4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        }
+      ]
     }
   },
   "resetOdom": true,

@@ -87,7 +87,7 @@
              intakeSubsys.stopIntake(),
              Commands.print("start seq"),
              pivotSubsys.setAngle(PivotConstants.lowStowAngle),
-             Commands.waitUntil(() -> pivotSubsys.isStowed()),
+             Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
              Commands.print("pivot in stow angle"),
              elevatorSubsys.setHeight(ElevatorConstants.scoreLevelTwo),
              Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
@@ -163,9 +163,7 @@
          //     );
          // } else {
              return Commands.sequence(
-                 intakeSubsys.runIntake(IntakeConstants.coralSpeed).until(() -> ! intakeSubsys.sensorIsTriggered()),
-                 
- 
+
                  pivotSubsys.setAngle(PivotConstants.lowStowAngle),
                  Commands.waitUntil(()-> pivotSubsys.isNearGoal()),
  
@@ -173,7 +171,7 @@
  
                  pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
                  Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                 intakeSubsys.runIntake(0.2).until(() -> intakeSubsys.sensorIsTriggered())
+                 intakeSubsys.runIntake(0.15).until(() -> intakeSubsys.sensorIsTriggered())
  
  
              );
@@ -348,6 +346,7 @@
  
      public Command autonShoot(){
          return Commands.sequence(
+            Commands.print("Uhh ohhh"),
              intakeSubsys.runIntake(1.0).until(() -> !intakeSubsys.sensorIsTriggered())
          );
      }

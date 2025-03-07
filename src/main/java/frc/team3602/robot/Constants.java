@@ -92,7 +92,7 @@ public final class Constants {
 
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
-    public final static double coralSpeed = 0.7;
+    public final static double coralSpeed = 1.0;
     public final static double algaeSpeed = -0.5;
   }
 
@@ -103,7 +103,8 @@ public final class Constants {
 
     public final static double tolerance = 5; // TODO - this is random still
 
-    public final static double coralIntakeAngle = 100;
+    public final static double coralIntakeAngle = 99;//100
+    
     public final static double lowStowAngle = 87;//35
     public final static double highStowAngle = 30;//35
     public final static double scoreL4Angle = 89;
