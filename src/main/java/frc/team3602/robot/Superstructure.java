@@ -185,7 +185,7 @@
  
              elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeHigh),
              pivotSubsys.setAngle(-50),
-             intakeSubsys.runIntake(IntakeConstants.algaeSpeed)
+             intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed)
          );
      }
      public Command grabAlgaeLow(){
@@ -195,7 +195,7 @@
  
              elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeLow),
              pivotSubsys.setAngle(-50),
-             intakeSubsys.runIntake(IntakeConstants.algaeSpeed)
+             intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed)
          );
      }
  
@@ -205,7 +205,23 @@
              elevatorSubsys.setHeight(0.1)
          );
      }
- 
+     
+     public Command setAlgeaProcesser(){
+        return Commands.parallel(
+            intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed),
+         Commands.sequence(
+
+            elevatorSubsys.setHeight(ElevatorConstants.scoreAlgaeProcesser),
+            pivotSubsys.setAngle(PivotConstants.scoreAlgaeProcesserAngle)
+        )
+        );
+     }
+
+     public Command scoreAlgea(){
+        return Commands.sequence(
+        intakeSubsys.runIntake(IntakeConstants.scorAlgeaSpeed)
+        );
+     }
     // private boolean algaeTaken = false;
  
      public Command intakeAlgae() {
@@ -218,7 +234,7 @@
                  elevatorSubsys.setHeight(0.1),
  
                  pivotSubsys.setAngle(PivotConstants.intakeAlgaeAngle),
-                 intakeSubsys.runIntake(IntakeConstants.algaeSpeed)
+                 intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed)
              );
         } else {
              //algaeTaken = false;
@@ -229,7 +245,7 @@
                  Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
  
                  pivotSubsys.setAngle(PivotConstants.intakeAlgaeAngle),
-                 intakeSubsys.runIntake(IntakeConstants.algaeSpeed)
+                 intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed)
              );
            
          }
@@ -272,9 +288,9 @@
      //AUTONS COMMANDS
      public Command autonPrepElevL4() {
          return Commands.sequence(
-             pivotSubsys.setAngle(PivotConstants.highStowAngle),
+             pivotSubsys.setAngle(PivotConstants.lowStowAngle),
              Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-             elevatorSubsys.setHeight(ElevatorConstants.scoreLevelFour)
+             elevatorSubsys.setHeight(31.0)//ElevatorConstants.scoreLevelFour)
          );
      }
  
@@ -324,7 +340,7 @@
  
      public Command autonPrepPivotL4(){
          return Commands.sequence(
-         pivotSubsys.setAngle(PivotConstants.scoreL4Angle),
+         pivotSubsys.setAngle(88),//PivotConstants.scoreL4Angle),
          Commands.waitUntil(() -> pivotSubsys.isNearGoal())
          );
      }
@@ -332,8 +348,8 @@
      public Command autonPrepPivotCoralIntake(){
          return Commands.sequence(
              pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
-             Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-             intakeSubsys.runIntake(0.2).until(() -> intakeSubsys.sensorIsTriggered())
+             Commands.waitUntil(() -> pivotSubsys.isNearGoal())
+             //intakeSubsys.runIntake(0.2)//.until(() -> intakeSubsys.sensorIsTriggered())
              );
      }
  
@@ -344,16 +360,16 @@
          );
      }
  
+
      public Command autonShoot(){
          return Commands.sequence(
-            Commands.print("Uhh ohhh"),
              intakeSubsys.runIntake(1.0).until(() -> !intakeSubsys.sensorIsTriggered())
          );
      }
  
      public Command autonIntake(){
          return Commands.sequence(
-             intakeSubsys.runIntake(1.0).until(() -> !intakeSubsys.sensorIsTriggered())
+             intakeSubsys.runIntake(0.2).until(() -> intakeSubsys.sensorIsTriggered())
          );
      }
  
@@ -367,7 +383,7 @@
  
              elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeHigh),
              pivotSubsys.setAngle(-50),
-             intakeSubsys.runIntake(IntakeConstants.algaeSpeed)
+             intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed)
          );
      }
      public Command autonGrabAlgaeLow(){
@@ -377,7 +393,7 @@
  
              elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeLow),
              pivotSubsys.setAngle(-50),
-             intakeSubsys.runIntake(IntakeConstants.algaeSpeed)
+             intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed)
          );
      }
  

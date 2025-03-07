@@ -59,10 +59,10 @@ public final class Constants {
     public final static double down = 0.1;
 
     //the rest of these are bs numbers still
-    public final static double scoreAlgaeProcesser = 0.5;
+    public final static double scoreAlgaeProcesser = 2;
     public final static double scoreAlgaeBarge = 4;
-    public final static double removeAlgaeHigh = 2.7;
-    public final static double removeAlgaeLow = 2.2;
+    public final static double removeAlgaeHigh = 10;
+    public final static double removeAlgaeLow = 20;
 
     // PID Constants
     public final static double KP = 0.6;
@@ -93,7 +93,8 @@ public final class Constants {
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
     public final static double coralSpeed = 1.0;
-    public final static double algaeSpeed = -0.5;
+    public final static double intakeAlgaeSpeed = -0.3;
+    public final static double scorAlgeaSpeed = 0.3;
   }
 
   public final class PivotConstants {
@@ -103,17 +104,18 @@ public final class Constants {
 
     public final static double tolerance = 5; // TODO - this is random still
 
-    public final static double coralIntakeAngle = 99;//100
+    public final static double coralIntakeAngle = 101;//100
     
-    public final static double lowStowAngle = 87;//35
+    public final static double lowStowAngle = 86;//87
     public final static double highStowAngle = 30;//35
     public final static double scoreL4Angle = 89;
     public final static double scoreCoralAngle = 80;
     public final static double intakeAlgaeAngle = -50;
+    public final static double scoreAlgaeProcesserAngle = -90;
 
 
     // PID Constants
-    public final static double KP = 0.05;//.056
+    public final static double KP = 0.056;//.056 //.05
     public final static double KI = 0.0;
     public final static double KD = 0;
 

@@ -185,7 +185,11 @@ public class RobotContainer {
       joystick.button(4).onTrue(superstructure.scoreL4Coral());
       joystick.trigger().onTrue(superstructure.score());
       joystick.button(2).onTrue(superstructure.down());
-      joystick.button(11).onTrue(superstructure.getCoral());
+      joystick.button(11).onTrue(superstructure.grabAlgaeHigh());
+      joystick.button(12).onTrue(superstructure.grabAlgaeLow());
+
+      joystick.button(8).onTrue(superstructure.scoreAlgea());
+      joystick.button(10).onTrue(superstructure.setAlgeaProcesser());
       //xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
 
     //bxController.x().onTrue(intakeSubsys.stopIntake());
@@ -193,7 +197,7 @@ public class RobotContainer {
         drivetrainSubsys.applyRequest(() -> drive.withVelocityX(0.1 *  polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
 
             .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(0.1 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative
+            .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative
                                                                               // X (left)
 
       // reset the field-centric heading on left bumper press

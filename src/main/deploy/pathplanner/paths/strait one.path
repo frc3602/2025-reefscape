@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.274684426229509,
-        "y": 4.274743852459015
+        "x": 6.0691574910119295,
+        "y": 4.1433049783126865
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.778073770491804,
-        "y": 4.162858606557377
+        "x": 5.5,
+        "y": 4.18
       },
       "prevControl": {
-        "x": 6.450823770491804,
-        "y": 4.201858606557376
+        "x": 6.138539108727854,
+        "y": 4.103644054209367
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +29,21 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.723835246455099,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.7,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -42,7 +56,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.7000248376961
+    "rotation": -177.0
   },
   "reversed": false,
   "folder": "More Commonly Used",
