@@ -22,6 +22,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -423,11 +424,14 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     }
   }
   
+  public boolean isNearPose(Pose2d pose) {
+    return MathUtil.isNear(this.getState().Pose.getX(), pose.getX(), 0.01) && MathUtil.isNear(this.getState().Pose.getY(), pose.getY(), 0.01) && MathUtil.isNear(this.getState().Pose.getRotation().getDegrees(), pose.getRotation().getDegrees(), 1.0 / 60.0);
+  }
 
   public Command driveToPose(Pose2d pose) {
     return run(() -> {
-      double vx = translationController.calculate(pose.getX() - this.getState().Pose.getX(), 0.0);
-      double vy = translationController.calculate(pose.getY() - this.getState().Pose.getY(), 0.0);
+      double vx = MathUtil.isNear(this.getState().Pose.getX(), pose.getX(), 0.01) ? 0.0 : 0.2;
+      double vy = MathUtil.isNear(this.getState().Pose.getY(), pose.getY(), 0.01) ? 0.0 : 0.2;
       double w = 0.0;
 
       this.setControl(new ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(vx, vy, w)));
