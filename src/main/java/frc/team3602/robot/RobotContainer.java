@@ -169,7 +169,7 @@ public class RobotContainer {
 
 
       xboxController.a().onTrue(drivetrainSubsys.driveToPose(getPose().plus(new Transform2d(new Translation2d(-1.0, -1.0), new Rotation2d(0)))));
-      xboxController.x().onTrue(intakeSubsys.runIntake(0.05));
+      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.b().onTrue(pivotSubsys.setAngle(80));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
