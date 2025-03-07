@@ -228,7 +228,8 @@ public class RobotContainer {
   }
 
   public Command testPosing() {
-    return drivetrainSubsys.driveToPose(getPose()).until(() -> driveTrainSubsys.isNearPose(getPose()))
+    Pose2d newPose = new Pose2d(getPose().getX() + 1, getPose().getY(), getPose().getRotation());
+    return drivetrainSubsys.driveToPose(newPose).until(() -> drivetrainSubsys.isNearPose(newPose));
   }
 
 
