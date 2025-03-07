@@ -168,7 +168,7 @@ public class RobotContainer {
       
 
 
-      xboxController.a().onTrue(drivetrainSubsys.driveToPose(getPose().plus(new Transform2d(new Translation2d(-1.0, -1.0), new Rotation2d(0)))));
+      xboxController.a().onTrue(testPosing());
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.b().onTrue(pivotSubsys.setAngle(80));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
@@ -226,6 +226,11 @@ public class RobotContainer {
   public void updateVision() {
      vision.update(getPose());
   }
+
+  public Command testPosing() {
+    return drivetrainSubsys.driveToPose(getPose()).until(() -> driveTrainSubsys.isNearPose(getPose()))
+  }
+
 
   public Pose2d getNearestCoralScoringPose(Direction direction) {
     List<Pose2d> tagPoses = Collections.emptyList();
