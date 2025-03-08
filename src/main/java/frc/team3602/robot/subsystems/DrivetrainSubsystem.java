@@ -423,19 +423,5 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
       DriverStation.reportError("something may or may not be broken, idk", ex.getStackTrace());
     }
   }
-  
-  public boolean isNearPose(Pose2d pose) {
-    return MathUtil.isNear(this.getState().Pose.getX(), pose.getX(), 0.01) && MathUtil.isNear(this.getState().Pose.getY(), pose.getY(), 0.01); // && MathUtil.isNear(this.getState().Pose.getRotation().getDegrees(), pose.getRotation().getDegrees(), 1.0);
-  }
-
-  public Command driveToPose(Pose2d pose) {
-    return run(() -> {
-      double vx = MathUtil.isNear(this.getState().Pose.getX(), pose.getX(), 0.05) ? 0.0 : 0.2;
-      double vy = MathUtil.isNear(this.getState().Pose.getY(), pose.getY(), 0.05) ? 0.0 : 0.2;
-      double w = 0.0; // TODO: Rotation
-
-      this.setControl(new ApplyRobotSpeeds().withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(vx, vy, w), this.getState().Pose.getRotation())));
-    });
-  }
 
 }

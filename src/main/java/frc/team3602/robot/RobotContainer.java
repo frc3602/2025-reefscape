@@ -15,10 +15,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import au.grapplerobotics.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,10 +33,6 @@ import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
-import static frc.team3602.robot.Constants.VisionConstants.kFieldLayout;
-
-import java.util.Collections;
-import java.util.List;
 
 public class RobotContainer {
 
@@ -50,6 +42,9 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.RobotCentric robocentricdDrive = new SwerveRequest.RobotCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -166,15 +161,12 @@ public class RobotContainer {
     } else {
 
       
-       xboxController.a().onTrue(pivotSubsys.setAngle(-50));
-      xboxController.b().onTrue(pivotSubsys.setAngle(0));
-      xboxController.x().onTrue(pivotSubsys.setAngle(87));
-      xboxController.y().onTrue(pivotSubsys.setAngle(101));
 
-      //xboxController.a().onTrue(testPosing());
-      // xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
-      // xboxController.b().onTrue(pivotSubsys.setAngle(80));
-      // xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
+
+      xboxController.a().onTrue(drivetrainSubsys.applyRequest(() -> robocentricdDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
+      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
+      xboxController.b().onTrue(pivotSubsys.setAngle(80));
+      xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
       //xboxController.b().onTrue(superstructure.getCoral());
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
@@ -234,33 +226,4 @@ public class RobotContainer {
      vision.update(getPose());
   }
 
-  public Command testPosing() {
-    Pose2d newPose = new Pose2d(getPose().getX() + 1, getPose().getY(), getPose().getRotation());
-    return drivetrainSubsys.driveToPose(newPose).until(() -> drivetrainSubsys.isNearPose(newPose));
-  }
-
-
-  public Pose2d getNearestCoralScoringPose(Direction direction) {
-    List<Pose2d> tagPoses = Collections.emptyList();
-
-    int sideModifier = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 0 : 11;
-
-    for (int i = (22 - sideModifier); i <= (17 - sideModifier); i--) {
-      tagPoses.add(VisionConstants.kFieldLayout.getTagPose(i).get().toPose2d());
-    }
-
-    Pose2d reefCenterPose = new Pose2d(4.026, ((DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 4.489 : (kFieldLayout.getFieldLength() - 4.489)), new Rotation2d(0.0));
-    Pose2d nearestPose = getPose().nearest(tagPoses);
-    nearestPose = nearestPose.transformBy(nearestPose.minus(reefCenterPose));
-
-    double initialRadius = 0.832;
-    double finalRadius = initialRadius + 0.5;
-    double modAngle = ((direction == Direction.Left) ? -1.0 : 1.0) * Math.atan(0.162 / finalRadius);
-
-    return new Pose2d(
-      ((finalRadius * Math.cos(Math.acos(nearestPose.getX() / initialRadius) + modAngle)) + reefCenterPose.getX()),
-      ((finalRadius * Math.sin(Math.asin(nearestPose.getY() / initialRadius) + modAngle)) + reefCenterPose.getY()),
-      new Rotation2d(-nearestPose.getRotation().getRadians())
-    );
-  }
 }
