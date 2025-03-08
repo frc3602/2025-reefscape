@@ -161,16 +161,16 @@ public final class Constants {
     // THEY MUST BE CHANGED eventually
     // I believe x&y coordinates are meters
     public static final Transform3d kRobotToMod0CameraTransform = new Transform3d(
-        new Translation3d(-0.5, 0.5, 0.0),
+        new Translation3d(-0.254, 0.254, 0.15),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(135.0)));
     public static final Transform3d kRobotToMod1CameraTransform = new Transform3d(
-        new Translation3d(0.5, 0.5, 0.0),
+        new Translation3d(0.254, 0.254, 0.15),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(45.0)));
     public static final Transform3d kRobotToMod2CameraTransform = new Transform3d(
-        new Translation3d(0.5, -0.5, 0.0),
+        new Translation3d(0.254, -0.254, 0.15),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(315.0)));
     public static final Transform3d kRobotToMod3CameraTransform = new Transform3d(
-        new Translation3d(-0.5, -0.5, 0.0),
+        new Translation3d(-0.254, -0.254, 0.15),
         new Rotation3d(0.0, 0.0, Units.degreesToRadians(225.0)));
 
     public static final Measure<DistanceUnit> kCameraHeight = Inches.of(4);

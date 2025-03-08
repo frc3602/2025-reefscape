@@ -16,6 +16,7 @@ import org.photonvision.simulation.VisionSystemSim;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.team3602.robot.Constants.VisionConstants.*;
@@ -76,7 +77,7 @@ public class Vision {
     }
 
     private double lastEstimateTimestampMod0 = 0.0;
-    private Pose2d mod0Pose2d = new Pose2d();
+    private Pose2d mod0Pose2d;// = new Pose2d();
 
     public Optional<EstimatedRobotPose> getEstimatedPoseMod0(Pose2d prevEstimatedRobotPose){
         double latestTimestamp = mod0Camera.getLatestResult().getTimestampSeconds();
@@ -84,7 +85,10 @@ public class Vision {
 
         if (newResult){
             lastEstimateTimestampMod0 = latestTimestamp;
+        }else{
+            Commands.print("mod 0 camera is old, moldy, and stale!!!");
         }
+
 
         photonPoseEstimator0.setReferencePose(prevEstimatedRobotPose);
         mod0Pose2d = photonPoseEstimator0.update(mod0Camera.getLatestResult()).get().estimatedPose.toPose2d();
@@ -93,7 +97,7 @@ public class Vision {
     }
 
     private double lastEstimateTimestampMod1 = 0.0;
-    private Pose2d mod1Pose2d = new Pose2d();
+    private Pose2d mod1Pose2d;// = new Pose2d();
 
     public Optional<EstimatedRobotPose> getEstimatedPoseMod1(Pose2d prevEstimatedRobotPose){
         double latestTimestamp = mod1Camera.getLatestResult().getTimestampSeconds();
@@ -101,7 +105,10 @@ public class Vision {
 
         if (newResult){
             lastEstimateTimestampMod1 = latestTimestamp;
+        }else{
+            Commands.print("mod 1 camera is old, moldy, and stale!!!");
         }
+
 
         photonPoseEstimator1.setReferencePose(prevEstimatedRobotPose);
         mod1Pose2d = photonPoseEstimator1.update(mod1Camera.getLatestResult()).get().estimatedPose.toPose2d();
@@ -109,7 +116,7 @@ public class Vision {
 
     }
     private double lastEstimateTimestampMod2 = 0.0;
-    private Pose2d mod2Pose2d = new Pose2d();
+    private Pose2d mod2Pose2d;// = new Pose2d();
 
     public Optional<EstimatedRobotPose> getEstimatedPoseMod2(Pose2d prevEstimatedRobotPose){
         double latestTimestamp = mod2Camera.getLatestResult().getTimestampSeconds();
@@ -117,6 +124,8 @@ public class Vision {
 
         if (newResult){
             lastEstimateTimestampMod2 = latestTimestamp;
+        }else{
+            Commands.print("mod 2 camera is old, moldy, and stale!!!");
         }
 
         photonPoseEstimator2.setReferencePose(prevEstimatedRobotPose);
@@ -126,7 +135,7 @@ public class Vision {
     }
 
     private double lastEstimateTimestampMod3 = 0.0;
-    private Pose2d mod3Pose2d = new Pose2d();
+    private Pose2d mod3Pose2d;// = new Pose2d();
 
     public Optional<EstimatedRobotPose> getEstimatedPoseMod3(Pose2d prevEstimatedRobotPose){
         double latestTimestamp = mod3Camera.getLatestResult().getTimestampSeconds();
@@ -134,7 +143,10 @@ public class Vision {
 
         if (newResult){
             lastEstimateTimestampMod3 = latestTimestamp;
+        }else{
+            Commands.print("mod 3 camera is old, moldy, and stale!!!");
         }
+
 
         photonPoseEstimator3.setReferencePose(prevEstimatedRobotPose);
         mod3Pose2d = photonPoseEstimator3.update(mod3Camera.getLatestResult()).get().estimatedPose.toPose2d();
@@ -175,6 +187,9 @@ public class Vision {
          Commands.print("mod3 pose failed");
     }    
    
+
+    SmartDashboard.putNumber("posex", pose.getX());
+    SmartDashboard.putNumber("posey", pose.getY());
 
     visionSim.update(pose);
     visionSim.getDebugField();
