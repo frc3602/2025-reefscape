@@ -166,12 +166,15 @@ public class RobotContainer {
     } else {
 
       
+       xboxController.a().onTrue(pivotSubsys.setAngle(-50));
+      xboxController.b().onTrue(pivotSubsys.setAngle(0));
+      xboxController.x().onTrue(pivotSubsys.setAngle(87));
+      xboxController.y().onTrue(pivotSubsys.setAngle(101));
 
-
-      xboxController.a().onTrue(testPosing());
-      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
-      xboxController.b().onTrue(pivotSubsys.setAngle(80));
-      xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
+      //xboxController.a().onTrue(testPosing());
+      // xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
+      // xboxController.b().onTrue(pivotSubsys.setAngle(80));
+      // xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
       //xboxController.b().onTrue(superstructure.getCoral());
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
