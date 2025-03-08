@@ -15,10 +15,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import au.grapplerobotics.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,10 +33,6 @@ import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
-import static frc.team3602.robot.Constants.VisionConstants.kFieldLayout;
-
-import java.util.Collections;
-import java.util.List;
 
 public class RobotContainer {
 
@@ -50,6 +42,9 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.RobotCentric robocentricdDrive = new SwerveRequest.RobotCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -168,7 +163,7 @@ public class RobotContainer {
       
 
 
-      
+      xboxController.a().onTrue(drivetrainSubsys.applyRequest(() -> robocentricdDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.b().onTrue(pivotSubsys.setAngle(80));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
