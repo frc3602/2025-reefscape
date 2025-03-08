@@ -231,33 +231,4 @@ public class RobotContainer {
      vision.update(getPose());
   }
 
-  public Command testPosing() {
-    Pose2d newPose = new Pose2d(getPose().getX() + 1, getPose().getY(), getPose().getRotation());
-    return drivetrainSubsys.driveToPose(newPose).until(() -> drivetrainSubsys.isNearPose(newPose));
-  }
-
-
-  public Pose2d getNearestCoralScoringPose(Direction direction) {
-    List<Pose2d> tagPoses = Collections.emptyList();
-
-    int sideModifier = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 0 : 11;
-
-    for (int i = (22 - sideModifier); i <= (17 - sideModifier); i--) {
-      tagPoses.add(VisionConstants.kFieldLayout.getTagPose(i).get().toPose2d());
-    }
-
-    Pose2d reefCenterPose = new Pose2d(4.026, ((DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 4.489 : (kFieldLayout.getFieldLength() - 4.489)), new Rotation2d(0.0));
-    Pose2d nearestPose = getPose().nearest(tagPoses);
-    nearestPose = nearestPose.transformBy(nearestPose.minus(reefCenterPose));
-
-    double initialRadius = 0.832;
-    double finalRadius = initialRadius + 0.5;
-    double modAngle = ((direction == Direction.Left) ? -1.0 : 1.0) * Math.atan(0.162 / finalRadius);
-
-    return new Pose2d(
-      ((finalRadius * Math.cos(Math.acos(nearestPose.getX() / initialRadius) + modAngle)) + reefCenterPose.getX()),
-      ((finalRadius * Math.sin(Math.asin(nearestPose.getY() / initialRadius) + modAngle)) + reefCenterPose.getY()),
-      new Rotation2d(-nearestPose.getRotation().getRadians())
-    );
-  }
 }
