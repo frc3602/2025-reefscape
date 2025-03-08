@@ -164,9 +164,9 @@ public class RobotContainer {
 
 
       xboxController.a().onTrue(drivetrainSubsys.applyRequest(() -> robocentricdDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
-      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
-      xboxController.b().onTrue(pivotSubsys.setAngle(80));
-      xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
+      // xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
+      // xboxController.b().onTrue(pivotSubsys.setAngle(80));
+      // xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
       //xboxController.b().onTrue(superstructure.getCoral());
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
