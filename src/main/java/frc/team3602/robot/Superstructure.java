@@ -171,7 +171,7 @@
  
                  pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
                  Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                 intakeSubsys.runIntake(0.15).until(() -> intakeSubsys.sensorIsTriggered())
+                 intakeSubsys.runIntake(0.1).until(() -> intakeSubsys.sensorIsTriggered())
  
  
              );

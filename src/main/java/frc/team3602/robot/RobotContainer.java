@@ -13,11 +13,13 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import au.grapplerobotics.*;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -163,10 +165,13 @@ public class RobotContainer {
       
 
 
-      xboxController.a().onTrue(drivetrainSubsys.applyRequest(() -> robocentricdDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
-      // xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
-      // xboxController.b().onTrue(pivotSubsys.setAngle(80));
-      // xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
+     xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricdDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
+         //  xboxController.b().onTrue(pivotSubsys.setAngle(80));
+
+      //   xboxController.a().onTrue(align(Direction.Left));
+      // xboxController.b().onTrue(align(Direction.Right));
+      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
+      xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
       //xboxController.b().onTrue(superstructure.getCoral());
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
@@ -180,6 +185,7 @@ public class RobotContainer {
       joystick.button(4).onTrue(superstructure.scoreL4Coral());
       joystick.trigger().onTrue(superstructure.score());
       joystick.button(2).onTrue(superstructure.down());
+
       joystick.button(11).onTrue(superstructure.grabAlgaeHigh());
       joystick.button(12).onTrue(superstructure.grabAlgaeLow());
 
@@ -201,6 +207,14 @@ public class RobotContainer {
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
     }
   }
+
+
+  // 10 in
+  // public Command align(Direction direction) {
+  //  var camera = (direction == Direction.Left) ? vision.mod2Camera : vision.mod1Camera;
+  //  return drivetrainSubsys.runOnce(() -> drivetrainSubsys.setControl(robocentricdDrive.withVelocityY((direction == Direction.Left) ? 0.5 : -0.5))).andThen(Commands.waitUntil(() -> camera.getLatestResult().hasTargets() ? MathUtil.isNear(Units.degreesToRadians(camera.getLatestResult().getBestTarget().getYaw()), Math.atan(0.6223 / camera.getLatestResult().getBestTarget().getBestCameraToTarget().getX()), 0.05) : true)).andThen(drivetrainSubsys.getDefaultCommand());
+  //}
+
 
   public void startPose() {
      drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);

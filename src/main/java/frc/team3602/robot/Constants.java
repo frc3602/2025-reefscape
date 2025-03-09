@@ -93,7 +93,7 @@ public final class Constants {
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
     public final static double coralSpeed = 1.0;
-    public final static double intakeAlgaeSpeed = -0.3;
+    public final static double intakeAlgaeSpeed = -0.5;//-0.3
     public final static double scorAlgeaSpeed = 0.3;
   }
 

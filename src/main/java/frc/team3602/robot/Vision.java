@@ -27,8 +27,8 @@ public class Vision {
 
 /*Cameras */
   private final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
-  private final PhotonCamera mod1Camera = new PhotonCamera("mod1Cam");
-  private final PhotonCamera mod2Camera = new PhotonCamera("mod2Cam");
+  public final PhotonCamera mod1Camera = new PhotonCamera("mod1Cam");
+  public final PhotonCamera mod2Camera = new PhotonCamera("mod2Cam");
   private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
 
     /* Field Simulation */
