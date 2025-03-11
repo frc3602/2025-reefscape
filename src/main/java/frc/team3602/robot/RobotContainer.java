@@ -12,16 +12,21 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import au.grapplerobotics.*;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.*;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
+import frc.team3602.robot.Constants.VisionConstants;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
@@ -30,6 +35,9 @@ import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 public class RobotContainer {
 
@@ -41,16 +49,22 @@ public class RobotContainer {
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.RobotCentric robocentricDrive = new SwerveRequest.RobotCentric()
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
+  /* laser can */
+  private LaserCan lc;
+
   /* Operator interfaces */
   private final CommandXboxController xboxController = new CommandXboxController(kXboxControllerPort);
-  private final CommandJoystick joystick = new CommandJoystick(1);
   // for simulation
   //private final CommandJoystick joystick = new CommandJoystick(0);
+  private final CommandJoystick joystick = new CommandJoystick(1);
 
   /* Subsystems */
   private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
@@ -61,7 +75,10 @@ public class RobotContainer {
       elevatorSubsys.elevatorSimMech.getRoot("Intake Wheel Root", 0.75, 0.3),
       () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
-  private final Superstructure superstructure = new Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys);
+  private final Vision vision = new Vision(drivetrainSubsys);
+  private final Superstructure superstructure = new
+  Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys, vision
+  );
 
   /* Autonomous */
   private final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
@@ -147,8 +164,15 @@ public class RobotContainer {
       // joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
       // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
     } else {
+
+      
+
+
+      xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
          //  xboxController.b().onTrue(pivotSubsys.setAngle(80));
 
+      xboxController.a().onTrue(align(Direction.Left)).onFalse(drivetrainSubsys.getDefaultCommand());
+      xboxController.b().onTrue(align(Direction.Right)).onFalse(drivetrainSubsys.getDefaultCommand());
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
@@ -187,6 +211,33 @@ public class RobotContainer {
     }
   }
 
+  public boolean isAlgined(Direction direction) {
+    PhotonCamera camera = (direction == Direction.Left) ? vision.mod2Camera : vision.mod1Camera;
+    PhotonPipelineResult result = camera.getLatestResult();
+
+    if (result.hasTargets()) {
+      double targetYaw = Math.atan(0.6223 / result.getBestTarget().getBestCameraToTarget().getX());
+      double yaw = Units.degreesToRadians(result.getBestTarget().getYaw());
+
+      return MathUtil.isNear(yaw, targetYaw, 0.05);
+    } else {
+      return true;
+    }
+  }
+
+  public Command align(Direction direction) {
+    final double yv = 0.5;
+
+    if (direction == Direction.Left) {
+      return drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(yv))
+        .until(() -> isAlgined(direction));
+    } else {
+      return drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(-yv))
+        .until(() -> isAlgined(direction));
+    }
+  }
+
+
   public void startPose() {
      drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);
   }
@@ -201,6 +252,14 @@ public class RobotContainer {
 
   public Pose2d getPose() {
     return drivetrainSubsys.getState().Pose;
+  }
+
+  public void resetSimulation() {
+     vision.reset();
+  }
+
+  public void updateVision() {
+     // vision.update(getPose());
   }
 
 }

@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    robotContainer.updateVision();
   }
 
   @Override
@@ -57,6 +58,7 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    robotContainer.resetSimulation();
   }
 
   @Override

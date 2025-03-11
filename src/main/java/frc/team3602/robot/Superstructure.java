@@ -20,12 +20,14 @@
      private ElevatorSubsystem elevatorSubsys;
      private IntakeSubsystem intakeSubsys;
      private PivotSubsystem pivotSubsys;
+     private Vision vision;
  
-     public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys) {
+     public Superstructure(DrivetrainSubsystem driveSubsys, ElevatorSubsystem elevatorSubsys, IntakeSubsystem intakeSubsys, PivotSubsystem pivotSubsys, Vision vision) {
          this.driveSubsys = driveSubsys;
          this.elevatorSubsys = elevatorSubsys;
          this.intakeSubsys = intakeSubsys;
          this.pivotSubsys = pivotSubsys;
+         this.vision = vision;
      }
  
      public Command getCoral() {
