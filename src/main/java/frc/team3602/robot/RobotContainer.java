@@ -75,9 +75,9 @@ public class RobotContainer {
       elevatorSubsys.elevatorSimMech.getRoot("Intake Wheel Root", 0.75, 0.3),
       () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
-  private final Vision vision = new Vision(drivetrainSubsys);
+ //private final Vision vision = new Vision(/*drivetrainSubsys*/);
   private final Superstructure superstructure = new
-  Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys, vision
+  Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys/* vision*/
   );
 
   /* Autonomous */
@@ -168,11 +168,11 @@ public class RobotContainer {
       
 
 
-      xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
+      xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
          //  xboxController.b().onTrue(pivotSubsys.setAngle(80));
 
-      xboxController.a().onTrue(align(Direction.Left)).onFalse(drivetrainSubsys.getDefaultCommand());
-      xboxController.b().onTrue(align(Direction.Right)).onFalse(drivetrainSubsys.getDefaultCommand());
+      // xboxController.a().onTrue(align(Direction.Left)).onFalse(drivetrainSubsys.getDefaultCommand());
+      // xboxController.b().onTrue(align(Direction.Right)).onFalse(drivetrainSubsys.getDefaultCommand());
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
@@ -211,31 +211,33 @@ public class RobotContainer {
     }
   }
 
-  public boolean isAlgined(Direction direction) {
-    PhotonCamera camera = (direction == Direction.Left) ? vision.mod2Camera : vision.mod1Camera;
-    PhotonPipelineResult result = camera.getLatestResult();
+  // public boolean isAligned(Direction direction) {
+  //   PhotonCamera camera = (direction == Direction.Left) ? vision.mod2Camera : vision.mod1Camera;
+  //   PhotonPipelineResult result = camera.getLatestResult();
 
-    if (result.hasTargets()) {
-      double targetYaw = Math.atan(0.6223 / result.getBestTarget().getBestCameraToTarget().getX());
-      double yaw = Units.degreesToRadians(result.getBestTarget().getYaw());
+  //   if (result.hasTargets()) {
+  //     double targetYaw = Math.atan(0.6223 / result.getBestTarget().getBestCameraToTarget().getX());
+  //     double yaw = Units.degreesToRadians(result.getBestTarget().getYaw());
 
-      return MathUtil.isNear(yaw, targetYaw, 0.05);
-    } else {
-      return true;
-    }
-  }
+  //     return MathUtil.isNear(yaw, targetYaw, 0.005);
+  //   } else {
+  //     // return true;
+  //   }
+  // }
 
-  public Command align(Direction direction) {
-    final double yv = 0.5;
+  // public Command align(Direction direction) {
+  //   final double yv = 0.5;
 
-    if (direction == Direction.Left) {
-      return drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(yv))
-        .until(() -> isAlgined(direction));
-    } else {
-      return drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(-yv))
-        .until(() -> isAlgined(direction));
-    }
-  }
+  //   if (direction == Direction.Left) {
+  //     return drivetrainSubsys.run(() -> {
+  //       drivetrainSubsys.setControl(robocentricDrive.withVelocityY(yv));
+  //     }).until(() -> isAligned(direction));
+  //   } else {
+  //     return drivetrainSubsys.run(() -> {
+  //       drivetrainSubsys.setControl(robocentricDrive.withVelocityY(-yv));
+  //     }).until(() -> isAligned(direction));
+  //   }
+  // }
 
 
   public void startPose() {
@@ -255,11 +257,59 @@ public class RobotContainer {
   }
 
   public void resetSimulation() {
-     vision.reset();
+    // vision.reset();
   }
 
-  public void updateVision() {
-     // vision.update(getPose());
-  }
+//   public void updateVision() {
+//     //vision.update();
+//  }
+
+//  public void updatePose(){
+//   // drivetrainSubsys.addVisionMeasurement(vision.getEstimatedPoseMod0().get().estimatedPose.toPose2d(), vision.lastEstimateTimestampMod0);
+
+//  }
+
+
+//  public void updateVision() {
+//   vision.update();
+//   //vision.visionSim.update(drivetrainSubsys.getState().Pose);
+// }
+
+// public void updatePose(){
+// // if(vision.getEstimatedPoseMod0().isPresent()){
+//     // try{
+//     //   drivetrainSubsys.addVisionMeasurement(vision.getEstimatedPoseMod0().get().estimatedPose.toPose2d(), vision.lastEstimateTimestampMod0);
+//     //    //}else{
+//     //   } catch (Exception e) {
+//     //      Commands.print("mod0 pose failed");
+//     //  }
+//       // if(vision.getEstimatedPoseMod0().isPresent()
+      
+//        try{
+//         var posebruh = vision.getEstimatedPoseMod1();
+//         if(!posebruh.isEmpty()){
+
+//          drivetrainSubsys.addVisionMeasurement(posebruh.get().estimatedPose.toPose2d(), vision.lastEstimateTimestampMod1);
+//         }
+//           //}else{
+//          } catch (Exception e) {
+//             Commands.print("mod1 pose failed");
+//         }
+//         // if(vision.getEstimatedPoseMod0().isPresent()){
+//     try{
+//       var poseBruh = vision.getEstimatedPoseMod2();
+//       if(! poseBruh.isEmpty()){
+//         SmartDashboard.putNumber("mod 2 estimated pose x", poseBruh.get().estimatedPose.getX());
+//         SmartDashboard.putNumber("mod 2 timestamp", vision.lastEstimateTimestampMod2);
+
+//      drivetrainSubsys.addVisionMeasurement(poseBruh.get().estimatedPose.toPose2d(), vision.lastEstimateTimestampMod2);
+//       }
+//       //}else{
+//      } catch (Exception e) {
+//         Commands.print("mod2 pose failed");
+//     }
+
+// }
+
 
 }
