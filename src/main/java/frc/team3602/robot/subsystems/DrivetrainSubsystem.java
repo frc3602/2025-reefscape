@@ -20,6 +20,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.team3602.robot.Constants.DrivetrainConstants;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
 
 /**
@@ -59,6 +61,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
   private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+  private final LaserCan alignmentLASER = new LaserCan(DrivetrainConstants.kAlignmentLASERCANId);
 
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
@@ -392,6 +396,10 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
             }
     }
 
+  public double getDistanceFromReef() {
+    return (alignmentLASER.getMeasurement().distance_mm / 1000);
+  }
+
   public void configDrivetrainSubsys() {
     try {
       var config = RobotConfig.fromGUISettings();
@@ -414,5 +422,4 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
       DriverStation.reportError("something may or may not be broken, idk", ex.getStackTrace());
     }
   }
-
 }

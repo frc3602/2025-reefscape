@@ -30,6 +30,10 @@ public final class Constants {
     public final static int kControlPanelPort = 1;
   }
 
+  public final class DrivetrainConstants {
+    public final static int kAlignmentLASERCANId = 70; // TODO: Find the actual CAN Id.
+  }
+
   // in case we want the flypath stuff in superstructure or something
   public final class flyPathPosesConstants {
 

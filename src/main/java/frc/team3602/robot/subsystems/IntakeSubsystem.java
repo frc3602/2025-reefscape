@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private DoubleSupplier pivotSimAngleRads;
 
     public IntakeSubsystem(MechanismRoot2d intakeWheelRoot, DoubleSupplier elevatorVizLength, DoubleSupplier pivotSimAngleRads){
-          // Motor configs
+        // Motor configs
         var motorConfigs = new MotorOutputConfigs();
         var limitConfigs = new CurrentLimitsConfigs();
 
@@ -80,9 +80,9 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
-    public boolean sensorIsTriggered(){
+    public boolean sensorIsTriggered() {
         LaserCan.Measurement laserMeasurement = laser.getMeasurement();
-        return (laserMeasurement.distance_mm <50.0);
+        return (laserMeasurement.distance_mm < 50.0);
     }
 
 
