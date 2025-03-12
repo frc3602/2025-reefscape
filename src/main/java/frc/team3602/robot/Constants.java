@@ -143,8 +143,7 @@ public final class Constants {
   }
 
   public final class VisionConstants {
-    public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout
-        .loadField(AprilTagFields.k2025ReefscapeWelded);
+    public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     public static final int kWidthOfCamera = 4656;
     public static final int kHeightOfCamera = 3496;
