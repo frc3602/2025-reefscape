@@ -115,6 +115,10 @@ public class RobotContainer {
     polarityChooser.addOption("Positive", 1.0);
     polarityChooser.addOption("Negative", -1.0);
 
+    SmartDashboard.putBoolean("Camera0", vision.mod0Camera.getLatestResult().hasTargets());
+    SmartDashboard.putBoolean("Camera1", vision.mod1Camera.getLatestResult().hasTargets());
+    SmartDashboard.putBoolean("Camera2", vision.mod2Camera.getLatestResult().hasTargets());
+    SmartDashboard.putBoolean("Camera3", vision.mod3Camera.getLatestResult().hasTargets());
 
     configDefaultCommands();
     configButtonBindings();
@@ -171,8 +175,6 @@ public class RobotContainer {
       xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
          //  xboxController.b().onTrue(pivotSubsys.setAngle(80));
 
-      xboxController.a().onTrue(align(Direction.Left)).onFalse(drivetrainSubsys.getDefaultCommand());
-      xboxController.b().onTrue(align(Direction.Right)).onFalse(drivetrainSubsys.getDefaultCommand());
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
 
@@ -210,33 +212,6 @@ public class RobotContainer {
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
     }
   }
-
-  public boolean isAlgined(Direction direction) {
-    PhotonCamera camera = (direction == Direction.Left) ? vision.mod2Camera : vision.mod1Camera;
-    PhotonPipelineResult result = camera.getLatestResult();
-
-    if (result.hasTargets()) {
-      double targetYaw = Math.atan(0.6223 / result.getBestTarget().getBestCameraToTarget().getX());
-      double yaw = Units.degreesToRadians(result.getBestTarget().getYaw());
-
-      return MathUtil.isNear(yaw, targetYaw, 0.05);
-    } else {
-      return true;
-    }
-  }
-
-  public Command align(Direction direction) {
-    final double yv = 0.5;
-
-    if (direction == Direction.Left) {
-      return drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(yv))
-        .until(() -> isAlgined(direction));
-    } else {
-      return drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(-yv))
-        .until(() -> isAlgined(direction));
-    }
-  }
-
 
   public void startPose() {
      drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);

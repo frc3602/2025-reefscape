@@ -26,10 +26,10 @@ public class Vision {
     private DrivetrainSubsystem driveSubsys;
 
 /*Cameras */
-  private final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
+  public final PhotonCamera mod0Camera = new PhotonCamera("mod0Cam");
   public final PhotonCamera mod1Camera = new PhotonCamera("mod1Cam");
   public final PhotonCamera mod2Camera = new PhotonCamera("mod2Cam");
-  private final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
+  public final PhotonCamera mod3Camera = new PhotonCamera("mod3Cam");
 
     /* Field Simulation */
     private final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2025ReefscapeWelded.loadAprilTagLayoutField();
