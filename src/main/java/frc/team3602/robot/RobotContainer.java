@@ -12,21 +12,16 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import au.grapplerobotics.*;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.*;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
-import frc.team3602.robot.Constants.VisionConstants;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
@@ -35,9 +30,6 @@ import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 public class RobotContainer {
 
@@ -57,14 +49,12 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  /* laser can */
-  private LaserCan lc;
-
-  /* Operator interfaces */
+  /* Operator Interfaces, Real */
   private final CommandXboxController xboxController = new CommandXboxController(kXboxControllerPort);
-  // for simulation
-  //private final CommandJoystick joystick = new CommandJoystick(0);
-  private final CommandJoystick joystick = new CommandJoystick(1);
+  private final CommandJoystick joystick = new CommandJoystick(kControlPanelPort);
+
+  /* Operator Interfaces, Simulated */
+  // private final CommandJoystick joystick = new CommandJoystick(0);
 
   /* Subsystems */
   private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
@@ -76,17 +66,14 @@ public class RobotContainer {
       () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
 
   private final Vision vision = new Vision(drivetrainSubsys);
-  private final Superstructure superstructure = new
-  Superstructure(drivetrainSubsys, elevatorSubsys, intakeSubsys, pivotSubsys, vision
-  );
+  private final Superstructure superstructure = new Superstructure(/* drivetrainSubsys, */ elevatorSubsys, intakeSubsys, pivotSubsys /*, vision */);
 
   /* Autonomous */
-  private final SendableChooser<Command> autoChooser;// = new SendableChooser<>();
+  private final SendableChooser<Command> autoChooser;
   private SendableChooser<Double> polarityChooser = new SendableChooser<>();
 
   public RobotContainer() {
-
-     //auton commands
+    // Register commands for auton
     NamedCommands.registerCommand("elevDown", elevatorSubsys.setHeight(ElevatorConstants.down));
     NamedCommands.registerCommand("prepElevL4", superstructure.autonPrepElevL4());
     NamedCommands.registerCommand("prepElevL3", superstructure.autonPrepElevL3());
@@ -151,7 +138,7 @@ public class RobotContainer {
     }
   }
 
-  /**
+  /*
    * Function that is called in the constructor where we configure operator
    * interface button bindings.
    */
@@ -168,20 +155,22 @@ public class RobotContainer {
       // joystick2.button(3).onTrue(pivotSubsys.setAngle(90));
       // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
     } else {
-
-      
-
-
+      xboxController.leftTrigger().whileTrue(
+        drivetrainSubsys.applyRequest(() -> drive.withVelocityX(0.1 *  polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
+            .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative
+      xboxController.rightBumper().onTrue(superstructure.getCoral());
+      // Reset the field-centric heading on left bumper press
+      xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
       xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
-         //  xboxController.b().onTrue(pivotSubsys.setAngle(80));
 
+      // xboxController.b().onTrue(pivotSubsys.setAngle(80));
+      // xboxController.b().onTrue(superstructure.getCoral());
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
-
-      //xboxController.b().onTrue(superstructure.getCoral());
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
+      // xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
       // xboxController.y().onFalse(intakeSubsys.stopIntake());
-      xboxController.rightBumper().onTrue(superstructure.getCoral());
 
 
       joystick.button(5).onTrue(superstructure.scoreL1Coral());
@@ -194,20 +183,8 @@ public class RobotContainer {
       joystick.button(11).onTrue(superstructure.grabAlgaeHigh());
       joystick.button(12).onTrue(superstructure.grabAlgaeLow());
 
-      joystick.button(8).onTrue(superstructure.scoreAlgea());
-      joystick.button(10).onTrue(superstructure.setAlgeaProcesser());
-      //xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
-
-    //bxController.x().onTrue(intakeSubsys.stopIntake());
-      xboxController.leftTrigger().whileTrue(
-        drivetrainSubsys.applyRequest(() -> drive.withVelocityX(0.1 *  polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
-
-            .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative
-                                                                              // X (left)
-
-      // reset the field-centric heading on left bumper press
-      xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
+      joystick.button(8).onTrue(superstructure.scoreAlgae());
+      joystick.button(10).onTrue(superstructure.setAlgaeProcesser());
 
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
     }
