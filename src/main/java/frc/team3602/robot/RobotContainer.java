@@ -13,6 +13,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -162,12 +163,19 @@ public class RobotContainer {
       xboxController.rightBumper().onTrue(superstructure.getCoral());
       // Reset the field-centric heading on left bumper press
       xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
-      xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(-1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
+      xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
 
-      // xboxController.b().onTrue(pivotSubsys.setAngle(80));
+      //xboxController.a().onTrue(pivotSubsys.setAngle(0.0));
+      xboxController.b().onTrue(pivotSubsys.setAngle(80));
+      // xboxController.y().onTrue(pivotSubsys.setAngle(-50));
+      // xboxController.x().onTrue(pivotSubsys.setAngle(101));
+
       // xboxController.b().onTrue(superstructure.getCoral());
+
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
+
+
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
       // xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
       // xboxController.y().onFalse(intakeSubsys.stopIntake());
@@ -211,6 +219,14 @@ public class RobotContainer {
   }
 
   public void updateVision() {
+    SmartDashboard.putNumber("ëstimated drive pose x", drivetrainSubsys.getState().Pose.getX());
+    SmartDashboard.putNumber("ëstimated drive pose y", drivetrainSubsys.getState().Pose.getY());
+    SmartDashboard.putNumber("ëstimated drive pose rotation", drivetrainSubsys.getState().Pose.getRotation().getDegrees());
+
+    if(xboxController.a().getAsBoolean()){
+      drivetrainSubsys.resetPose(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
+    }
+
      // vision.update(getPose());
   }
 

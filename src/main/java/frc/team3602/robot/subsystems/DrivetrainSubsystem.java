@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -63,6 +64,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
   private final LaserCan alignmentLASER = new LaserCan(DrivetrainConstants.kAlignmentLASERCANId);
+  private double distance = 0.0;
+
 
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
@@ -266,6 +269,9 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
         m_hasAppliedOperatorPerspective = true;
       });
     }
+
+    distance = getDistanceFromReef();
+    SmartDashboard.putNumber("LASER", distance);
   }
 
   private void startSimThread() {
@@ -396,8 +402,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
             }
     }
 
-  public double getDistanceFromReef() {
-    return (alignmentLASER.getMeasurement().distance_mm / 1000);
+  public Double getDistanceFromReef() {
+    return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
   }
 
   public void configDrivetrainSubsys() {

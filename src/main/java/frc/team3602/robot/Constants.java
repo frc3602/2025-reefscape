@@ -31,7 +31,7 @@ public final class Constants {
   }
 
   public final class DrivetrainConstants {
-    public final static int kAlignmentLASERCANId = 70; // TODO: Find the actual CAN Id.
+    public final static int kAlignmentLASERCANId = 6;
   }
 
   // in case we want the flypath stuff in superstructure or something
@@ -119,9 +119,9 @@ public final class Constants {
 
 
     // PID Constants
-    public final static double KP = 0.076;//.056 //.0722
+    public final static double KP = 0.11;//.056 //.09 .11
     public final static double KI = 0.0;
-    public final static double KD = 0;
+    public final static double KD = 0.0001;
 
     // ffe Constants
     public final static double KS = 0.8;
