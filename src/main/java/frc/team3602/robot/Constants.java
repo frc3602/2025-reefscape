@@ -36,14 +36,233 @@ public final class Constants {
 
   // in case we want the flypath stuff in superstructure or something
   public final class flyPathPosesConstants {
+    
+    public static double robotWidth = Units.inchesToMeters(28 + 6);
+    public static double robotLength = Units.inchesToMeters(30 + 6);
+    public static Transform2d halfRobot = new Transform2d(robotLength / 2.0, 0, new Rotation2d());
 
-      public static final Pose2d startingPose = new Pose2d(7.6, 0.5, Rotation2d.fromDegrees(180));
+    public static Transform2d halfRobotGatherLeftFar =
+            new Transform2d(
+                    robotLength / 2.0 + Units.inchesToMeters(1.5),
+                    Units.inchesToMeters(16),
+                    Rotation2d.kZero);
+    public static Transform2d halfRobotGatherLeftClose =
+            new Transform2d(
+                    robotLength / 2.0 + Units.inchesToMeters(1.5),
+                    Units.inchesToMeters(-16),
+                    Rotation2d.kZero);
+    public static Transform2d halfRobotGatherRightFar =
+            new Transform2d(
+                    robotLength / 2.0 + Units.inchesToMeters(1.5),
+                    Units.inchesToMeters(-16),
+                    Rotation2d.kZero);
+    public static Transform2d halfRobotGatherRightClose =
+            new Transform2d(
+                    robotLength / 2.0 + Units.inchesToMeters(1.5),
+                    Units.inchesToMeters(16),
+                    Rotation2d.kZero);
 
-    // TODO- change with real life robot testing
-    public static final Pose2d blueNONBargeCoralIntakePose = new Pose2d(1.22, 1.68, Rotation2d.fromDegrees(145));
-    public static final Pose2d blueBargeCoralIntakePose = new Pose2d(0.8, 7.07, Rotation2d.fromDegrees(34.6));
-    public static final Pose2d redNONBargeCoralIntakePose = new Pose2d(16.5, 7.5, Rotation2d.fromDegrees(-36.7));
-    public static final Pose2d redBargeCoralIntakePose = new Pose2d(16.5, 1.68, Rotation2d.fromDegrees(-145));
+    public static Transform2d halfRobotCoralRight =
+            new Transform2d(
+                    robotLength / 2.0 + Units.inchesToMeters(3.25),
+                    Units.inchesToMeters(5.5),
+                    Rotation2d.kZero);
+    public static Transform2d halfRobotCoralLeft =
+            new Transform2d(
+                    robotLength / 2.0 + Units.inchesToMeters(3.5),
+                    Units.inchesToMeters(-8),
+                    Rotation2d.kZero);
+
+    public static Transform2d halfRobotAlgae =
+            new Transform2d(robotLength / 2.0 + Units.inchesToMeters(6), 0, Rotation2d.kZero);
+
+    // TODO: make code that uses this
+    public static Transform2d halfRobotCoralLevel1 =
+            new Transform2d(
+                    robotLength / 2.0 + Units.inchesToMeters(7.5),
+                    Units.inchesToMeters(0),
+                    new Rotation2d());
+
+    public static AprilTagFieldLayout tags =
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+
+    static Pose2d[] blueStarts = {
+        new Pose2d(6, 3, Rotation2d.k180deg),
+        new Pose2d(6, 3, Rotation2d.k180deg),
+        new Pose2d(6, 3, Rotation2d.k180deg)
+    };
+
+    static Pose2d[] redStarts = {
+        new Pose2d(12, 3, Rotation2d.kZero),
+        new Pose2d(12, 3, Rotation2d.kZero),
+        new Pose2d(12, 3, Rotation2d.kZero)
+    };
+    
+    public static final Pose2d APose = new Pose2d(if (isBlue()) {
+      return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotCoralLeft));
+  } else {
+      return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotCoralLeft));
+  });
+
+    public static final Pose2d BPose = new Pose2d(if (isBlue()) {
+      return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotCoralRight));
+  } else {
+      return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotCoralRight));
+  });
+
+  public static final Pose2d CPose = new Pose2d(if (isBlue()) {
+    return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotCoralLeft));
+} else {
+    return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotCoralLeft));
+});
+
+public static final Pose2d DPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotCoralRight));
+} else {
+  return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotCoralRight));
+});
+
+public static final Pose2d EPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotCoralLeft));
+} else {
+  return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotCoralLeft));
+});
+
+public static final Pose2d FPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotCoralRight));
+} else {
+  return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotCoralRight));
+});
+
+public static final Pose2d CPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotCoralLeft));
+} else {
+  return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotCoralLeft));
+});
+
+public static final Pose2d DPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotCoralRight));
+} else {
+  return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotCoralRight));
+});
+
+public static final Pose2d CPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotCoralLeft));
+} else {
+  return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotCoralLeft));
+});
+
+public static final Pose2d DPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotCoralRight));
+} else {
+  return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotCoralRight));
+});
+
+public static final Pose2d CPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotCoralLeft));
+} else {
+  return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotCoralLeft));
+});
+
+public static final Pose2d DPose = new Pose2d(if (isBlue()) {
+  return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotCoralRight));
+} else {
+  return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotCoralRight));
+});
+
+
+
+
+
+ 
+
+    public static Pose2d getStartLoc(int idx) {
+        if (isBlue()) {
+            if (idx >= blueStarts.length) return null;
+            return blueStarts[idx];
+        } else {
+            if (idx >= redStarts.length) return null;
+            return redStarts[idx];
+        }
+    }
+
+    public static Translation2d getReef() {
+      Pose2d front, back;
+      if (isBlue()) {
+          front = tags.getTagPose(18).get().toPose2d();
+          back = tags.getTagPose(21).get().toPose2d();
+      } else {
+          front = tags.getTagPose(7).get().toPose2d();
+          back = tags.getTagPose(10).get().toPose2d();
+      }
+
+      return front.getTranslation().plus(back.getTranslation()).times(0.5);
+  }
+
+
+
+public static Pose2d getLeftGatherStationFar() {
+  if (!isBlue()) {
+      return invert(tags.getTagPose(1).get().toPose2d().plus(halfRobotGatherLeftFar));
+  } else {
+      return invert(tags.getTagPose(13).get().toPose2d().plus(halfRobotGatherLeftFar));
+  }
+}
+
+public static Pose2d getRightGatherStationFar() {
+  if (!isBlue()) {
+      return invert(tags.getTagPose(2).get().toPose2d().plus(halfRobotGatherRightFar));
+  } else {
+      return invert(tags.getTagPose(12).get().toPose2d().plus(halfRobotGatherRightFar));
+  }
+}
+
+public static Pose2d getLeftGatherStationClose() {
+  if (!isBlue()) {
+      return invert(tags.getTagPose(1).get().toPose2d().plus(halfRobotGatherLeftClose));
+  } else {
+      return invert(tags.getTagPose(13).get().toPose2d().plus(halfRobotGatherLeftClose));
+  }
+}
+
+public static Pose2d getRightGatherStationClose() {
+  if (!isBlue()) {
+      return invert(tags.getTagPose(2).get().toPose2d().plus(halfRobotGatherRightClose));
+  } else {
+      return invert(tags.getTagPose(12).get().toPose2d().plus(halfRobotGatherRightClose));
+  }
+}
+
+
+
+public static Pose2d getTag7() {
+  Pose2d tag = tags.getTagPose(7).get().toPose2d().plus(halfRobotCoralLeft);
+  return invert(tag);
+}
+
+public static boolean isBlue() {
+  return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
+}
+
+public static Pose2d invert(Pose2d in) {
+  return new Pose2d(in.getTranslation(), in.getRotation().plus(Rotation2d.k180deg));
+}
+
+public static Pose2d getProcLoc() {
+  if (isBlue()) {
+      return invert(tags.getTagPose(16).get().toPose2d().plus(halfRobot));
+  } else {
+      return invert(tags.getTagPose(3).get().toPose2d().plus(halfRobot));
+  }
+}
+
+
+
+    // // TODO- change with real life robot testing
+    // public static final Pose2d blueNONBargeCoralIntakePose = new Pose2d(1.22, 1.68, Rotation2d.fromDegrees(145));
+    // public static final Pose2d blueBargeCoralIntakePose = new Pose2d(0.8, 7.07, Rotation2d.fromDegrees(34.6));
+    // public static final Pose2d redNONBargeCoralIntakePose = new Pose2d(16.5, 7.5, Rotation2d.fromDegrees(-36.7));
+    // public static final Pose2d redBargeCoralIntakePose = new Pose2d(16.5, 1.68, Rotation2d.fromDegrees(-145));
   }
 
   public final class ElevatorConstants {
