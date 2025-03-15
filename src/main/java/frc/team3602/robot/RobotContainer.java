@@ -13,8 +13,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +24,7 @@ import static edu.wpi.first.units.Units.*;
 import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
 import frc.team3602.robot.generated.TunerConstants;
+import frc.team3602.robot.subsystems.ClimberSubsystem;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
@@ -66,6 +65,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsys = new IntakeSubsystem(
       elevatorSubsys.elevatorSimMech.getRoot("Intake Wheel Root", 0.75, 0.3),
       () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
+  private final ClimberSubsystem climberSubsys = new ClimberSubsystem();
 
   private final Vision vision = new Vision(drivetrainSubsys);
   private final Superstructure superstructure = new Superstructure(/* drivetrainSubsys, */ elevatorSubsys, intakeSubsys, pivotSubsys /*, vision */);
@@ -168,13 +168,10 @@ public class RobotContainer {
             .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative
       );
 
-      //xboxController.a().onTrue(pivotSubsys.setAngle(0.0));
-      xboxController.b().onTrue(pivotSubsys.setAngle(80));
-      // xboxController.y().onTrue(pivotSubsys.setAngle(-50));
-      // xboxController.x().onTrue(pivotSubsys.setAngle(101));
+      xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
+      xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 
-      // xboxController.b().onTrue(superstructure.getCoral());
-
+      xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));

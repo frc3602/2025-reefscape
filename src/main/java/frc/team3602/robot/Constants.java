@@ -146,6 +146,11 @@ public final class Constants {
     public final static double simPivotKA = 0.1;
   }
 
+  public final class ClimberConstants {
+    public static final int motorCANId = 18;
+    public static final double percentVoltageScalar = 0.2;
+  }
+
   public final class VisionConstants {
     public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
