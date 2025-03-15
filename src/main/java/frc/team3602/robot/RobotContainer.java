@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -135,7 +136,7 @@ public class RobotContainer {
               .withVelocityY(0.5 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
               .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative
                                                                                 // X (left)
-          ));
+      ));
     }
   }
 
@@ -161,9 +162,11 @@ public class RobotContainer {
             .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative
       xboxController.rightBumper().onTrue(superstructure.getCoral());
-      // Reset the field-centric heading on left bumper press
-      xboxController.leftBumper().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.seedFieldCentric()));
-      xboxController.rightTrigger().onTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(1.0))).onFalse(drivetrainSubsys.getDefaultCommand());
+      xboxController.rightTrigger().whileTrue(
+        drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(0.1 *  polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
+            .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative
+      );
 
       //xboxController.a().onTrue(pivotSubsys.setAngle(0.0));
       xboxController.b().onTrue(pivotSubsys.setAngle(80));
@@ -174,12 +177,9 @@ public class RobotContainer {
 
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
-
-
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
       // xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
       // xboxController.y().onFalse(intakeSubsys.stopIntake());
-
 
       joystick.button(5).onTrue(superstructure.scoreL1Coral());
       joystick.button(6).onTrue(superstructure.scoreL2Coral());
@@ -219,14 +219,6 @@ public class RobotContainer {
   }
 
   public void updateVision() {
-    SmartDashboard.putNumber("ëstimated drive pose x", drivetrainSubsys.getState().Pose.getX());
-    SmartDashboard.putNumber("ëstimated drive pose y", drivetrainSubsys.getState().Pose.getY());
-    SmartDashboard.putNumber("ëstimated drive pose rotation", drivetrainSubsys.getState().Pose.getRotation().getDegrees());
-
-    if(xboxController.a().getAsBoolean()){
-      drivetrainSubsys.resetPose(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
-    }
-
      // vision.update(getPose());
   }
 
