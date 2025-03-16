@@ -240,53 +240,59 @@ public class RobotContainer {
                 drivetrainSubsys.getState().Pose.getRotation().getDegrees());
 
         // puts the pose from the reef cam on our dashboards if it sees a tag
-        if (vision.getMod0EstimatedPose().isPresent()) {
-            SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod0EstimatedPose().get().estimatedPose.getX());
-            SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod0EstimatedPose().get().estimatedPose.getY());
-            SmartDashboard.putNumber("Reef Cam Pose Angle",
-                    vision.getMod0EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
-        }
-        if (vision.getMod1EstimatedPose().isPresent()) {
-          SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod1EstimatedPose().get().estimatedPose.getX());
-          SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod1EstimatedPose().get().estimatedPose.getY());
-          SmartDashboard.putNumber("Reef Cam Pose Angle",
-                  vision.getMod1EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
+     
+
+      var mostRecentMod0Pose = new Pose2d();
+      try {
+          var Mod0Pose = vision.getMod0EstimatedPose().get().estimatedPose.toPose2d();
+           mostRecentMod0Pose = Mod0Pose;
+          drivetrainSubsys.addVisionMeasurement(mostRecentMod0Pose, vision.lastMod0EstimateTimestamp);
+          SmartDashboard.putNumber("mod 0 Cam Pose X",mostRecentMod0Pose.getX());
+            SmartDashboard.putNumber("mod 0 Cam Pose Y", mostRecentMod0Pose.getY());
+            SmartDashboard.putNumber("mod 0 Cam Pose Angle",
+                    mostRecentMod0Pose.getRotation().getDegrees());
+      } catch (Exception e) {
+          Commands.print("mod 0 cam pose failed");
       }
+
+      var mostRecentMod1Pose = new Pose2d();
       try {
         var Mod1Pose = vision.getMod1EstimatedPose().get().estimatedPose.toPose2d();
-        var mostRecentMod1Pose = Mod1Pose;
-        drivetrainSubsys.addVisionMeasurement(mostRecentMod1Pose, vision.lastMod1EstimateTimestamp);
+           mostRecentMod1Pose = Mod1Pose;
+          drivetrainSubsys.addVisionMeasurement(mostRecentMod1Pose, vision.lastMod1EstimateTimestamp);
+          SmartDashboard.putNumber("mod 1 Cam Pose X",mostRecentMod1Pose.getX());
+            SmartDashboard.putNumber("mod 1 Cam Pose Y", mostRecentMod1Pose.getY());
+            SmartDashboard.putNumber("mod 1 Cam Pose Angle",
+                    mostRecentMod1Pose.getRotation().getDegrees());
     } catch (Exception e) {
-        Commands.print("reef cam pose failed");
+        Commands.print("mod 1 cam pose failed");
     }
 
-    if (vision.getMod2EstimatedPose().isPresent()) {
-      SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod2EstimatedPose().get().estimatedPose.getX());
-      SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod2EstimatedPose().get().estimatedPose.getY());
-      SmartDashboard.putNumber("Reef Cam Pose Angle",
-              vision.getMod2EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
-  }
-  try {
-    var Mod2Pose = vision.getMod2EstimatedPose().get().estimatedPose.toPose2d();
-    var mostRecentMod2Pose = Mod2Pose;
-    drivetrainSubsys.addVisionMeasurement(mostRecentMod2Pose, vision.lastMod2EstimateTimestamp);
-} catch (Exception e) {
-    Commands.print("reef cam pose failed");
-}
+       var mostRecentMod2Pose = new Pose2d();
+      try {
+        var Mod2Pose = vision.getMod2EstimatedPose().get().estimatedPose.toPose2d();
+           mostRecentMod1Pose = Mod2Pose;
+          drivetrainSubsys.addVisionMeasurement(mostRecentMod2Pose, vision.lastMod2EstimateTimestamp);
+          SmartDashboard.putNumber("mod 2 Cam Pose X",mostRecentMod2Pose.getX());
+            SmartDashboard.putNumber("mod 2 Cam Pose Y", mostRecentMod2Pose.getY());
+            SmartDashboard.putNumber("mod 2 Cam Pose Angle",
+                    mostRecentMod2Pose.getRotation().getDegrees());
+    } catch (Exception e) {
+        Commands.print("mod 2 cam pose failed");
+    }
 
-if (vision.getMod3EstimatedPose().isPresent()) {
-  SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod3EstimatedPose().get().estimatedPose.getX());
-  SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod3EstimatedPose().get().estimatedPose.getY());
-  SmartDashboard.putNumber("Reef Cam Pose Angle",
-          vision.getMod3EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
-}
-try {
-var Mod3Pose = vision.getMod3EstimatedPose().get().estimatedPose.toPose2d();
-var mostRecentMod3Pose = Mod3Pose;
-drivetrainSubsys.addVisionMeasurement(mostRecentMod3Pose, vision.lastMod3EstimateTimestamp);
-} catch (Exception e) {
-Commands.print("reef cam pose failed");
-}
+    var mostRecentMod3Pose = new Pose2d();
+    try {
+      var Mod3Pose = vision.getMod3EstimatedPose().get().estimatedPose.toPose2d();
+         mostRecentMod3Pose = Mod3Pose;
+        drivetrainSubsys.addVisionMeasurement(mostRecentMod3Pose, vision.lastMod3EstimateTimestamp);
+        SmartDashboard.putNumber("mod 3 Cam Pose X",mostRecentMod3Pose.getX());
+          SmartDashboard.putNumber("mod 3 Cam Pose Y", mostRecentMod3Pose.getY());
+          SmartDashboard.putNumber("mod 3 Cam Pose Angle",
+                  mostRecentMod2Pose.getRotation().getDegrees());
+  } catch (Exception e) {
+      Commands.print("mod 3 cam pose failed");
+  }
         // allows us to reset our pose
         // TODO take out for matches
         // for auton testing at LSSU, change the pose to the starting pose we have in
@@ -296,19 +302,10 @@ Commands.print("reef cam pose failed");
             drivetrainSubsys.resetPose(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
         }
 
-
-        try {
-            var Mod0Pose = vision.getMod0EstimatedPose().get().estimatedPose.toPose2d();
-            var mostRecentMod0Pose = Mod0Pose;
-            drivetrainSubsys.addVisionMeasurement(mostRecentMod0Pose, vision.lastMod0EstimateTimestamp);
-        } catch (Exception e) {
-            Commands.print("reef cam pose failed");
-        }
-
-        // ***If the stuff above doesn't work, try adding these */
-        // var newestPose = drivetrainSubsys.getState().Pose;
-        // drivetrainSubsys.resetPose(newestPose);
-    }
+        var newestPose = drivetrainSubsys.getState().Pose;
+        drivetrainSubsys.resetPose(newestPose);
+    }       
+     
 
 
     public void updateSimulation() {
