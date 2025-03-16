@@ -101,7 +101,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   // CALCULATIONS
-  public double getEncoder() {
+  public Double getEncoder() {
     return (elevatorMotor.getRotorPosition().getValueAsDouble() * (Math.PI * 2.15) / 12.0) * -1.0;
   }
 
@@ -143,7 +143,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Sim Elevator Motor Output",
     // simElevatorMotor.getMotorVoltage());
     // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
-    SmartDashboard.putNumber("elev get enc", getEncoder());
     SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
 
