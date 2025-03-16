@@ -65,6 +65,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
   private final LaserCan alignmentLASER = new LaserCan(DrivetrainConstants.kAlignmentLASERCANId);
   private double distance = 0.0;
+  private boolean reefDetected = false;
 
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
@@ -269,8 +270,10 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
       });
     }
 
-    distance = getDistanceFromReef();
+    distance = getMetersFromReef();
+    reefDetected = alignLASERIsTriggered();
     SmartDashboard.putNumber("LASER", distance);
+    SmartDashboard.putBoolean("REEF DETECTED", reefDetected);
   }
 
   private void startSimThread() {
@@ -415,8 +418,13 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     }
   }
 
-  public Double getDistanceFromReef() {
+  public Double getMetersFromReef() {
     return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
+  }
+
+  public boolean alignLASERIsTriggered() {
+    Double metersFromReef = getMetersFromReef();
+    return (metersFromReef >= DrivetrainConstants.minMetersFromReef && metersFromReef <= DrivetrainConstants.maxMetersFromReef);
   }
 
 

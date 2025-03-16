@@ -110,6 +110,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Autons With Commands",
+  "folder": null,
   "choreoAuto": false
 }
