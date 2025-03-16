@@ -13,9 +13,11 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -67,7 +69,7 @@ public class RobotContainer {
       () -> elevatorSubsys.elevatorViz.getLength(), () -> pivotSubsys.pivotSim.getAngleRads());
   private final ClimberSubsystem climberSubsys = new ClimberSubsystem();
 
-  private final Vision vision = new Vision(drivetrainSubsys);
+  private final Vision vision = new Vision();
   private final Superstructure superstructure = new Superstructure(/* drivetrainSubsys, */ elevatorSubsys, intakeSubsys,
       pivotSubsys /* , vision */);
 
@@ -218,9 +220,9 @@ public class RobotContainer {
     }
   }
 
-  public void startPose() {
-    drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);
-  }
+  // public void startPose() {
+  //   drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);
+  // }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
@@ -230,16 +232,92 @@ public class RobotContainer {
     SmartDashboard.putData(autoChooser);
   }
 
-  public Pose2d getPose() {
-    return drivetrainSubsys.getState().Pose;
-  }
+ public void updatePose() {
+        // puts the drivetrain pose on our dashboards
+        SmartDashboard.putNumber("estimated drive pose x", drivetrainSubsys.getState().Pose.getX());
+        SmartDashboard.putNumber("estimated drive pose y", drivetrainSubsys.getState().Pose.getY());
+        SmartDashboard.putNumber("estimated drive pose rotation",
+                drivetrainSubsys.getState().Pose.getRotation().getDegrees());
 
+        // puts the pose from the reef cam on our dashboards if it sees a tag
+        if (vision.getMod0EstimatedPose().isPresent()) {
+            SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod0EstimatedPose().get().estimatedPose.getX());
+            SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod0EstimatedPose().get().estimatedPose.getY());
+            SmartDashboard.putNumber("Reef Cam Pose Angle",
+                    vision.getMod0EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
+        }
+        if (vision.getMod1EstimatedPose().isPresent()) {
+          SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod1EstimatedPose().get().estimatedPose.getX());
+          SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod1EstimatedPose().get().estimatedPose.getY());
+          SmartDashboard.putNumber("Reef Cam Pose Angle",
+                  vision.getMod1EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
+      }
+      try {
+        var Mod1Pose = vision.getMod1EstimatedPose().get().estimatedPose.toPose2d();
+        var mostRecentMod1Pose = Mod1Pose;
+        drivetrainSubsys.addVisionMeasurement(mostRecentMod1Pose, vision.lastMod1EstimateTimestamp);
+    } catch (Exception e) {
+        Commands.print("reef cam pose failed");
+    }
+
+    if (vision.getMod2EstimatedPose().isPresent()) {
+      SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod2EstimatedPose().get().estimatedPose.getX());
+      SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod2EstimatedPose().get().estimatedPose.getY());
+      SmartDashboard.putNumber("Reef Cam Pose Angle",
+              vision.getMod2EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
+  }
+  try {
+    var Mod2Pose = vision.getMod2EstimatedPose().get().estimatedPose.toPose2d();
+    var mostRecentMod2Pose = Mod2Pose;
+    drivetrainSubsys.addVisionMeasurement(mostRecentMod2Pose, vision.lastMod2EstimateTimestamp);
+} catch (Exception e) {
+    Commands.print("reef cam pose failed");
+}
+
+if (vision.getMod3EstimatedPose().isPresent()) {
+  SmartDashboard.putNumber("Reef Cam Pose X", vision.getMod3EstimatedPose().get().estimatedPose.getX());
+  SmartDashboard.putNumber("Reef Cam Pose Y", vision.getMod3EstimatedPose().get().estimatedPose.getY());
+  SmartDashboard.putNumber("Reef Cam Pose Angle",
+          vision.getMod3EstimatedPose().get().estimatedPose.toPose2d().getRotation().getDegrees());
+}
+try {
+var Mod3Pose = vision.getMod3EstimatedPose().get().estimatedPose.toPose2d();
+var mostRecentMod3Pose = Mod3Pose;
+drivetrainSubsys.addVisionMeasurement(mostRecentMod3Pose, vision.lastMod3EstimateTimestamp);
+} catch (Exception e) {
+Commands.print("reef cam pose failed");
+}
+        // allows us to reset our pose
+        // TODO take out for matches
+        // for auton testing at LSSU, change the pose to the starting pose we have in
+        // pathplanner. Note that the rotation2d value is found in the starting state,
+        // NOT the start pose
+        if (joystick.button(5).getAsBoolean()) {
+            drivetrainSubsys.resetPose(new Pose2d(0.0, 0.0, new Rotation2d(0.0)));
+        }
+
+
+        try {
+            var Mod0Pose = vision.getMod0EstimatedPose().get().estimatedPose.toPose2d();
+            var mostRecentMod0Pose = Mod0Pose;
+            drivetrainSubsys.addVisionMeasurement(mostRecentMod0Pose, vision.lastMod0EstimateTimestamp);
+        } catch (Exception e) {
+            Commands.print("reef cam pose failed");
+        }
+
+        // ***If the stuff above doesn't work, try adding these */
+        // var newestPose = drivetrainSubsys.getState().Pose;
+        // drivetrainSubsys.resetPose(newestPose);
+    }
+
+
+    public void updateSimulation() {
+      vision.visionSim.update(drivetrainSubsys.getState().Pose);
+      vision.visionSim.getDebugField();
+  }
+  
   public void resetSimulation() {
-    vision.reset();
-  }
-
-  public void updateVision() {
-    // vision.update(getPose());
+      vision.reset();
   }
 
 }
