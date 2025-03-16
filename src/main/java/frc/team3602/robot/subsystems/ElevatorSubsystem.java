@@ -39,7 +39,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   // Encoders, Simulated
   private double simElevatorEncoder;
 
-
   // Set point of elevator
   public double height = 0.0;
 
@@ -120,43 +119,37 @@ public class ElevatorSubsystem extends SubsystemBase {
         + (elevatorController.calculate(getEncoder(), height)));
   }
 
- 
-    @Override
-    public void periodic() {
-        if(Utils.isSimulation()){
-            simElevatorEncoder = elevatorViz.getLength();
-            simTotalEffort = simGetEffort();
-            elevatorMotor.setVoltage(simTotalEffort);
-        }else{
-            totalEffort = getEffort();
-            elevatorMotor.setVoltage(-totalEffort);
-        }
-    
-        // Update Simulation
-        elevatorSim.setInput(elevatorMotor.getMotorVoltage().getValueAsDouble());
-        elevatorSim.update(TimedRobot.kDefaultPeriod);
-        elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.2));
-  
-      
-      
-          SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
-          SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
-          SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0, 0));
-          SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
-      
-          // SmartDashboard.putNumber("Sim Elevator Motor Output",
-          // simElevatorMotor.getMotorVoltage());
-          // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
-          SmartDashboard.putNumber("elev get enc", getEncoder());
-          SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
-          SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
-      
-          SmartDashboard.putNumber("Elevator Set Height", height);
-      
-          SmartDashboard.putNumber("Elevator Encoder", getEncoder());
-      
-          
-      
+  @Override
+  public void periodic() {
+    if (Utils.isSimulation()) {
+      simElevatorEncoder = elevatorViz.getLength();
+      simTotalEffort = simGetEffort();
+      elevatorMotor.setVoltage(simTotalEffort);
+    } else {
+      totalEffort = getEffort();
+      elevatorMotor.setVoltage(-totalEffort);
+    }
+
+    // Update Simulation
+    elevatorSim.setInput(elevatorMotor.getMotorVoltage().getValueAsDouble());
+    elevatorSim.update(TimedRobot.kDefaultPeriod);
+    elevatorViz.setLength(elevatorViz.getLength() + (elevatorMotor.getMotorVoltage().getValueAsDouble() * 0.2));
+
+    SmartDashboard.putNumber("Elevator Motor Output", elevatorMotor.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator Follower Output", elevatorFollower.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator FFE Effort", elevatorFeedforward.calculate(0, 0));
+    SmartDashboard.putNumber("Elevator PID Effort", elevatorController.calculate(getEncoder(), height));
+
+    // SmartDashboard.putNumber("Sim Elevator Motor Output",
+    // simElevatorMotor.getMotorVoltage());
+    // SmartDashboard.putNumber("Sim Elevator Encoder Inches", simElevatorEncoder);
+    SmartDashboard.putNumber("elev get enc", getEncoder());
+    SmartDashboard.putNumber("Motor Encoder", elevatorMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Follower Motor Encoder", elevatorFollower.getPosition().getValueAsDouble());
+
+    SmartDashboard.putNumber("Elevator Set Height", height);
+
+    SmartDashboard.putNumber("Elevator Encoder", getEncoder());
 
   }
 
@@ -183,6 +176,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor.getConfigurator().apply(motorConfigs);
 
     SmartDashboard.putData("Elevator Viz", elevatorSimMech);
-   
+
   }
 }

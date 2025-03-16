@@ -66,7 +66,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private final LaserCan alignmentLASER = new LaserCan(DrivetrainConstants.kAlignmentLASERCANId);
   private double distance = 0.0;
 
-
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
    * for the drive motors.
@@ -339,68 +338,82 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
           );
           flypath.preventFlipping = true;
 
-        // Create a path following command using AutoBuilder.
-        return AutoBuilder.followPath(flypath);
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
-    }}else{
-        try{
-        
-            // Load the path you want to follow using its name in the GUI
-            PathPlannerPath flypath = new PathPlannerPath(
-                blueCloseBargeReefToCoralIntake,
-                constraints,
-                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-            flypath.preventFlipping = true;
-    
-            // Create a path following command using AutoBuilder.
-            return AutoBuilder.followPath(flypath);
+          // Create a path following command using AutoBuilder.
+          return AutoBuilder.followPath(flypath);
         } catch (Exception e) {
-            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-    }}}else if (getState().Pose.getY() < 4){
-        if(getState().Pose.getX()>= 4.5){
-            try{
-                
-                // Load the path you want to follow using its name in the GUI
-                PathPlannerPath flypath = new PathPlannerPath(
-                    blueFarNONBargeReefToCoralIntake,
-                    constraints,
-                    null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                    new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            );
-                flypath.preventFlipping = true;
-        
-                // Create a path following command using AutoBuilder.
-                return AutoBuilder.followPath(flypath);
-            } catch (Exception e) {
-                DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                return Commands.none();
-            }}else{
-                try{
-                
-                    // Load the path you want to follow using its name in the GUI
-                    PathPlannerPath flypath = new PathPlannerPath(
-                        blueCloseNONBargeReefToCoralIntake,
-                        constraints,
-                        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                        new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-                );
-                    flypath.preventFlipping = true;
-            
-                    // Create a path following command using AutoBuilder.
-                    return AutoBuilder.followPath(flypath);
-                } catch (Exception e) {
-                    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                    return Commands.none();
-                }
-            }} else{
-                return Commands.none();
-            }
+          DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+          return Commands.none();
+        }
+      } else {
+        try {
+
+          // Load the path you want to follow using its name in the GUI
+          PathPlannerPath flypath = new PathPlannerPath(
+              blueCloseBargeReefToCoralIntake,
+              constraints,
+              null, // The ideal starting state, this is only relevant for pre-planned paths, so can
+                    // be null for on-the-fly paths.
+              new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic rotation
+                                                                // here. If using a differential drivetrain, the
+                                                                // rotation will have no effect.
+          );
+          flypath.preventFlipping = true;
+
+          // Create a path following command using AutoBuilder.
+          return AutoBuilder.followPath(flypath);
+        } catch (Exception e) {
+          DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+          return Commands.none();
+        }
+      }
+    } else if (getState().Pose.getY() < 4) {
+      if (getState().Pose.getX() >= 4.5) {
+        try {
+
+          // Load the path you want to follow using its name in the GUI
+          PathPlannerPath flypath = new PathPlannerPath(
+              blueFarNONBargeReefToCoralIntake,
+              constraints,
+              null, // The ideal starting state, this is only relevant for pre-planned paths, so can
+                    // be null for on-the-fly paths.
+              new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation
+                                                                 // here. If using a differential drivetrain, the
+                                                                 // rotation will have no effect.
+          );
+          flypath.preventFlipping = true;
+
+          // Create a path following command using AutoBuilder.
+          return AutoBuilder.followPath(flypath);
+        } catch (Exception e) {
+          DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+          return Commands.none();
+        }
+      } else {
+        try {
+
+          // Load the path you want to follow using its name in the GUI
+          PathPlannerPath flypath = new PathPlannerPath(
+              blueCloseNONBargeReefToCoralIntake,
+              constraints,
+              null, // The ideal starting state, this is only relevant for pre-planned paths, so can
+                    // be null for on-the-fly paths.
+              new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation
+                                                                 // here. If using a differential drivetrain, the
+                                                                 // rotation will have no effect.
+          );
+          flypath.preventFlipping = true;
+
+          // Create a path following command using AutoBuilder.
+          return AutoBuilder.followPath(flypath);
+        } catch (Exception e) {
+          DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+          return Commands.none();
+        }
+      }
+    } else {
+      return Commands.none();
     }
+  }
 
   public Double getDistanceFromReef() {
     return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
@@ -409,7 +422,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   public void configDrivetrainSubsys() {
     try {
       var config = RobotConfig.fromGUISettings();
-      
+
       AutoBuilder.configure(
           () -> getState().Pose,
           this::resetPose,

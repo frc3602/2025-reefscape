@@ -68,7 +68,8 @@ public class RobotContainer {
   private final ClimberSubsystem climberSubsys = new ClimberSubsystem();
 
   private final Vision vision = new Vision(drivetrainSubsys);
-  private final Superstructure superstructure = new Superstructure(/* drivetrainSubsys, */ elevatorSubsys, intakeSubsys, pivotSubsys /*, vision */);
+  private final Superstructure superstructure = new Superstructure(/* drivetrainSubsys, */ elevatorSubsys, intakeSubsys,
+      pivotSubsys /* , vision */);
 
   /* Autonomous */
   private final SendableChooser<Command> autoChooser;
@@ -90,11 +91,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("shoot", superstructure.autonShoot());
     NamedCommands.registerCommand("intake", superstructure.autonIntake());
-    
+
     NamedCommands.registerCommand("grabAlgaeHigh", superstructure.autonGrabAlgaeHigh());
     NamedCommands.registerCommand("grabAlgaeLow", superstructure.autonGrabAlgaeLow());
     NamedCommands.registerCommand("holdAlgae", superstructure.autonHoldAlgae());
-
 
     drivetrainSubsys.configDrivetrainSubsys();
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -120,23 +120,33 @@ public class RobotContainer {
 
     if (Utils.isSimulation()) {
       // drivetrainSubsys.setDefaultCommand(
-      //     drivetrainSubsys.applyRequest(() -> drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward
-      //                                                                                                 // with negative Y
-      //                                                                                                 // (forward)
-      //         .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative X (left)
-      //         .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate)) // Drive counterclockwise with negative X
-      //                                                                         // (left)
+      // drivetrainSubsys.applyRequest(() ->
+      // drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward
+      // // with negative Y
+      // // (forward)
+      // .withVelocityY(joystick.getRawAxis(1) * MaxSpeed) // Drive left with negative
+      // X (left)
+      // .withRotationalRate(-joystick2.getRawAxis(1) * MaxAngularRate)) // Drive
+      // counterclockwise with negative X
+      // // (left)
       // );
     } else {
       drivetrainSubsys.setDefaultCommand(
-          drivetrainSubsys.applyRequest(() -> drive.withVelocityX( 0.5 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed) // Drive
-                                                                                                         // forward with
-                                                                                                         // negative Y
-                                                                                                         // (forward)
-              .withVelocityY(0.5 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-              .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative
-                                                                                // X (left)
-      ));
+          drivetrainSubsys.applyRequest(
+              () -> drive.withVelocityX(0.5 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed) // Drive
+                  // forward with
+                  // negative Y
+                  // (forward)
+                  .withVelocityY(0.5 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive
+                                                                                                              // left
+                                                                                                              // with
+                                                                                                              // negative
+                                                                                                              // X
+                                                                                                              // (left)
+                  .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with
+                                                                                    // negative
+                                                                                    // X (left)
+          ));
     }
   }
 
@@ -158,21 +168,34 @@ public class RobotContainer {
       // joystick2.button(4).onTrue(pivotSubsys.setAngle(150));
     } else {
       xboxController.leftTrigger().whileTrue(
-        drivetrainSubsys.applyRequest(() -> drive.withVelocityX(0.1 *  polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
-            .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative
+          drivetrainSubsys.applyRequest(
+              () -> drive.withVelocityX(0.1 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
+                  .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive
+                                                                                                              // left
+                                                                                                              // with
+                                                                                                              // negative
+                                                                                                              // X
+                                                                                                              // (left)
+                  .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate))); // Drive counterclockwise
+                                                                                             // with negative
       xboxController.rightBumper().onTrue(superstructure.getCoral());
       xboxController.rightTrigger().whileTrue(
-        drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityX(0.1 *  polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
-            .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative
+          drivetrainSubsys.applyRequest(() -> robocentricDrive
+              .withVelocityX(0.1 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
+              .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left
+                                                                                                          // with
+                                                                                                          // negative X
+                                                                                                          // (left)
+              .withRotationalRate(0.3 * -xboxController.getRightX() * MaxAngularRate)) // Drive counterclockwise with
+                                                                                       // negative
       );
 
       xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
       xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 
       xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
-      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered()).andThen(intakeSubsys.stopIntake()));
+      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered())
+          .andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
       // xboxController.y().onTrue(intakeSubsys.runIntake(-3.0)).onFalse(intakeSubsys.stopIntake());
@@ -196,7 +219,7 @@ public class RobotContainer {
   }
 
   public void startPose() {
-     drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);
+    drivetrainSubsys.resetPose(flyPathPosesConstants.startingPose);
   }
 
   public Command getAutonomousCommand() {
@@ -212,11 +235,11 @@ public class RobotContainer {
   }
 
   public void resetSimulation() {
-     vision.reset();
+    vision.reset();
   }
 
   public void updateVision() {
-     // vision.update(getPose());
+    // vision.update(getPose());
   }
 
 }

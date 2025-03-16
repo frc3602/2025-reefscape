@@ -37,7 +37,7 @@ public final class Constants {
   // in case we want the flypath stuff in superstructure or something
   public final class flyPathPosesConstants {
 
-      public static final Pose2d startingPose = new Pose2d(7.6, 0.5, Rotation2d.fromDegrees(180));
+    public static final Pose2d startingPose = new Pose2d(7.6, 0.5, Rotation2d.fromDegrees(180));
 
     // TODO- change with real life robot testing
     public static final Pose2d blueNONBargeCoralIntakePose = new Pose2d(1.22, 1.68, Rotation2d.fromDegrees(145));
@@ -62,7 +62,7 @@ public final class Constants {
     public final static double scoreLevelFour = 30.7;
     public final static double down = 0.1;
 
-    //the rest of these are bs numbers still
+    // the rest of these are bs numbers still
     public final static double scoreAlgaeProcesser = 2;
     public final static double scoreAlgaeBarge = 4;
     public final static double removeAlgaeHigh = 10;
@@ -97,7 +97,7 @@ public final class Constants {
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
     public final static double coralSpeed = 1.0;
-    public final static double intakeAlgaeSpeed = -0.5;//-0.3
+    public final static double intakeAlgaeSpeed = -0.5;// -0.3
     public final static double scorAlgeaSpeed = 0.3;
   }
 
@@ -108,24 +108,23 @@ public final class Constants {
 
     public final static double tolerance = 5; // TODO - this is random still
 
-    public final static double coralIntakeAngle = 101;//100
-    
-    public final static double lowStowAngle = 86;//87
-    public final static double highStowAngle = 30;//35
+    public final static double coralIntakeAngle = 101;// 100
+
+    public final static double lowStowAngle = 86;// 87
+    public final static double highStowAngle = 30;// 35
     public final static double scoreL4Angle = 89;
     public final static double scoreCoralAngle = 80;
     public final static double intakeAlgaeAngle = -50;
     public final static double scoreAlgaeProcesserAngle = -90;
 
-
     // PID Constants
-    public final static double KP = 0.11;//.056 //.09 .11
+    public final static double KP = 0.11;// .056 //.09 .11
     public final static double KI = 0.0;
     public final static double KD = 0.0001;
 
     // ffe Constants
     public final static double KS = 0.8;
-    public final static double KG = 0.27;//.25
+    public final static double KG = 0.27;// .25
     public final static double KV = 0.9;
     public final static double KA = 0.1;
 
@@ -152,7 +151,8 @@ public final class Constants {
   }
 
   public final class VisionConstants {
-    public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout
+        .loadField(AprilTagFields.k2025ReefscapeWelded);
 
     public static final int kWidthOfCamera = 4656;
     public static final int kHeightOfCamera = 3496;

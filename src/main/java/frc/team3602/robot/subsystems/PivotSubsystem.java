@@ -111,14 +111,14 @@ public class PivotSubsystem extends SubsystemBase {
 
     // CALCULATIONS
     private double getEncoderDegrees() {
-        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0) - 210; //absoluteOffset
+        return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0) - 210; // absoluteOffset
     }
 
     public boolean isNearGoal() {
         return MathUtil.isNear(setAngle, getEncoderDegrees(), PivotConstants.tolerance);
     }
 
-    public boolean isStowed(){
+    public boolean isStowed() {
         return getEncoderDegrees() < 35;
     }
 
@@ -138,14 +138,12 @@ public class PivotSubsystem extends SubsystemBase {
             simPivotEncoder = pivotViz.getAngle();
             pivotMotor.setVoltage(simGetEffort());
         } else {
-            if(getEncoderDegrees()  > -100){
+            if (getEncoderDegrees() > -100) {
                 pivotMotor.setVoltage(getEffort());
-            }else{
+            } else {
                 pivotMotor.setVoltage(-3);
             }
         }
-
-       
 
         // Update Simulation
         pivotSim.setInput(simPivotMotor.getMotorVoltage());
@@ -161,26 +159,27 @@ public class PivotSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Pivot Angle Deg", setAngle);
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Pivot FFE Effort", pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
+        SmartDashboard.putNumber("Pivot FFE Effort",
+                pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
         SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getEncoderDegrees(), setAngle));
         SmartDashboard.putNumber("Pivot Encoder ", getEncoderDegrees());
         SmartDashboard.putBoolean("pivot near goal", isNearGoal());
     }
 
-
-    private void configPivotSubsys(){
+    private void configPivotSubsys() {
         // SmartDashboard.putData("pivot angle", pivotAngle);
         // pivotAngle.setDefaultOption("high stow angle", PivotConstants.highStowAngle);
         // pivotAngle.setDefaultOption("low stow angle", PivotConstants.lowStowAngle);
         // pivotAngle.addOption("coral intake angle", PivotConstants.coralIntakeAngle);
         // pivotAngle.addOption("level 4 score angle", PivotConstants.scoreL4Angle);
-        // pivotAngle.addOption("level 1-3 score angle", PivotConstants.scoreCoralAngle);
+        // pivotAngle.addOption("level 1-3 score angle",
+        // PivotConstants.scoreCoralAngle);
 
-        //encoder configs
+        // encoder configs
         var magnetSensorConfigs = new MagnetSensorConfigs();
         magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = 1;
         pivotEncoder.getConfigurator().apply(magnetSensorConfigs);
-        
+
         // Motor configs
         var motorConfigs = new MotorOutputConfigs();
         var limitConfigs = new CurrentLimitsConfigs();

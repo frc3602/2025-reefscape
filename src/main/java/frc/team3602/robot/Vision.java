@@ -36,20 +36,28 @@ public class Vision {
     // public final VisionSystemSim visionSim = new VisionSystemSim("ALL_CAMS");
 
     /* Pose Estimators */
-    private final PhotonPoseEstimator photonPoseEstimator0 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod0CameraTransform);
-    private final PhotonPoseEstimator photonPoseEstimator1 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod1CameraTransform);
-    private final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod2CameraTransform);
-    private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator0 = new PhotonPoseEstimator(kFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod0CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator1 = new PhotonPoseEstimator(kFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod1CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(kFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod2CameraTransform);
+    private final PhotonPoseEstimator photonPoseEstimator3 = new PhotonPoseEstimator(kFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToMod3CameraTransform);
 
     // /* Camera Simulation */
-    // private final SimCameraProperties cameraProperties = new SimCameraProperties();
-    //   private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera, cameraProperties);
-    //   private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera, cameraProperties);
-    //   private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera, cameraProperties);
-    //   private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera, cameraProperties);
+    // private final SimCameraProperties cameraProperties = new
+    // SimCameraProperties();
+    // private PhotonCameraSim camera0Sim = new PhotonCameraSim(mod0Camera,
+    // cameraProperties);
+    // private PhotonCameraSim camera1Sim = new PhotonCameraSim(mod1Camera,
+    // cameraProperties);
+    // private PhotonCameraSim camera2Sim = new PhotonCameraSim(mod2Camera,
+    // cameraProperties);
+    // private PhotonCameraSim camera3Sim = new PhotonCameraSim(mod3Camera,
+    // cameraProperties);
 
-
-    /* Constructor */      
+    /* Constructor */
     public Vision(DrivetrainSubsystem driveSubsys) {
         this.driveSubsys = driveSubsys;
 
@@ -84,7 +92,7 @@ public class Vision {
     private double lastEstimateTimestampMod0 = 0.0;
     private Pose2d mod0Pose2d;
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseMod0(Pose2d prevEstimatedRobotPose){
+    public Optional<EstimatedRobotPose> getEstimatedPoseMod0(Pose2d prevEstimatedRobotPose) {
         double latestTimestamp = mod0Camera.getLatestResult().getTimestampSeconds();
         boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod0) > 1e-5;
 
@@ -102,7 +110,7 @@ public class Vision {
     private double lastEstimateTimestampMod1 = 0.0;
     private Pose2d mod1Pose2d;
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseMod1(Pose2d prevEstimatedRobotPose){
+    public Optional<EstimatedRobotPose> getEstimatedPoseMod1(Pose2d prevEstimatedRobotPose) {
         double latestTimestamp = mod1Camera.getLatestResult().getTimestampSeconds();
         boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod1) > 1e-5;
 
@@ -120,7 +128,7 @@ public class Vision {
     private double lastEstimateTimestampMod2 = 0.0;
     private Pose2d mod2Pose2d;
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseMod2(Pose2d prevEstimatedRobotPose){
+    public Optional<EstimatedRobotPose> getEstimatedPoseMod2(Pose2d prevEstimatedRobotPose) {
         double latestTimestamp = mod2Camera.getLatestResult().getTimestampSeconds();
         boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod2) > 1e-5;
 
@@ -138,7 +146,7 @@ public class Vision {
     private double lastEstimateTimestampMod3 = 0.0;
     private Pose2d mod3Pose2d;// = new Pose2d();
 
-    public Optional<EstimatedRobotPose> getEstimatedPoseMod3(Pose2d prevEstimatedRobotPose){
+    public Optional<EstimatedRobotPose> getEstimatedPoseMod3(Pose2d prevEstimatedRobotPose) {
         double latestTimestamp = mod3Camera.getLatestResult().getTimestampSeconds();
         boolean newResult = Math.abs(latestTimestamp - lastEstimateTimestampMod3) > 1e-5;
 
@@ -166,22 +174,22 @@ public class Vision {
             driveSubsys.addVisionMeasurement(mod1Pose2d, lastEstimateTimestampMod1);
         } catch (Exception e) {
             Commands.print("mod1 pose failed");
-        } 
-    
+        }
+
         try {
             getEstimatedPoseMod2(pose);
             driveSubsys.addVisionMeasurement(mod2Pose2d, lastEstimateTimestampMod2);
         } catch (Exception e) {
             Commands.print("mod2 pose failed");
-        } 
-   
+        }
+
         try {
             getEstimatedPoseMod3(pose);
             driveSubsys.addVisionMeasurement(mod3Pose2d, lastEstimateTimestampMod3);
         } catch (Exception e) {
             Commands.print("mod3 pose failed");
-        }    
-   
+        }
+
         SmartDashboard.putNumber("posex", pose.getX());
         SmartDashboard.putNumber("posey", pose.getY());
 
