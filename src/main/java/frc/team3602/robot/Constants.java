@@ -110,8 +110,7 @@ public final class Constants {
 
     public final static double coralIntakeAngle = 101;// 100
 
-    public final static double lowStowAngle = 86;// 87
-    public final static double highStowAngle = 30;// 35
+    public final static double stowAngle = 24;
     public final static double scoreL4Angle = 89;
     public final static double scoreCoralAngle = 80;
     public final static double intakeAlgaeAngle = -50;
@@ -147,7 +146,7 @@ public final class Constants {
 
   public final class ClimberConstants {
     public static final int motorCANId = 18;
-    public static final double percentVoltageScalar = 0.2;
+    public static final double percentVoltageScalar = 0.2; // TODO: Make faster; this number is for testing.
   }
 
   public final class VisionConstants {

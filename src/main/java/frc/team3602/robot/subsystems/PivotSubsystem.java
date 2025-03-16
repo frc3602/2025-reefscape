@@ -52,7 +52,7 @@ public class PivotSubsystem extends SubsystemBase {
     private double simPivotEncoder;
 
     // Set Point for Pivot
-    private double setAngle = 85.0;
+    private double setAngle = 102.0;
 
     // Controls, Actual
     private final PIDController pivotController = new PIDController(PivotConstants.KP, PivotConstants.KI,

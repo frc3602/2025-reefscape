@@ -34,7 +34,7 @@ public class Superstructure extends SubsystemBase {
 
     public Command getCoral() {
         return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.highStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(0.0),
@@ -55,7 +55,7 @@ public class Superstructure extends SubsystemBase {
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
                 Commands.print("Pivot Stowed"),
 
@@ -74,7 +74,7 @@ public class Superstructure extends SubsystemBase {
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
                 Commands.print("Pivot Stowed"),
 
@@ -93,7 +93,7 @@ public class Superstructure extends SubsystemBase {
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.highStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isStowed()),
                 Commands.print("Pivot Stowed"),
 
@@ -112,7 +112,7 @@ public class Superstructure extends SubsystemBase {
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.highStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
                 Commands.print("Pivot Stowed"),
 
@@ -137,7 +137,7 @@ public class Superstructure extends SubsystemBase {
         // );
         // } else {
         return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(0.1),
@@ -208,7 +208,7 @@ public class Superstructure extends SubsystemBase {
         } else {
             // algaeTaken = false;
             return Commands.sequence(
-                    pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                    pivotSubsys.setAngle(PivotConstants.stowAngle),
                     Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                     elevatorSubsys.setHeight(0.1),
@@ -231,7 +231,7 @@ public class Superstructure extends SubsystemBase {
                 intakeSubsys.runIntake(0.4),
                 Commands.waitSeconds(1),
 
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(0.1),
@@ -254,7 +254,7 @@ public class Superstructure extends SubsystemBase {
     /* Commands for Autonomous */
     public Command autonPrepElevL1() {
         return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(ElevatorConstants.scoreLevelOne),
@@ -263,7 +263,7 @@ public class Superstructure extends SubsystemBase {
 
     public Command autonPrepElevL2() {
         return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(ElevatorConstants.scoreLevelTwo),
@@ -272,7 +272,7 @@ public class Superstructure extends SubsystemBase {
 
     public Command autonPrepElevL3() {
         return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.highStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(ElevatorConstants.scoreLevelThree),
@@ -281,7 +281,7 @@ public class Superstructure extends SubsystemBase {
 
     public Command autonPrepElevL4() {
         return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(31.0) // ElevatorConstants.scoreLevelFour
@@ -290,7 +290,7 @@ public class Superstructure extends SubsystemBase {
 
     public Command autonPrepElevCoralIntake() {
         return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.lowStowAngle),
+                pivotSubsys.setAngle(PivotConstants.stowAngle),
                 Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
                 elevatorSubsys.setHeight(0.1));

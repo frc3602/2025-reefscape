@@ -69,8 +69,8 @@ public class IntakeSubsystem extends SubsystemBase {
             setSpeed = -speed;
             intakeMotor.set(-speed);
         }, () -> {
-            setSpeed = 0;
-            intakeMotor.set(0);
+            setSpeed = 0.0;
+            intakeMotor.set(0.0);
         });
     }
 
