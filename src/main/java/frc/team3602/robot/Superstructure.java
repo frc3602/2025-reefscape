@@ -7,10 +7,11 @@
 package frc.team3602.robot;
 
 import edu.wpi.first.wpilibj2.command.*;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
-import frc.team3602.robot.Constants.ElevatorConstants;
-import frc.team3602.robot.Constants.IntakeConstants;
-import frc.team3602.robot.Constants.PivotConstants;
+import static frc.team3602.robot.Constants.ElevatorConstants.*;
+import static frc.team3602.robot.Constants.IntakeConstants.*;
+import static frc.team3602.robot.Constants.PivotConstants.*;
 // import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
@@ -33,170 +34,167 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Command getCoral() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+        return sequence(
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
                 elevatorSubsys.setHeight(0.0),
-                Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
+                waitUntil(elevatorSubsys::isNearGoal),
 
-                pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+                pivotSubsys.setAngle(coralIntakeAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
                 intakeSubsys.runIntake(0.3),
-                Commands.waitUntil(() -> intakeSubsys.sensorIsTriggered()),
+                waitUntil(intakeSubsys::sensorIsTriggered),
                 intakeSubsys.runIntake(-0.5).withTimeout(1.0),
                 intakeSubsys.stopIntake());
     }
 
     public Command scoreL1Coral() {
-        return Commands.sequence(
-                Commands.print("Start of Sequence"),
+        return sequence(
+                print("Start of Sequence"),
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                Commands.print("Pivot Stowed"),
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                print("Pivot Stowed"),
 
-                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelOne),
-                Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
-                Commands.print("Elevator Positioned"),
+                elevatorSubsys.setHeight(scoreLevelOne),
+                waitUntil(elevatorSubsys::isNearGoal),
+                print("Elevator Positioned"),
 
-                pivotSubsys.setAngle(PivotConstants.scoreCoralAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                Commands.print("Pivot Positioned"));
+                pivotSubsys.setAngle(scoreCoralAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                print("Pivot Positioned"));
     }
 
     public Command scoreL2Coral() {
-        return Commands.sequence(
-                Commands.print("Start of Sequence"),
+        return sequence(
+                print("Start of Sequence"),
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                Commands.print("Pivot Stowed"),
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                print("Pivot Stowed"),
 
-                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelTwo),
-                Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
-                Commands.print("Elevator Positioned"),
+                elevatorSubsys.setHeight(scoreLevelTwo),
+                waitUntil(elevatorSubsys::isNearGoal),
+                print("Elevator Positioned"),
 
-                pivotSubsys.setAngle(PivotConstants.scoreCoralAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                Commands.print("Pivot Positioned"));
+                pivotSubsys.setAngle(scoreCoralAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                print("Pivot Positioned"));
     }
 
     public Command scoreL3Coral() {
-        return Commands.sequence(
-                Commands.print("Start of Sequence"),
+        return sequence(
+                print("Start of Sequence"),
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isStowed()),
-                Commands.print("Pivot Stowed"),
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isStowed),
+                print("Pivot Stowed"),
 
-                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelThree),
-                Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
-                Commands.print("Elevator Positioned"),
+                elevatorSubsys.setHeight(scoreLevelThree),
+                waitUntil(elevatorSubsys::isNearGoal),
+                print("Elevator Positioned"),
 
-                pivotSubsys.setAngle(PivotConstants.scoreCoralAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                Commands.print("Pivot Positioned"));
+                pivotSubsys.setAngle(scoreCoralAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                print("Pivot Positioned"));
     }
 
     public Command scoreL4Coral() {
-        return Commands.sequence(
-                Commands.print("Start of Sequence"),
+        return sequence(
+                print("Start of Sequence"),
 
                 intakeSubsys.stopIntake(),
 
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-                Commands.print("Pivot Stowed"),
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                print("Pivot Stowed"),
 
-                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelFour),
-                // Commands.waitUntil(() -> elevatorSubsys.isAbove(15)),
-                Commands.print("elev above the point of no return!!!"),
+                elevatorSubsys.setHeight(scoreLevelFour),
+                // waitUntil(() -> elevatorSubsys.isAbove(15)),
+                print("elev above the point of no return!!!"),
 
-                pivotSubsys.setAngle(PivotConstants.scoreL4Angle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()));
+                pivotSubsys.setAngle(scoreL4Angle),
+                waitUntil(pivotSubsys::isNearGoal));
     }
 
     public Command score() {
-        return intakeSubsys.runIntake(IntakeConstants.coralSpeed).until(() -> !intakeSubsys.sensorIsTriggered());
+        return intakeSubsys.runIntake(coralSpeed).until(() -> !intakeSubsys.sensorIsTriggered());
     }
 
     public Command down() {
-        return Commands.sequence(
-        
-            (elevatorSubsys.getEncoder() >= 30.0) ?
-                Commands.sequence(
-                    Commands.print("Cool!"),
-                    pivotSubsys.setAngle(115.0),
-                    Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+        return sequence(
 
-                    elevatorSubsys.setHeight(ElevatorConstants.scoreLevelThree),
-                    Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
-                    Commands.waitSeconds(3)
-                ) :
-                Commands.print("BAD ENCODER: " + elevatorSubsys.getEncoder().toString()),      
+                (elevatorSubsys.getEncoder() >= 30.0) ? sequence(
+                        print("Cool!"),
+                        pivotSubsys.setAngle(115.0),
+                        waitUntil(pivotSubsys::isNearGoal),
 
-            pivotSubsys.setAngle(PivotConstants.stowAngle),
-            Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+                        elevatorSubsys.setHeight(scoreLevelThree),
+                        waitUntil(elevatorSubsys::isNearGoal),
+                        waitSeconds(3))
+                        : print("BAD ENCODER: " + elevatorSubsys.getEncoder().toString()),
 
-            elevatorSubsys.setHeight(0.1),
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
-            pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
-            Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-            intakeSubsys.runIntake(0.1).until(() -> intakeSubsys.sensorIsTriggered())
-        );
+                elevatorSubsys.setHeight(0.1),
+
+                pivotSubsys.setAngle(coralIntakeAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                intakeSubsys.runIntake(0.1).until(intakeSubsys::sensorIsTriggered));
     }
 
     public Command grabAlgaeHigh() {
-        return Commands.sequence(
+        return sequence(
                 pivotSubsys.setAngle(0.0),
-                Commands.waitUntil(() -> pivotSubsys.isStowed()),
+                waitUntil(pivotSubsys::isStowed),
 
-                elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeHigh),
+                elevatorSubsys.setHeight(removeAlgaeHigh),
 
                 pivotSubsys.setAngle(-50.0),
 
-                intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed));
+                intakeSubsys.runIntake(intakeAlgaeSpeed));
     }
 
     public Command grabAlgaeLow() {
-        return Commands.sequence(
+        return sequence(
                 pivotSubsys.setAngle(0),
-                Commands.waitUntil(() -> pivotSubsys.isStowed()),
+                waitUntil(pivotSubsys::isStowed),
 
-                elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeLow),
+                elevatorSubsys.setHeight(removeAlgaeLow),
 
                 pivotSubsys.setAngle(-50),
 
-                intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed));
+                intakeSubsys.runIntake(intakeAlgaeSpeed));
     }
 
     public Command holdAlgae() {
-        return Commands.sequence(
+        return sequence(
                 intakeSubsys.runIntake(-0.6),
 
                 elevatorSubsys.setHeight(0.1));
     }
 
     public Command setAlgaeProcesser() {
-        return Commands.parallel(
-                intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed),
+        return parallel(
+                intakeSubsys.runIntake(intakeAlgaeSpeed),
 
-                Commands.sequence(
-                        elevatorSubsys.setHeight(ElevatorConstants.scoreAlgaeProcesser),
+                sequence(
+                        elevatorSubsys.setHeight(scoreAlgaeProcesser),
 
-                        pivotSubsys.setAngle(PivotConstants.scoreAlgaeProcesserAngle)));
+                        pivotSubsys.setAngle(scoreAlgaeProcesserAngle)));
     }
 
     public Command scoreAlgae() {
-        return intakeSubsys.runIntake(IntakeConstants.scorAlgeaSpeed);
+        return intakeSubsys.runIntake(scorAlgeaSpeed);
     }
 
     // private boolean algaeTaken = false;
@@ -205,24 +203,24 @@ public class Superstructure extends SubsystemBase {
         // if (!algaeTaken) {
         // algaeTaken = true;
         if (elevatorSubsys.getEncoder() < 0.5) {
-            return Commands.sequence(
+            return sequence(
                     elevatorSubsys.setHeight(0.1),
 
-                    pivotSubsys.setAngle(PivotConstants.intakeAlgaeAngle),
+                    pivotSubsys.setAngle(intakeAlgaeAngle),
 
-                    intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed));
+                    intakeSubsys.runIntake(intakeAlgaeSpeed));
         } else {
             // algaeTaken = false;
-            return Commands.sequence(
-                    pivotSubsys.setAngle(PivotConstants.stowAngle),
-                    Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+            return sequence(
+                    pivotSubsys.setAngle(stowAngle),
+                    waitUntil(pivotSubsys::isNearGoal),
 
                     elevatorSubsys.setHeight(0.1),
-                    Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
+                    waitUntil(elevatorSubsys::isNearGoal),
 
-                    pivotSubsys.setAngle(PivotConstants.intakeAlgaeAngle),
+                    pivotSubsys.setAngle(intakeAlgaeAngle),
 
-                    intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed));
+                    intakeSubsys.runIntake(intakeAlgaeSpeed));
         }
         // } // ?
     }
@@ -233,99 +231,99 @@ public class Superstructure extends SubsystemBase {
         // algaeDropped = !algaeDropped;
 
         // if (algaeDropped) {
-        return Commands.sequence(
+        return sequence(
                 intakeSubsys.runIntake(0.4),
-                Commands.waitSeconds(1),
+                waitSeconds(1),
 
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
                 elevatorSubsys.setHeight(0.1),
 
-                intakeSubsys.runIntake(0.17).until(() -> intakeSubsys.sensorIsTriggered()),
+                intakeSubsys.runIntake(0.17).until(intakeSubsys::sensorIsTriggered),
 
-                pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()));
+                pivotSubsys.setAngle(coralIntakeAngle),
+                waitUntil(pivotSubsys::isNearGoal));
         // } else {
         // return intakeSubsys.stopIntake();
         // }
     }
 
     public Command ridIntakeOfCoral() {
-        return Commands.sequence(
-                intakeSubsys.runIntake(IntakeConstants.coralSpeed),
-                Commands.waitUntil(() -> !intakeSubsys.sensorIsTriggered()));
+        return sequence(
+                intakeSubsys.runIntake(coralSpeed),
+                waitUntil(() -> !intakeSubsys.sensorIsTriggered()));
     }
 
     /* Commands for Autonomous */
     public Command autonPrepElevL1() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+        return sequence(
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
-                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelOne),
-                Commands.waitUntil(() -> elevatorSubsys.isNearGoal()));
+                elevatorSubsys.setHeight(scoreLevelOne),
+                waitUntil(elevatorSubsys::isNearGoal));
     }
 
     public Command autonPrepElevL2() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+        return sequence(
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
-                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelTwo),
-                Commands.waitUntil(() -> elevatorSubsys.isNearGoal()));
+                elevatorSubsys.setHeight(scoreLevelTwo),
+                waitUntil(elevatorSubsys::isNearGoal));
     }
 
     public Command autonPrepElevL3() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+        return sequence(
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
-                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelThree),
-                Commands.waitUntil(() -> elevatorSubsys.isNearGoal()));
+                elevatorSubsys.setHeight(scoreLevelThree),
+                waitUntil(elevatorSubsys::isNearGoal));
     }
 
     public Command autonPrepElevL4() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+        return sequence(
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
-                elevatorSubsys.setHeight(31.0) // ElevatorConstants.scoreLevelFour
+                elevatorSubsys.setHeight(31.0) // scoreLevelFour
         );
     }
 
     public Command autonPrepElevCoralIntake() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.stowAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
+        return sequence(
+                pivotSubsys.setAngle(stowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
 
                 elevatorSubsys.setHeight(0.1));
     }
 
     public Command autonPrepPivotReef() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.scoreCoralAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()));
+        return sequence(
+                pivotSubsys.setAngle(scoreCoralAngle),
+                waitUntil(pivotSubsys::isNearGoal));
     }
 
     public Command autonPrepPivotL4() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(88.0), // PivotConstants.scoreL4Angle
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal()));
+        return sequence(
+                pivotSubsys.setAngle(88.0), // scoreL4Angle
+                waitUntil(pivotSubsys::isNearGoal));
     }
 
     public Command autonPrepPivotCoralIntake() {
-        return Commands.sequence(
-                pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
-                Commands.waitUntil(() -> pivotSubsys.isNearGoal())
-        // intakeSubsys.runIntake(0.2) // .until(() -> intakeSubsys.sensorIsTriggered())
+        return sequence(
+                pivotSubsys.setAngle(coralIntakeAngle),
+                waitUntil(pivotSubsys::isNearGoal)
+        // intakeSubsys.runIntake(0.2) // .until(intakeSubsys::sensorIsTriggered)
         );
     }
 
     public Command autonPrepPivotAlgae() {
-        return Commands.sequence(
+        return sequence(
                 pivotSubsys.setAngle(0),
-                Commands.waitUntil(() -> pivotSubsys.isStowed()));
+                waitUntil(pivotSubsys::isStowed));
     }
 
     public Command autonShoot() {
@@ -333,38 +331,37 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Command autonIntake() {
-        return intakeSubsys.runIntake(0.2).until(() -> intakeSubsys.sensorIsTriggered());
+        return intakeSubsys.runIntake(0.2).until(intakeSubsys::sensorIsTriggered);
     }
 
     public Command autonGrabAlgaeHigh() {
-        return Commands.sequence(
+        return sequence(
                 // pivotSubsys.setAngle(0.0),
-                // Commands.waitUntil(() -> pivotSubsys.isStowed()),
+                // waitUntil(pivotSubsys::isStowed),
 
-                elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeHigh),
+                elevatorSubsys.setHeight(removeAlgaeHigh),
 
                 pivotSubsys.setAngle(-50.0),
 
-                intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed));
+                intakeSubsys.runIntake(intakeAlgaeSpeed));
     }
 
     public Command autonGrabAlgaeLow() {
-        return Commands.sequence(
+        return sequence(
                 // pivotSubsys.setAngle(0),
-                // Commands.waitUntil(() -> pivotSubsys.isStowed()),
+                // waitUntil(pivotSubsys::isStowed),
 
-                elevatorSubsys.setHeight(ElevatorConstants.removeAlgaeLow),
+                elevatorSubsys.setHeight(removeAlgaeLow),
 
                 pivotSubsys.setAngle(-50.0),
 
-                intakeSubsys.runIntake(IntakeConstants.intakeAlgaeSpeed));
+                intakeSubsys.runIntake(intakeAlgaeSpeed));
     }
 
     public Command autonHoldAlgae() {
-        return Commands.sequence(
+        return sequence(
                 intakeSubsys.runIntake(-0.6),
 
                 elevatorSubsys.setHeight(0.1));
     }
-
 }
