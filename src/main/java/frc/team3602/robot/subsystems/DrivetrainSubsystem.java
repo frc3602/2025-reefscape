@@ -427,30 +427,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     return (metersFromReef >= DrivetrainConstants.minMetersFromReef && metersFromReef <= DrivetrainConstants.maxMetersFromReef);
   }
 
-
-/**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     */
-    @Override
-    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
-    }
-
-    // same thing as before, but could be used in place of it if we use the standard deviation of vision measurments(I have no idea how to do that!)
-    @Override
-    public void addVisionMeasurement(
-        Pose2d visionRobotPoseMeters,
-        double timestampSeconds,
-        Matrix<N3, N1> visionMeasurementStdDevs
-    ) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
-    }
-
-
   public void configDrivetrainSubsys() {
     try {
       var config = RobotConfig.fromGUISettings();
