@@ -6,6 +6,9 @@
 
 package frc.team3602.robot;
 
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
@@ -130,26 +133,16 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Command down() {
-        return sequence(
+        return Commands.sequence(
+            pivotSubsys.setAngle(stowAngle),
+            Commands.waitUntil(pivotSubsys::isNearGoal()),
 
-                (elevatorSubsys.getEncoder() >= 30.0) ? sequence(
-                        print("Cool!"),
-                        pivotSubsys.setAngle(115.0),
-                        waitUntil(pivotSubsys::isNearGoal),
+            elevatorSubsys.setHeight(0.1),
 
-                        elevatorSubsys.setHeight(scoreLevelThree),
-                        waitUntil(elevatorSubsys::isNearGoal),
-                        waitSeconds(3))
-                        : print("BAD ENCODER: " + elevatorSubsys.getEncoder().toString()),
-
-                pivotSubsys.setAngle(stowAngle),
-                waitUntil(pivotSubsys::isNearGoal),
-
-                elevatorSubsys.setHeight(0.1),
-
-                pivotSubsys.setAngle(coralIntakeAngle),
-                waitUntil(pivotSubsys::isNearGoal),
-                intakeSubsys.runIntake(0.1).until(intakeSubsys::sensorIsTriggered));
+            pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
+            Commands.waitUntil(pivotSubsys::isNearGoal()),
+            intakeSubsys.runIntake(0.1).until(intakeSubsys::sensorIsTriggered())
+        );
     }
 
     public Command grabAlgaeHigh() {

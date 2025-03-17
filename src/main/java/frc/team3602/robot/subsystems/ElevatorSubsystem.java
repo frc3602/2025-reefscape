@@ -100,6 +100,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     });
   }
 
+
+
   // CALCULATIONS
   public Double getEncoder() {
     return (elevatorMotor.getRotorPosition().getValueAsDouble() * (Math.PI * 2.15) / 12.0) * -1.0;
@@ -149,7 +151,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Set Height", height);
 
     SmartDashboard.putNumber("Elevator Encoder", getEncoder());
-
   }
 
   private void configElevatorSubsys() {
