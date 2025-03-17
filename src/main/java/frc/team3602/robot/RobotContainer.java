@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import static edu.wpi.first.units.Units.*;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
-import frc.team3602.robot.Constants.flyPathPosesConstants;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.ClimberSubsystem;
 import frc.team3602.robot.subsystems.DrivetrainSubsystem;
@@ -107,11 +107,6 @@ public class RobotContainer {
     polarityChooser.addOption("Positive", 1.0);
     polarityChooser.addOption("Negative", -1.0);
 
-    SmartDashboard.putBoolean("Camera0", vision.mod0Camera.getLatestResult().hasTargets());
-    SmartDashboard.putBoolean("Camera1", vision.mod1Camera.getLatestResult().hasTargets());
-    SmartDashboard.putBoolean("Camera2", vision.mod2Camera.getLatestResult().hasTargets());
-    SmartDashboard.putBoolean("Camera3", vision.mod3Camera.getLatestResult().hasTargets());
-
     configDefaultCommands();
     configButtonBindings();
     configAutonomous();
@@ -122,6 +117,7 @@ public class RobotContainer {
   private void configDefaultCommands() {
 
     if (Utils.isSimulation()) {
+
       // drivetrainSubsys.setDefaultCommand(
       // drivetrainSubsys.applyRequest(() ->
       // drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed) // Drive forward
@@ -159,6 +155,9 @@ public class RobotContainer {
    */
   private void configButtonBindings() {
     if (Utils.isSimulation()) {
+      joystick.button(2).onTrue(superstructure.down());
+      joystick.button(4).onTrue(superstructure.scoreL4Coral());
+
 
       // // joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
       // // joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));

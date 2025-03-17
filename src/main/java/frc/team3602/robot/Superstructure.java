@@ -6,6 +6,9 @@
 
 package frc.team3602.robot;
 
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
 import frc.team3602.robot.Constants.ElevatorConstants;
@@ -130,19 +133,6 @@ public class Superstructure extends SubsystemBase {
 
     public Command down() {
         return Commands.sequence(
-        
-            (elevatorSubsys.getEncoder() >= 30.0) ?
-                Commands.sequence(
-                    Commands.print("Cool!"),
-                    pivotSubsys.setAngle(115.0),
-                    Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
-
-                    elevatorSubsys.setHeight(ElevatorConstants.scoreLevelThree),
-                    Commands.waitUntil(() -> elevatorSubsys.isNearGoal()),
-                    Commands.waitSeconds(3)
-                ) :
-                Commands.print("BAD ENCODER: " + elevatorSubsys.getEncoder().toString()),      
-
             pivotSubsys.setAngle(PivotConstants.stowAngle),
             Commands.waitUntil(() -> pivotSubsys.isNearGoal()),
 
@@ -366,5 +356,4 @@ public class Superstructure extends SubsystemBase {
 
                 elevatorSubsys.setHeight(0.1));
     }
-
 }
