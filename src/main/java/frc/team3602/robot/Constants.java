@@ -32,8 +32,8 @@ public final class Constants {
 
   public final class DrivetrainConstants {
     public final static int kAlignmentLASERCANId = 6;
-    public final static double minMetersFromReef = 0.1;
-    public final static double maxMetersFromReef = Units.inchesToMeters(31); // TODO: Use real numbers :(
+    public final static double minMetersFromReef = 0.0;
+    public final static double maxMetersFromReef = 1.0; // TODO: Use real numbers :(
   }
 
   // in case we want the flypath stuff in superstructure or something

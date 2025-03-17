@@ -135,13 +135,13 @@ public class Superstructure extends SubsystemBase {
     public Command down() {
         return Commands.sequence(
             pivotSubsys.setAngle(stowAngle),
-            Commands.waitUntil(pivotSubsys::isNearGoal()),
+            waitUntil(pivotSubsys::isNearGoal),
 
             elevatorSubsys.setHeight(0.1),
 
-            pivotSubsys.setAngle(PivotConstants.coralIntakeAngle),
-            Commands.waitUntil(pivotSubsys::isNearGoal()),
-            intakeSubsys.runIntake(0.1).until(intakeSubsys::sensorIsTriggered())
+            pivotSubsys.setAngle(coralIntakeAngle),
+            waitUntil(pivotSubsys::isNearGoal),
+            intakeSubsys.runIntake(0.1).until(intakeSubsys::sensorIsTriggered)
         );
     }
 

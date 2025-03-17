@@ -155,10 +155,6 @@ public class RobotContainer {
    */
   private void configButtonBindings() {
     if (Utils.isSimulation()) {
-      joystick.button(2).onTrue(superstructure.down());
-      joystick.button(4).onTrue(superstructure.scoreL4Coral());
-
-
       // // joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
       // // joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
       // // // joystick.button(3).onTrue(superstructure.scoreCoral());
@@ -195,6 +191,7 @@ public class RobotContainer {
       xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
       xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 
+      xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(0.45 * Math.signum(joystick.getRawAxis(3)))).until(drivetrainSubsys::alignLASERIsTriggered));
       xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered())
           .andThen(intakeSubsys.stopIntake()));
