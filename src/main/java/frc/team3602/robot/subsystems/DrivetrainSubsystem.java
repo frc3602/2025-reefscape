@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.team3602.robot.Constants.DrivetrainConstants;
 import frc.team3602.robot.Constants.flyPathPosesConstants;
@@ -44,6 +46,14 @@ import frc.team3602.robot.Constants.flyPathPosesConstants;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsystem {
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max
+                                                                                    // angular velocity
+
+  public final SwerveRequest.RobotCentric robocentricDrive = new SwerveRequest.RobotCentric()
+    .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
@@ -425,6 +435,14 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   public boolean alignLASERIsTriggered() {
     Double metersFromReef = getMetersFromReef();
     return (metersFromReef >= DrivetrainConstants.minMetersFromReef && metersFromReef <= DrivetrainConstants.maxMetersFromReef);
+  }
+
+  public Command alignLeft() {
+    return applyRequest(() -> robocentricDrive.withVelocityY(-0.45));
+  }
+
+  public Command alignRight() {
+    return applyRequest(() -> robocentricDrive.withVelocityY(0.45));
   }
 
   public void configDrivetrainSubsys() {

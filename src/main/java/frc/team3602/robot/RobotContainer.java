@@ -45,9 +45,6 @@ public class RobotContainer {
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  private final SwerveRequest.RobotCentric robocentricDrive = new SwerveRequest.RobotCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -178,7 +175,7 @@ public class RobotContainer {
                                                                                              // with negative
       xboxController.rightBumper().onTrue(superstructure.getCoral());
       xboxController.rightTrigger().whileTrue(
-          drivetrainSubsys.applyRequest(() -> robocentricDrive
+          drivetrainSubsys.applyRequest(() -> drivetrainSubsys.robocentricDrive
               .withVelocityX(0.1 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
               .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left
                                                                                                           // with
@@ -191,7 +188,7 @@ public class RobotContainer {
       xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
       xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 
-      xboxController.a().whileTrue(drivetrainSubsys.applyRequest(() -> robocentricDrive.withVelocityY(0.45 * Math.signum(joystick.getRawAxis(3)))).until(drivetrainSubsys::alignLASERIsTriggered));
+      xboxController.a().whileTrue(((joystick.getRawAxis(3) <= 0) ? drivetrainSubsys.alignLeft() : drivetrainSubsys.alignRight()).until(drivetrainSubsys::alignLASERIsTriggered));
       xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered())
           .andThen(intakeSubsys.stopIntake()));
