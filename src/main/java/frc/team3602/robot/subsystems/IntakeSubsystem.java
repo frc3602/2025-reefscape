@@ -74,6 +74,20 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command setIntake(Double speed){
+        return runOnce(() -> {
+            intakeMotor.set(-speed);
+        });
+    }
+
+    public Command holdAlgae(Double speed) {
+        return runOnce(() -> {
+            setSpeed = -speed;
+            intakeMotor.set(-speed);
+        }
+        );
+    }
+
     public Command stopIntake() {
         return runOnce(() -> {
             setSpeed = 0.0;

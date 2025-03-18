@@ -113,6 +113,7 @@ public final class Constants {
     public final static double coralIntakeAngle = 101;// 100
 
     public final static double stowAngle = 24;
+    public final static double holdAlgaeAngle = 29;
     public final static double scoreL4Angle = 89;
     public final static double scoreCoralAngle = 80;
     public final static double intakeAlgaeAngle = -50;

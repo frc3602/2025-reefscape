@@ -15,6 +15,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3602.robot.Constants.ElevatorConstants.*;
 import static frc.team3602.robot.Constants.IntakeConstants.*;
 import static frc.team3602.robot.Constants.PivotConstants.*;
+
+import frc.team3602.robot.Constants.PivotConstants;
 // import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
@@ -154,7 +156,7 @@ public class Superstructure extends SubsystemBase {
 
                 pivotSubsys.setAngle(-50.0),
 
-                intakeSubsys.runIntake(intakeAlgaeSpeed));
+                intakeSubsys.holdAlgae(intakeAlgaeSpeed));
     }
 
     public Command grabAlgaeLow() {
@@ -170,10 +172,11 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Command holdAlgae() {
-        return sequence(
-                intakeSubsys.runIntake(-0.6),
-
-                elevatorSubsys.setHeight(0.1));
+    return sequence(
+                elevatorSubsys.setHeight(.5),
+                pivotSubsys.setAngle(29)
+                );
+       
     }
 
     public Command setAlgaeProcesser() {
@@ -183,7 +186,30 @@ public class Superstructure extends SubsystemBase {
                 sequence(
                         elevatorSubsys.setHeight(scoreAlgaeProcesser),
 
-                        pivotSubsys.setAngle(scoreAlgaeProcesserAngle)));
+                        pivotSubsys.setAngle(scoreAlgaeProcesserAngle))
+                        );
+    }
+
+
+    // public Command stowAlgae() {
+    //     return Commands.sequence(//parallel(
+    //             intakeSubsys.runIntake(intakeAlgaeSpeed),
+
+    //            // sequence(
+    //                     elevatorSubsys.setHeight(0.1),
+
+    //                     pivotSubsys.setAngle(29)//)
+    //                     );
+    // }
+
+    public Command stowAlgae(){
+        return sequence(
+            
+        intakeSubsys.setIntake(intakeAlgaeSpeed),
+        elevatorSubsys.setHeight(0.1),
+
+        pivotSubsys.setAngle(29)
+        );
     }
 
     public Command scoreAlgae() {

@@ -45,6 +45,9 @@ public class RobotContainer {
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.RobotCentric robocentricDrive = new SwerveRequest.RobotCentric()
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -91,7 +94,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("shoot", superstructure.autonShoot());
     NamedCommands.registerCommand("intake", superstructure.autonIntake());
-
+    
     NamedCommands.registerCommand("grabAlgaeHigh", superstructure.autonGrabAlgaeHigh());
     NamedCommands.registerCommand("grabAlgaeLow", superstructure.autonGrabAlgaeLow());
     NamedCommands.registerCommand("holdAlgae", superstructure.autonHoldAlgae());
@@ -130,9 +133,9 @@ public class RobotContainer {
       drivetrainSubsys.setDefaultCommand(
           drivetrainSubsys.applyRequest(
               () -> drive.withVelocityX(0.5 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed) // Drive
-                  // forward with
-                  // negative Y
-                  // (forward)
+                                                                                                         // forward with
+                                                                                                         // negative Y
+                                                                                                         // (forward)
                   .withVelocityY(0.5 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive
                                                                                                               // left
                                                                                                               // with
@@ -141,7 +144,7 @@ public class RobotContainer {
                                                                                                               // (left)
                   .withRotationalRate(-xboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with
                                                                                     // negative
-                                                                                    // X (left)
+                                                                                // X (left)
           ));
     }
   }
@@ -152,6 +155,7 @@ public class RobotContainer {
    */
   private void configButtonBindings() {
     if (Utils.isSimulation()) {
+
       // // joystick.button(1).whileTrue(elevatorSubsys.setHeight(0.0));
       // // joystick.button(2).onTrue(elevatorSubsys.setHeight(1.0));
       // // // joystick.button(3).onTrue(superstructure.scoreCoral());
@@ -209,6 +213,7 @@ public class RobotContainer {
 
       joystick.button(8).onTrue(superstructure.scoreAlgae());
       joystick.button(10).onTrue(superstructure.setAlgaeProcesser());
+      joystick.button(9).onTrue(superstructure.stowAlgae());
 
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
     }
