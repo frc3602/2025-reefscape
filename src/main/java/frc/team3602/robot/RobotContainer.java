@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.interfaces.LaserCanInterface.RegionOfInterest;
 
 import com.ctre.phoenix6.Utils;
@@ -82,8 +83,16 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private SendableChooser<Double> polarityChooser = new SendableChooser<>();
 
-  public RegionOfInterest getROI() {
-    return (joystick.getRawAxis(3) >= 0.0) ? DrivetrainConstants.leftmostRegion : DrivetrainConstants.rightmostRegion;
+  // public RegionOfInterest getROI() {
+  //   return (joystick.getRawAxis(3) >= 0.0) ? DrivetrainConstants.leftmostRegion : DrivetrainConstants.rightmostRegion;
+  // }
+
+  private LaserCan leftLASER = new LaserCan(kLeftLASERCANId);
+  private LaserCan rightLASER = new LaserCan(kRightLASERCANId);
+
+  private boolean LASERNotTriggered() {
+    int LASERMeasureMM = ((joystick.getRawAxis(3) <= 0) ? leftLASER : rightLASER).getMeasurement().distance_mm;
+    return !((LASERMeasureMM <= 0) || (LASERMeasureMM > 100));
   }
 
   public RobotContainer() {
@@ -200,7 +209,8 @@ public class RobotContainer {
       xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
       xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 
-      xboxController.a().onTrue(drivetrainSubsys.setROI(this::getROI)).whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(drivetrainSubsys::alignLASERIsTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
+      xboxController.a().whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(this::LASERNotTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
+      // xboxController.a().onTrue(drivetrainSubsys.setROI(this::getROI)).whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(drivetrainSubsys::alignLASERIsTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
       xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered())
           .andThen(intakeSubsys.stopIntake()));

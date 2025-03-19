@@ -29,6 +29,8 @@ public final class Constants {
   public final class OperatorInterfaceConstants {
     public final static int kXboxControllerPort = 0;
     public final static int kControlPanelPort = 1;
+    public final static int kLeftLASERCANId = 9;
+    public final static int kRightLASERCANId = 10;
   }
 
   public final class DrivetrainConstants {

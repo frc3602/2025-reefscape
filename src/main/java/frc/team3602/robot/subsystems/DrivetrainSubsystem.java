@@ -283,8 +283,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
       });
     }
 
-    distance = getMetersFromReef();
-    reefDetected = alignLASERIsTriggered();
+    // distance = getMetersFromReef();
+    // reefDetected = alignLASERIsTriggered();
     SmartDashboard.putNumber("LASER", distance);
     SmartDashboard.putBoolean("REEF DETECTED", reefDetected);
   }
@@ -431,22 +431,22 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     }
   }
 
-  public Double getMetersFromReef() {
-    return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
-  }
+  // public Double getMetersFromReef() {
+  //   return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
+  // }
 
-  public boolean alignLASERIsTriggered() {
-    Double metersFromReef = getMetersFromReef();
-    return (metersFromReef >= DrivetrainConstants.minMetersFromReef && metersFromReef <= DrivetrainConstants.maxMetersFromReef);
-  }
+  // public boolean alignLASERIsTriggered() {
+  //   Double metersFromReef = getMetersFromReef();
+  //   return (metersFromReef >= DrivetrainConstants.minMetersFromReef && metersFromReef <= DrivetrainConstants.maxMetersFromReef);
+  // }
 
-  public Command setROI(Supplier<RegionOfInterest> regionOfInterest) {
-    return runOnce(() -> {
-      try {
-        alignmentLASER.setRegionOfInterest(regionOfInterest.get());
-      } catch (Exception e) {}
-    });
-  }
+  // public Command setROI(Supplier<RegionOfInterest> regionOfInterest) {
+  //   return runOnce(() -> {
+  //     try {
+  //       alignmentLASER.setRegionOfInterest(regionOfInterest.get());
+  //     } catch (Exception e) {}
+  //   });
+  // }
 
   public Command align(DoubleSupplier leftRight) {
     return applyRequest(() -> robocentricDrive.withVelocityY(Math.signum(leftRight.getAsDouble()) * 0.45));
