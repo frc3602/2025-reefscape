@@ -37,6 +37,7 @@ import frc.team3602.robot.subsystems.ElevatorSubsystem;
 import frc.team3602.robot.subsystems.IntakeSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 
+import static frc.team3602.robot.Constants.ElevatorConstants.pivotStowHeight;
 import static frc.team3602.robot.Constants.OperatorInterfaceConstants.*;
 import static frc.team3602.robot.Constants.VisionConstants.*;
 
@@ -87,12 +88,12 @@ public class RobotContainer {
   //   return (joystick.getRawAxis(3) >= 0.0) ? DrivetrainConstants.leftmostRegion : DrivetrainConstants.rightmostRegion;
   // }
 
-  private LaserCan leftLASER = new LaserCan(kLeftLASERCANId);
-  private LaserCan rightLASER = new LaserCan(kRightLASERCANId);
+  public LaserCan leftLASER = new LaserCan(kLeftLASERCANId);
+  public LaserCan rightLASER = new LaserCan(kRightLASERCANId);
 
-  private boolean LASERNotTriggered() {
-    int LASERMeasureMM = ((joystick.getRawAxis(3) <= 0) ? leftLASER : rightLASER).getMeasurement().distance_mm;
-    return !((LASERMeasureMM <= 0) || (LASERMeasureMM > 100));
+  public boolean LASERNotTriggered() {
+    int LASERMeasureMM = ((joystick.getRawAxis(3) <= 0) ? rightLASER : leftLASER).getMeasurement().distance_mm;
+    return ((LASERMeasureMM <= 0) || (LASERMeasureMM > 400));
   }
 
   public RobotContainer() {
@@ -206,6 +207,8 @@ public class RobotContainer {
                                                                                        // negative
       );
 
+      xboxController.pov(-1).onTrue(pivotSubsys.setAngle(0.0));
+      
       xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
       xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 

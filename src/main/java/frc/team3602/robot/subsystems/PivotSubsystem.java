@@ -52,7 +52,7 @@ public class PivotSubsystem extends SubsystemBase {
     private double simPivotEncoder;
 
     // Set Point for Pivot
-    private double setAngle = 102.0;
+    public double setAngle = 102.0;
 
     // Controls, Actual
     private final PIDController pivotController = new PIDController(PivotConstants.KP, PivotConstants.KI,
@@ -137,9 +137,17 @@ public class PivotSubsystem extends SubsystemBase {
                 + (simPivotController.calculate(simPivotEncoder, setAngle)));
     }
 
+    public double getPIDEffort() {
+        double PIDEffort = pivotController.calculate(getEncoderDegrees(), setAngle);
+        if (Math.abs(PIDEffort) > 8.0) {
+            PIDEffort = Math.signum(PIDEffort) * 8.0;
+        }
+        return PIDEffort;
+    }
+
     public double getEffort() {
         return totalEffort = ((pivotFeedforward.calculate(Units.degreesToRadians((getEncoderDegrees())), 0))
-                + (pivotController.calculate(getEncoderDegrees(), setAngle)));
+                + getPIDEffort());
     }
 
     public void periodic() {
@@ -174,7 +182,7 @@ public class PivotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Pivot FFE Effort",
                 pivotFeedforward.calculate(Units.degreesToRadians(getEncoderDegrees()), 0));
-        SmartDashboard.putNumber("Pivot PID Effort", pivotController.calculate(getEncoderDegrees(), setAngle));
+        SmartDashboard.putNumber("Pivot PID Effort", getPIDEffort());
         SmartDashboard.putNumber("Pivot Encoder ", getEncoderDegrees());
         SmartDashboard.putBoolean("pivot near goal", isNearGoal());
     }
@@ -197,7 +205,9 @@ public class PivotSubsystem extends SubsystemBase {
         var motorConfigs = new MotorOutputConfigs();
         var limitConfigs = new CurrentLimitsConfigs();
 
-        limitConfigs.StatorCurrentLimit = 35;
+        limitConfigs.StatorCurrentLimit = 30;
+        limitConfigs.SupplyCurrentLimit = 30;
+        limitConfigs.SupplyCurrentLimitEnable = true;
         limitConfigs.StatorCurrentLimitEnable = true;
 
         pivotMotor.getConfigurator().apply(limitConfigs);

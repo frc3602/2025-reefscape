@@ -28,6 +28,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -285,8 +286,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
     // distance = getMetersFromReef();
     // reefDetected = alignLASERIsTriggered();
-    SmartDashboard.putNumber("LASER", distance);
-    SmartDashboard.putBoolean("REEF DETECTED", reefDetected);
+    // SmartDashboard.putNumber("LASER", distance);
+    // SmartDashboard.putBoolean("REEF DETECTED", reefDetected);
   }
 
   private void startSimThread() {
@@ -449,7 +450,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   // }
 
   public Command align(DoubleSupplier leftRight) {
-    return applyRequest(() -> robocentricDrive.withVelocityY(Math.signum(leftRight.getAsDouble()) * 0.45));
+    return applyRequest(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(0.0, Math.signum(leftRight.getAsDouble()) * 0.35, 0.0)));
+    //robocentricDrive.withVelocityY(Math.signum(leftRight.getAsDouble()) * 0.3));
   }
 
   @Override

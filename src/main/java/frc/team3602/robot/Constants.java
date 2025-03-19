@@ -29,8 +29,8 @@ public final class Constants {
   public final class OperatorInterfaceConstants {
     public final static int kXboxControllerPort = 0;
     public final static int kControlPanelPort = 1;
-    public final static int kLeftLASERCANId = 9;
-    public final static int kRightLASERCANId = 10;
+    public final static int kLeftLASERCANId = 33;
+    public final static int kRightLASERCANId = 32;
   }
 
   public final class DrivetrainConstants {
@@ -66,7 +66,7 @@ public final class Constants {
     public final static double scoreLevelOne = 2;
     public final static double scoreLevelTwo = 6;
     public final static double scoreLevelThree = 16;
-    public final static double scoreLevelFour = 30.7;
+    public final static double scoreLevelFour = 31.7;
     public final static double down = 0.1;
 
     // the rest of these are bs numbers still
@@ -120,7 +120,7 @@ public final class Constants {
     public final static double stowAngle = 85;
     public final static double l4StowAngle = 20;
     public final static double holdAlgaeAngle = 29;
-    public final static double scoreL4Angle = 89;
+    public final static double scoreL4Angle = 85;
     public final static double scoreCoralAngle = 80;
     public final static double intakeAlgaeAngle = -50;
     public final static double scoreAlgaeProcesserAngle = -42;

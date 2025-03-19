@@ -101,6 +101,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     });
   }
 
+public boolean beneathL4Height() {
+  return (getEncoder() < 28.0);
+}
+
+public boolean beneathBargeHeight() {
+  return (getEncoder() < 0.0);
+}
 
 
   // CALCULATIONS

@@ -17,6 +17,7 @@ import static frc.team3602.robot.Constants.ElevatorConstants.*;
 import static frc.team3602.robot.Constants.IntakeConstants.*;
 import static frc.team3602.robot.Constants.PivotConstants.*;
 
+import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.Constants.PivotConstants;
 // import frc.team3602.robot.subsystems.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.ElevatorSubsystem;
@@ -140,6 +141,11 @@ public class Superstructure extends SubsystemBase {
 
     public Command down() {
         return Commands.sequence(
+            sequence(
+                elevatorSubsys.setHeight(ElevatorConstants.scoreLevelThree),
+                waitUntil(elevatorSubsys::isNearGoal)
+            ).unless(elevatorSubsys::beneathL4Height),
+
             pivotSubsys.setAngle(stowAngle),
             waitUntil(pivotSubsys::isNearGoal),
 
@@ -150,6 +156,20 @@ public class Superstructure extends SubsystemBase {
             intakeSubsys.runIntake(0.1).until(intakeSubsys::sensorIsTriggered)
         );
     }
+
+    // public Command downL4(){
+    //     return sequence(
+    //         //pivotSubsys.setAngle()
+    //         elevatorSubsys.setHeight(scoreLevelThree),
+    //         waitUntil(elevatorSubsys::isNearGoal),
+
+    //         pivotSubsys.setAngle(stowAngle),
+    //          waitUntil(pivotSubsys::isNearGoal),
+
+    //         elevatorSubsys.setHeight(0.1),
+    //         declareAtL4False()
+    //     );
+    // }
 
     public Command grabAlgaeHigh() {
         return sequence(
@@ -236,9 +256,11 @@ public class Superstructure extends SubsystemBase {
                     elevatorSubsys.setHeight(Units.metersToInches(kMaxHeightMeters)),
                     waitUntil(elevatorSubsys::isNearGoal)
                 ),
-
-                
-                intakeSubsys.runIntake(0.5)
+                sequence(
+                    intakeSubsys.runIntake(0.5),
+                    pivotSubsys.setAngle(30.0),
+                    waitUntil(pivotSubsys::isNearGoal)
+                )
             ),
             pivotSubsys.setAngle(20),
             intakeSubsys.stopIntake()
