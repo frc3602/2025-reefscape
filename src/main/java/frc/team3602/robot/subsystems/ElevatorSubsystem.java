@@ -18,6 +18,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -109,6 +110,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public boolean isNearGoal() {
     return MathUtil.isNear(height, getEncoder(), ElevatorConstants.tolerance);
+  }
+
+  public boolean aboveShootingHeight() {
+    return (true);
   }
 
   public double simGetEffort() {

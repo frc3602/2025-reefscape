@@ -3,6 +3,7 @@ package frc.team3602.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -22,7 +23,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
 import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface.RegionOfInterest;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -437,12 +440,23 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     return (metersFromReef >= DrivetrainConstants.minMetersFromReef && metersFromReef <= DrivetrainConstants.maxMetersFromReef);
   }
 
-  public Command alignLeft() {
-    return applyRequest(() -> robocentricDrive.withVelocityY(-0.45));
+  public Command setROI(Supplier<RegionOfInterest> regionOfInterest) {
+    return runOnce(() -> {
+      try {
+        alignmentLASER.setRegionOfInterest(regionOfInterest.get());
+      } catch (Exception e) {}
+    });
   }
 
-  public Command alignRight() {
-    return applyRequest(() -> robocentricDrive.withVelocityY(0.45));
+  public Command align(DoubleSupplier leftRight) {
+    return applyRequest(() -> robocentricDrive.withVelocityY(Math.signum(leftRight.getAsDouble()) * 0.45));
+  }
+
+  @Override
+  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds){
+    Matrix<N3, N1> bsStdDevs = VecBuilder.fill(8.0, 8.0, 8.0);
+    super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), bsStdDevs);
+
   }
 
   public void configDrivetrainSubsys() {

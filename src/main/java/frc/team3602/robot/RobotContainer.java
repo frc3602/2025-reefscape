@@ -9,6 +9,9 @@ package frc.team3602.robot;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import au.grapplerobotics.interfaces.LaserCanInterface.RegionOfInterest;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.*;
 
+import frc.team3602.robot.Constants.DrivetrainConstants;
 import frc.team3602.robot.Constants.ElevatorConstants;
 import frc.team3602.robot.generated.TunerConstants;
 import frc.team3602.robot.subsystems.ClimberSubsystem;
@@ -77,6 +81,10 @@ public class RobotContainer {
   /* Autonomous */
   private final SendableChooser<Command> autoChooser;
   private SendableChooser<Double> polarityChooser = new SendableChooser<>();
+
+  public RegionOfInterest getROI() {
+    return (joystick.getRawAxis(3) >= 0.0) ? DrivetrainConstants.leftmostRegion : DrivetrainConstants.rightmostRegion;
+  }
 
   public RobotContainer() {
     // Register commands for auton
@@ -192,7 +200,7 @@ public class RobotContainer {
       xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
       xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 
-      xboxController.a().whileTrue(((joystick.getRawAxis(3) <= 0) ? drivetrainSubsys.alignLeft() : drivetrainSubsys.alignRight()).until(drivetrainSubsys::alignLASERIsTriggered));
+      xboxController.a().onTrue(drivetrainSubsys.setROI(this::getROI)).whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(drivetrainSubsys::alignLASERIsTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
       xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered())
           .andThen(intakeSubsys.stopIntake()));
@@ -210,6 +218,8 @@ public class RobotContainer {
 
       joystick.button(11).onTrue(superstructure.grabAlgaeHigh());
       joystick.button(12).onTrue(superstructure.grabAlgaeLow());
+
+      joystick.button(7).onTrue(superstructure.placeAlgaeInBarge());
 
       joystick.button(8).onTrue(superstructure.scoreAlgae());
       joystick.button(10).onTrue(superstructure.setAlgaeProcesser());
@@ -238,59 +248,116 @@ public class RobotContainer {
     SmartDashboard.putNumber("estimated drive pose rotation",
         drivetrainSubsys.getState().Pose.getRotation().getDegrees());
 
-    // puts the pose from the reef cam on our dashboards if it sees a tag
-
-    var mostRecentMod0Pose = new Pose2d();
-    try {
-      var Mod0Pose = vision.getMod0EstimatedPose().get().estimatedPose.toPose2d();
-      mostRecentMod0Pose = Mod0Pose;
-      drivetrainSubsys.addVisionMeasurement(mostRecentMod0Pose, vision.lastMod0EstimateTimestamp, kMultiTagStdDevs);
-      SmartDashboard.putNumber("mod 0 Cam Pose X", mostRecentMod0Pose.getX());
-      SmartDashboard.putNumber("mod 0 Cam Pose Y", mostRecentMod0Pose.getY());
-      SmartDashboard.putNumber("mod 0 Cam Pose Angle",
-          mostRecentMod0Pose.getRotation().getDegrees());
-    } catch (Exception e) {
-      Commands.print("mod 0 cam pose failed");
+  
+    //new and successful pose est
+    
+    try{
+      var mod0VisionEst = vision.getMod0EstimatedPose();
+      mod0VisionEst.ifPresent(est-> {
+        drivetrainSubsys.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds);
+        SmartDashboard.putNumber("mod 0 Cam Pose X", est.estimatedPose.toPose2d().getX());
+        SmartDashboard.putNumber("mod 0 Cam Pose Y", est.estimatedPose.toPose2d().getY());
+        SmartDashboard.putNumber("mod 0 Cam Pose Angle",
+            est.estimatedPose.toPose2d().getRotation().getDegrees());
+      });
+    } catch (Exception e0){
+      Commands.print("Mod 0 pose est failed");
     }
 
-    var mostRecentMod1Pose = new Pose2d();
-    try {
-      var Mod1Pose = vision.getMod1EstimatedPose().get().estimatedPose.toPose2d();
-      mostRecentMod1Pose = Mod1Pose;
-      drivetrainSubsys.addVisionMeasurement(mostRecentMod1Pose, vision.lastMod1EstimateTimestamp, kMultiTagStdDevs);
-      SmartDashboard.putNumber("mod 1 Cam Pose X", mostRecentMod1Pose.getX());
-      SmartDashboard.putNumber("mod 1 Cam Pose Y", mostRecentMod1Pose.getY());
-      SmartDashboard.putNumber("mod 1 Cam Pose Angle",
-          mostRecentMod1Pose.getRotation().getDegrees());
-    } catch (Exception e) {
-      Commands.print("mod 1 cam pose failed");
+    try{
+      var mod1VisionEst = vision.getMod1EstimatedPose();
+      mod1VisionEst.ifPresent(est-> {
+        drivetrainSubsys.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds);
+        SmartDashboard.putNumber("mod 1 Cam Pose X", est.estimatedPose.toPose2d().getX());
+        SmartDashboard.putNumber("mod 1 Cam Pose Y", est.estimatedPose.toPose2d().getY());
+        SmartDashboard.putNumber("mod 1 Cam Pose Angle",
+            est.estimatedPose.toPose2d().getRotation().getDegrees());
+      });
+    } catch (Exception e1){
+      Commands.print("Mod 1 pose est failed");
     }
 
-    var mostRecentMod2Pose = new Pose2d();
-    try {
-      var Mod2Pose = vision.getMod2EstimatedPose().get().estimatedPose.toPose2d();
-      mostRecentMod1Pose = Mod2Pose;
-      drivetrainSubsys.addVisionMeasurement(mostRecentMod2Pose, vision.lastMod2EstimateTimestamp, kMultiTagStdDevs);
-      SmartDashboard.putNumber("mod 2 Cam Pose X", mostRecentMod2Pose.getX());
-      SmartDashboard.putNumber("mod 2 Cam Pose Y", mostRecentMod2Pose.getY());
-      SmartDashboard.putNumber("mod 2 Cam Pose Angle",
-          mostRecentMod2Pose.getRotation().getDegrees());
-    } catch (Exception e) {
-      Commands.print("mod 2 cam pose failed");
+    try{
+      var mod2VisionEst = vision.getMod2EstimatedPose();
+      mod2VisionEst.ifPresent(est-> {
+        drivetrainSubsys.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds);
+        SmartDashboard.putNumber("mod 2 Cam Pose X", est.estimatedPose.toPose2d().getX());
+        SmartDashboard.putNumber("mod 2 Cam Pose Y", est.estimatedPose.toPose2d().getY());
+        SmartDashboard.putNumber("mod 2 Cam Pose Angle",
+            est.estimatedPose.toPose2d().getRotation().getDegrees());
+      });
+    } catch (Exception e2){
+      Commands.print("Mod 2 pose est failed");
     }
 
-    var mostRecentMod3Pose = new Pose2d();
-    try {
-      var Mod3Pose = vision.getMod3EstimatedPose().get().estimatedPose.toPose2d();
-      mostRecentMod3Pose = Mod3Pose;
-      drivetrainSubsys.addVisionMeasurement(mostRecentMod3Pose, vision.lastMod3EstimateTimestamp, kMultiTagStdDevs);
-      SmartDashboard.putNumber("mod 3 Cam Pose X", mostRecentMod3Pose.getX());
-      SmartDashboard.putNumber("mod 3 Cam Pose Y", mostRecentMod3Pose.getY());
-      SmartDashboard.putNumber("mod 3 Cam Pose Angle",
-          mostRecentMod2Pose.getRotation().getDegrees());
-    } catch (Exception e) {
-      Commands.print("mod 3 cam pose failed");
+    try{
+      var mod3VisionEst = vision.getMod3EstimatedPose();
+      mod3VisionEst.ifPresent(est-> {
+        drivetrainSubsys.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds);
+        SmartDashboard.putNumber("mod 3 Cam Pose X", est.estimatedPose.toPose2d().getX());
+        SmartDashboard.putNumber("mod 3 Cam Pose Y", est.estimatedPose.toPose2d().getY());
+        SmartDashboard.putNumber("mod 3 Cam Pose Angle",
+            est.estimatedPose.toPose2d().getRotation().getDegrees());
+      });
+    } catch (Exception e3){
+      Commands.print("Mod 3 pose est failed");
     }
+
+
+
+
+
+    // var mostRecentMod0Pose = new Pose2d();
+    // try {
+    //   var Mod0Pose = vision.getMod0EstimatedPose().get().estimatedPose.toPose2d();
+    //   mostRecentMod0Pose = Mod0Pose;
+    //   drivetrainSubsys.addVisionMeasurement(mostRecentMod0Pose, vision.lastMod0EstimateTimestamp, kMultiTagStdDevs);
+    //   SmartDashboard.putNumber("mod 0 Cam Pose X", mostRecentMod0Pose.getX());
+    //   SmartDashboard.putNumber("mod 0 Cam Pose Y", mostRecentMod0Pose.getY());
+    //   SmartDashboard.putNumber("mod 0 Cam Pose Angle",
+    //       mostRecentMod0Pose.getRotation().getDegrees());
+    // } catch (Exception e) {
+    //   Commands.print("mod 0 cam pose failed");
+    // }
+
+    // var mostRecentMod1Pose = new Pose2d();
+    // try {
+    //   var Mod1Pose = vision.getMod1EstimatedPose().get().estimatedPose.toPose2d();
+    //   mostRecentMod1Pose = Mod1Pose;
+    //   drivetrainSubsys.addVisionMeasurement(mostRecentMod1Pose, vision.lastMod1EstimateTimestamp, kMultiTagStdDevs);
+    //   SmartDashboard.putNumber("mod 1 Cam Pose X", mostRecentMod1Pose.getX());
+    //   SmartDashboard.putNumber("mod 1 Cam Pose Y", mostRecentMod1Pose.getY());
+    //   SmartDashboard.putNumber("mod 1 Cam Pose Angle",
+    //       mostRecentMod1Pose.getRotation().getDegrees());
+    // } catch (Exception e) {
+    //   Commands.print("mod 1 cam pose failed");
+    // }
+
+    // var mostRecentMod2Pose = new Pose2d();
+    // try {
+    //   var Mod2Pose = vision.getMod2EstimatedPose().get().estimatedPose.toPose2d();
+    //   mostRecentMod1Pose = Mod2Pose;
+    //   drivetrainSubsys.addVisionMeasurement(mostRecentMod2Pose, vision.lastMod2EstimateTimestamp, kMultiTagStdDevs);
+    //   SmartDashboard.putNumber("mod 2 Cam Pose X", mostRecentMod2Pose.getX());
+    //   SmartDashboard.putNumber("mod 2 Cam Pose Y", mostRecentMod2Pose.getY());
+    //   SmartDashboard.putNumber("mod 2 Cam Pose Angle",
+    //       mostRecentMod2Pose.getRotation().getDegrees());
+    // } catch (Exception e) {
+    //   Commands.print("mod 2 cam pose failed");
+    // }
+
+    // var mostRecentMod3Pose = new Pose2d();
+    // try {
+    //   var Mod3Pose = vision.getMod3EstimatedPose().get().estimatedPose.toPose2d();
+    //   mostRecentMod3Pose = Mod3Pose;
+    //   drivetrainSubsys.addVisionMeasurement(mostRecentMod3Pose, vision.lastMod3EstimateTimestamp, kMultiTagStdDevs);
+    //   SmartDashboard.putNumber("mod 3 Cam Pose X", mostRecentMod3Pose.getX());
+    //   SmartDashboard.putNumber("mod 3 Cam Pose Y", mostRecentMod3Pose.getY());
+    //   SmartDashboard.putNumber("mod 3 Cam Pose Angle",
+    //       mostRecentMod2Pose.getRotation().getDegrees());
+    // } catch (Exception e) {
+    //   Commands.print("mod 3 cam pose failed");
+    // }
     // allows us to reset our pose
     // TODO take out for matches
     // for auton testing at LSSU, change the pose to the starting pose we have in

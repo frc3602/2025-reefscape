@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.8720286885245896,
-        "y": 5.0499487704918025
+        "x": 3.6855,
+        "y": 5.077999999999999
       },
       "prevControl": {
-        "x": 3.0670988921251605,
-        "y": 5.558895341299722
+        "x": 2.880570203600571,
+        "y": 5.586946570807919
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,7 +56,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.0
+    "rotation": -60.46121774044187
   },
   "reversed": false,
   "folder": "More Commonly Used",

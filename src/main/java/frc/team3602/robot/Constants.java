@@ -21,6 +21,7 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import static edu.wpi.first.units.Units.*;
 
+import au.grapplerobotics.interfaces.LaserCanInterface.RegionOfInterest;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
@@ -34,6 +35,8 @@ public final class Constants {
     public final static int kAlignmentLASERCANId = 6;
     public final static double minMetersFromReef = 0.0;
     public final static double maxMetersFromReef = 1.0; // TODO: Use real numbers :(
+    public final static RegionOfInterest leftmostRegion = new RegionOfInterest(2,8,4,4);
+    public final static RegionOfInterest rightmostRegion = new RegionOfInterest(12,8,4,4);
   }
 
   // in case we want the flypath stuff in superstructure or something
@@ -98,7 +101,7 @@ public final class Constants {
 
   public final class IntakeConstants {
     public final static int kIntakeMotorId = 56;
-    public final static double coralSpeed = 1.0;
+    public final static double coralSpeed = .50;
     public final static double intakeAlgaeSpeed = -0.5;// -0.3
     public final static double scorAlgeaSpeed = 0.3;
   }
@@ -112,15 +115,17 @@ public final class Constants {
 
     public final static double coralIntakeAngle = 101;// 100
 
-    public final static double stowAngle = 24;
+    public final static double stowAngle = 85;
+    public final static double l4StowAngle = 20;
     public final static double holdAlgaeAngle = 29;
     public final static double scoreL4Angle = 89;
     public final static double scoreCoralAngle = 80;
     public final static double intakeAlgaeAngle = -50;
-    public final static double scoreAlgaeProcesserAngle = -90;
+    public final static double scoreAlgaeProcesserAngle = -42;
+    public final static double bargeAngle = 00;
 
     // PID Constants
-    public final static double KP = 0.11;// .056 //.09 .11
+    public final static double KP = 0.09;// .056 //.09 .11
     public final static double KI = 0.0;
     public final static double KD = 0.0001;
 

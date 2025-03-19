@@ -80,6 +80,8 @@ public class PivotSubsystem extends SubsystemBase {
     private final MechanismRoot2d pivotRoot;
     private final MechanismLigament2d pivotViz;
 
+    private boolean enabled = true;
+
     public PivotSubsystem(MechanismRoot2d pivotRoot, DoubleSupplier elevatorVizLength) {
         // Simulation Initiation
         this.pivotRoot = pivotRoot;
@@ -109,6 +111,14 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
+    public Command enablePivot() {
+        return runOnce(() -> enabled = true);
+    }
+
+    public Command disablePivot() {
+        return runOnce(() -> enabled = false);
+    }
+
     // CALCULATIONS
     private double getEncoderDegrees() {
         return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0) - 210; // absoluteOffset
@@ -133,16 +143,19 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-
-        if (Utils.isSimulation()) {
-            simPivotEncoder = pivotViz.getAngle();
-            pivotMotor.setVoltage(simGetEffort());
-        } else {
-            if (getEncoderDegrees() > -100) {
-                pivotMotor.setVoltage(getEffort());
+        if (enabled) {
+            if (Utils.isSimulation()) {
+                simPivotEncoder = pivotViz.getAngle();
+                pivotMotor.setVoltage(simGetEffort());
             } else {
-                pivotMotor.setVoltage(-3);
+                if (getEncoderDegrees() > -100) {
+                    pivotMotor.setVoltage(getEffort());
+                } else {
+                    pivotMotor.setVoltage(-3);
+                }
             }
+        } else {
+            pivotMotor.setVoltage(0.0);
         }
 
         // Update Simulation

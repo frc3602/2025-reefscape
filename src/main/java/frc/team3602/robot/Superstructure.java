@@ -8,6 +8,7 @@ package frc.team3602.robot;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -100,7 +101,7 @@ public class Superstructure extends SubsystemBase {
                 intakeSubsys.stopIntake(),
 
                 pivotSubsys.setAngle(stowAngle),
-                waitUntil(pivotSubsys::isStowed),
+                waitUntil(pivotSubsys::isNearGoal),
                 print("Pivot Stowed"),
 
                 elevatorSubsys.setHeight(scoreLevelThree),
@@ -117,6 +118,9 @@ public class Superstructure extends SubsystemBase {
                 print("Start of Sequence"),
 
                 intakeSubsys.stopIntake(),
+                pivotSubsys.setAngle(PivotConstants.l4StowAngle),
+                waitUntil(pivotSubsys::isNearGoal),
+                elevatorSubsys.setHeight(scoreLevelThree),
 
                 pivotSubsys.setAngle(stowAngle),
                 waitUntil(pivotSubsys::isNearGoal),
@@ -180,14 +184,16 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Command setAlgaeProcesser() {
-        return parallel(
-                intakeSubsys.runIntake(intakeAlgaeSpeed),
+        return sequence(
+            intakeSubsys.stopIntake(),
+            parallel(
+                elevatorSubsys.setHeight(scoreAlgaeProcesser),
 
-                sequence(
-                        elevatorSubsys.setHeight(scoreAlgaeProcesser),
-
-                        pivotSubsys.setAngle(scoreAlgaeProcesserAngle))
-                        );
+                pivotSubsys.disablePivot()
+            ),
+            waitSeconds(2.0),
+            pivotSubsys.enablePivot()
+        );
     }
 
 
@@ -202,13 +208,51 @@ public class Superstructure extends SubsystemBase {
     //                     );
     // }
 
-    public Command stowAlgae(){
+    public Command stowAlgae() {
         return sequence(
             
-        intakeSubsys.setIntake(intakeAlgaeSpeed),
-        elevatorSubsys.setHeight(0.1),
+            intakeSubsys.setIntake(intakeAlgaeSpeed),
 
-        pivotSubsys.setAngle(29)
+            sequence(
+                elevatorSubsys.setHeight(0.1),
+
+                pivotSubsys.setAngle(29)
+            )
+        );
+    }
+
+    public Command placeAlgaeInBarge() {
+        return Commands.sequence(
+            intakeSubsys.stopIntake(),
+
+            pivotSubsys.setAngle(22.0),
+            waitUntil(pivotSubsys::isNearGoal),
+
+            elevatorSubsys.setHeight(scoreLevelThree),
+            waitUntil(elevatorSubsys::isNearGoal),
+
+            parallel(
+                sequence(
+                    elevatorSubsys.setHeight(Units.metersToInches(kMaxHeightMeters)),
+                    waitUntil(elevatorSubsys::isNearGoal)
+                ),
+
+                
+                intakeSubsys.runIntake(0.5)
+            ),
+            pivotSubsys.setAngle(20),
+            intakeSubsys.stopIntake()
+
+            // parallel(
+            //     sequence(
+            //         elevatorSubsys.setHeight(Units.metersToInches(kMaxHeightMeters) - 0.5),
+            //         waitUntil(elevatorSubsys::isNearGoal)
+            //     ),
+            //     sequence(
+            //         waitUntil(elevatorSubsys::aboveShootingHeight),
+            //         pivotSubsys.setAngle(36)
+            //     )
+            // )
         );
     }
 
@@ -346,11 +390,11 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Command autonShoot() {
-        return intakeSubsys.runIntake(1.0).until(() -> !intakeSubsys.sensorIsTriggered());
+        return intakeSubsys.runIntake(0.5).until(() -> !intakeSubsys.sensorIsTriggered());
     }
 
     public Command autonIntake() {
-        return intakeSubsys.runIntake(0.2).until(intakeSubsys::sensorIsTriggered);
+        return intakeSubsys.runIntake(0.1).until(intakeSubsys::sensorIsTriggered);
     }
 
     public Command autonGrabAlgaeHigh() {
