@@ -198,8 +198,8 @@ public class RobotContainer {
       xboxController.rightBumper().onTrue(superstructure.getCoral());
       xboxController.rightTrigger().whileTrue(
           drivetrainSubsys.applyRequest(() -> drivetrainSubsys.robocentricDrive
-              .withVelocityX(0.1 * polarityChooser.getSelected() * -xboxController.getLeftY() * MaxSpeed)
-              .withVelocityY(0.1 * polarityChooser.getSelected() * -xboxController.getLeftX() * MaxSpeed) // Drive left
+              .withVelocityX(0.1 * -xboxController.getLeftY() * MaxSpeed)
+              .withVelocityY(0.1 * -xboxController.getLeftX() * MaxSpeed) // Drive left
                                                                                                           // with
                                                                                                           // negative X
                                                                                                           // (left)
@@ -207,8 +207,6 @@ public class RobotContainer {
                                                                                        // negative
       );
 
-      xboxController.pov(-1).onTrue(pivotSubsys.setAngle(0.0));
-      
       xboxController.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
       xboxController.povDown().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
 
@@ -239,6 +237,8 @@ public class RobotContainer {
       joystick.button(9).onTrue(superstructure.stowAlgae());
 
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
+
+      joystick.povDown().onTrue(superstructure.downFromBarge());
     }
   }
 

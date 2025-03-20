@@ -157,19 +157,15 @@ public class Superstructure extends SubsystemBase {
         );
     }
 
-    // public Command downL4(){
-    //     return sequence(
-    //         //pivotSubsys.setAngle()
-    //         elevatorSubsys.setHeight(scoreLevelThree),
-    //         waitUntil(elevatorSubsys::isNearGoal),
+    public Command downFromBarge() {
+        return sequence(
+            pivotSubsys.setAngle(20.0),
+            waitUntil(pivotSubsys::isNearGoal),
 
-    //         pivotSubsys.setAngle(stowAngle),
-    //          waitUntil(pivotSubsys::isNearGoal),
-
-    //         elevatorSubsys.setHeight(0.1),
-    //         declareAtL4False()
-    //     );
-    // }
+            elevatorSubsys.setHeight(0.1),
+            waitUntil(elevatorSubsys::isNearGoal)
+        );
+    }
 
     public Command grabAlgaeHigh() {
         return sequence(
@@ -258,11 +254,9 @@ public class Superstructure extends SubsystemBase {
                 ),
                 sequence(
                     intakeSubsys.runIntake(0.5),
-                    pivotSubsys.setAngle(30.0),
-                    waitUntil(pivotSubsys::isNearGoal)
+                    pivotSubsys.setAngle(30.0)
                 )
             ),
-            pivotSubsys.setAngle(20),
             intakeSubsys.stopIntake()
 
             // parallel(
