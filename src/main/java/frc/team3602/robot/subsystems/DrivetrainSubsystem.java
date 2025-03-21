@@ -288,6 +288,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     // reefDetected = alignLASERIsTriggered();
     // SmartDashboard.putNumber("LASER", distance);
     // SmartDashboard.putBoolean("REEF DETECTED", reefDetected);
+    SmartDashboard.putNumber("X", this.getState().Pose.getX());
+    SmartDashboard.putNumber("Y", this.getState().Pose.getY());
   }
 
   private void startSimThread() {

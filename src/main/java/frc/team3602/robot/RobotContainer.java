@@ -212,7 +212,8 @@ public class RobotContainer {
 
       xboxController.a().whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(this::LASERNotTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
       // xboxController.a().onTrue(drivetrainSubsys.setROI(this::getROI)).whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(drivetrainSubsys::alignLASERIsTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
-      xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
+      // xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
+      // xboxController.b().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.resetPose(new Pose2d(0, 0, new Rotation2d(0.0)))));
       xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered())
           .andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
@@ -229,6 +230,7 @@ public class RobotContainer {
 
       joystick.button(11).onTrue(superstructure.grabAlgaeHigh());
       joystick.button(12).onTrue(superstructure.grabAlgaeLow());
+      
 
       joystick.button(7).onTrue(superstructure.placeAlgaeInBarge());
 
