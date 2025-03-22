@@ -73,7 +73,8 @@ public class Superstructure extends SubsystemBase {
 
                 pivotSubsys.setAngle(scoreCoralAngle),
                 waitUntil(pivotSubsys::isNearGoal),
-                print("Pivot Positioned"));
+                print("Pivot Positioned")
+        ).unless(intakeSubsys::sensorIsNotTriggered);
     }
 
     public Command scoreL2Coral() {
@@ -92,7 +93,8 @@ public class Superstructure extends SubsystemBase {
 
                 pivotSubsys.setAngle(scoreCoralAngle),
                 waitUntil(pivotSubsys::isNearGoal),
-                print("Pivot Positioned"));
+                print("Pivot Positioned")
+        ).unless(intakeSubsys::sensorIsNotTriggered);
     }
 
     public Command scoreL3Coral() {
@@ -111,7 +113,8 @@ public class Superstructure extends SubsystemBase {
 
                 pivotSubsys.setAngle(scoreCoralAngle),
                 waitUntil(pivotSubsys::isNearGoal),
-                print("Pivot Positioned"));
+                print("Pivot Positioned")
+        ).unless(intakeSubsys::sensorIsNotTriggered);
     }
 
     public Command scoreL4Coral() {
@@ -132,7 +135,8 @@ public class Superstructure extends SubsystemBase {
                 print("elev above the point of no return!!!"),
 
                 pivotSubsys.setAngle(scoreL4Angle),
-                waitUntil(pivotSubsys::isNearGoal));
+                waitUntil(pivotSubsys::isNearGoal)
+        ).unless(intakeSubsys::sensorIsNotTriggered);
     }
 
     public Command score() {
@@ -249,7 +253,7 @@ public class Superstructure extends SubsystemBase {
 
             parallel(
                 sequence(
-                    elevatorSubsys.setHeight(Units.metersToInches(kMaxHeightMeters)),
+                    elevatorSubsys.setHeight(scoreLevelFour),
                     waitUntil(elevatorSubsys::isNearGoal)
                 ),
                 sequence(

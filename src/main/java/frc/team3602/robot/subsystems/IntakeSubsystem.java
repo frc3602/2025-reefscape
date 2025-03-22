@@ -100,6 +100,11 @@ public class IntakeSubsystem extends SubsystemBase {
         return (laserMeasurement.distance_mm < 50.0);
     }
 
+    public boolean sensorIsNotTriggered() {
+        LaserCan.Measurement laserMeasurement = laser.getMeasurement();
+        return !(laserMeasurement.distance_mm < 50.0);
+    }
+
     public void periodic() {
         if (Utils.isSimulation()) {
             // Updating Simulation

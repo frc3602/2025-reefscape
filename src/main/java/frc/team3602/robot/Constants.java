@@ -63,17 +63,17 @@ public final class Constants {
     // Pre set heights
 
     public final static double coralIntakeHeight = 0.1;
-    public final static double scoreLevelOne = 2;
-    public final static double scoreLevelTwo = 6;
-    public final static double scoreLevelThree = 16;
-    public final static double scoreLevelFour = 31.7;
+    public final static double scoreLevelOne = 2;//2
+    public final static double scoreLevelTwo = 6.5;//6
+    public final static double scoreLevelThree = 16;//16
+    public final static double scoreLevelFour = 33;//31.7, 31.5, 33 also 33 is max height!!!!!
     public final static double down = 0.1;
 
     // the rest of these are bs numbers still
-    public final static double scoreAlgaeProcesser = 2;
-    public final static double scoreAlgaeBarge = 4;
-    public final static double removeAlgaeHigh = 10;
-    public final static double removeAlgaeLow = 20;
+    public final static double scoreAlgaeProcesser = 2;//2
+    public final static double scoreAlgaeBarge = 4;//4
+    public final static double removeAlgaeHigh = 13;//10
+    public final static double removeAlgaeLow = 22;//20
 
     // PID Constants
     public final static double KP = 0.6;
@@ -120,7 +120,7 @@ public final class Constants {
     public final static double stowAngle = 85;
     public final static double l4StowAngle = 20;
     public final static double holdAlgaeAngle = 29;
-    public final static double scoreL4Angle = 85;
+    public final static double scoreL4Angle = 80;//85, 83
     public final static double scoreCoralAngle = 80;
     public final static double intakeAlgaeAngle = -48;
     public final static double scoreAlgaeProcesserAngle = -42;
@@ -156,7 +156,7 @@ public final class Constants {
 
   public final class ClimberConstants {
     public static final int motorCANId = 18;
-    public static final double percentVoltageScalar = 0.2; // TODO: Make faster; this number is for testing.
+    public static final double percentVoltageScalar = 0.4; // 0.2
   }
 
   public final class VisionConstants {

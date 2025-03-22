@@ -74,6 +74,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   // StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
   // .getStructTopic("Elevator Pose", Pose3d.struct).publish();
 
+  private boolean runDown = false;
+
   public ElevatorSubsystem() {
     // Zero encoder
     elevatorMotor.setPosition(0.0);
@@ -105,11 +107,6 @@ public boolean beneathL4Height() {
   return (getEncoder() < 28.0);
 }
 
-public boolean beneathBargeHeight() {
-  return (getEncoder() < 0.0);
-}
-
-
   // CALCULATIONS
   public Double getEncoder() {
     return (elevatorMotor.getRotorPosition().getValueAsDouble() * (Math.PI * 2.15) / 12.0) * -1.0;
@@ -133,6 +130,19 @@ public boolean beneathBargeHeight() {
         + (elevatorController.calculate(getEncoder(), height)));
   }
 
+  public Command runDown(boolean doIt) {
+    return runOnce(() -> {
+      this.runDown = doIt;
+    });
+  }
+
+  public Command resetEncoder() {
+    return runOnce(() -> {
+      this.elevatorMotor.setPosition(0.0);
+      this.height = 0.0;
+    });
+  }
+
   @Override
   public void periodic() {
     if (Utils.isSimulation()) {
@@ -140,8 +150,13 @@ public boolean beneathBargeHeight() {
       simTotalEffort = simGetEffort();
       elevatorMotor.setVoltage(simTotalEffort);
     } else {
-      totalEffort = getEffort();
-      elevatorMotor.setVoltage(-totalEffort);
+      if (runDown) {
+        elevatorMotor.setVoltage(0.3);
+        height = getEncoder();
+      } else {
+        totalEffort = getEffort();
+        elevatorMotor.setVoltage(-totalEffort);
+      }
     }
 
     // Update Simulation

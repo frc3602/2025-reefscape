@@ -212,9 +212,9 @@ public class RobotContainer {
 
       xboxController.a().whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(this::LASERNotTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
       // xboxController.a().onTrue(drivetrainSubsys.setROI(this::getROI)).whileTrue(drivetrainSubsys.align(() -> joystick.getRawAxis(3)).until(drivetrainSubsys::alignLASERIsTriggered).andThen(drivetrainSubsys.applyRequest(() -> brake)));
-      // xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
+       xboxController.b().onTrue(pivotSubsys.setAngle(0.0));
       // xboxController.b().onTrue(drivetrainSubsys.runOnce(() -> drivetrainSubsys.resetPose(new Pose2d(0, 0, new Rotation2d(0.0)))));
-      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(() -> !intakeSubsys.sensorIsTriggered())
+      xboxController.x().onTrue(intakeSubsys.runIntake(0.2).until(intakeSubsys::sensorIsNotTriggered)
           .andThen(intakeSubsys.stopIntake()));
       xboxController.y().onTrue(intakeSubsys.runIntake(-0.6));
       // xboxController.y().onTrue(intakeSubsys.runIntake(3.0));
@@ -240,7 +240,14 @@ public class RobotContainer {
 
       drivetrainSubsys.registerTelemetry(logger::telemeterize);
 
-      joystick.povDown().onTrue(superstructure.downFromBarge());
+      // joystick.povUp().onTrue(elevatorSubsys.resetEncoder());
+      // joystick.povLeft().onTrue(elevatorSubsys.runDown(true)).onFalse(elevatorSubsys.runDown(false));
+      // joystick.povDown().onTrue(superstructure.downFromBarge());
+      joystick.povUp().onTrue(climberSubsys.runIn()).onFalse(climberSubsys.stop());
+      joystick.povDown().onTrue(climberSubsys.runOutAutomatic());
+      joystick.povRight().onTrue(climberSubsys.runOut()).onFalse(climberSubsys.stop());
+      joystick.povLeft().onTrue(superstructure.downFromBarge());
+      joystick.axisLessThan(2, 0.0).onTrue(climberSubsys.resetEncoder());
     }
   }
 
